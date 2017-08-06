@@ -36,7 +36,6 @@ end
 group :test do
   gem 'rspec-rails'
   gem 'factory_girl_rails'
-  gem 'rspec-sidekiq'
   gem 'simplecov'
   gem 'faker'
   gem 'capybara'
