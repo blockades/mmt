@@ -1,24 +1,36 @@
-# README
+# MMT
 
-This README would normally document whatever steps are necessary to get the
-application up and running.
+Getting sued like it's the 90s
+<hr>
 
-Things you may want to cover:
+# Set-up
 
-* Ruby version
+Environment
+-----------
 
-* System dependencies
+```BASH
+git clone http://code.constructiveproof.com/git/mmt/mmt.git && cd mmt
+bundle
+rake
+```
 
-* Configuration
+Development Environment
+-----------------------
 
-* Database creation
+`touch .env`
 
-* Database initialization
+<hr>
 
-* How to run the test suite
+# Process
 
-* Services (job queues, cache servers, search engines, etc.)
+Contributing
+-----------
+- Pull master branch
+- Checkout to a feature branch
+- Make your changes
+- Pull request into master
 
-* Deployment instructions
-
-* ...
+Issues
+------
+- Create new issue
+- Add a label
