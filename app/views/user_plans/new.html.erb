@@ -1,0 +1,26 @@
+<%= form_for @user_plan do |f| %>
+  <section>
+    <%= f.label :user %>
+    <%= f.collection_select(:user_id, User.all, :id, :email) %>
+  </section>
+  <section>
+    <%= f.label :plan %>
+    <%= f.collection_select(:plan_id, Plan.all, :id, :name) %>
+  </section>
+  <%= f.fields_for :holding, @user_plan.holdings.build do |b| %>
+    <section>
+      <%= b.label :iso_currency %>
+      <%= b.select :iso_currency, options_for_select([['USD', 'USD'], ['EUR', 'EUR'], ['GBP', 'GBP']]) %>
+    </section>
+    <section>
+      <%= b.label :iou %>
+      <%= b.check_box :iou %>
+    </section>
+    <section>
+      <%= b.label :amount %>
+      <%= b.number_field :amount, value: number_to_currency(b.object.amount.to_f, delimiter: '', unit: ''), step: :any %>
+    </section>
+  <% end %>
+  <%= f.submit 'Create' %>
+<% end %>
+
