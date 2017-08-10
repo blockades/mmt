@@ -1,8 +1,7 @@
 class CreateHoldings < ActiveRecord::Migration[5.0]
   def change
     create_table :holdings do |t|
-      t.integer :user_id
-      t.integer :plan_id
+      t.integer :user_plan_id
       # The amount they bought
       t.decimal :amount, precision: 10, scale: 2, default: 0.0
       # The currency in which the purchase was made
