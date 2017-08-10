@@ -6,4 +6,5 @@ class User < ApplicationRecord
 
   has_many :user_plans
   has_many :holdings, through: :user_plans
+  has_many :managed_holdings, -> { where(admin_id: id) }
 end
