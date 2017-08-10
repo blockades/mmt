@@ -1,0 +1,3 @@
+class Holding < ApplicationRecord
+
+end
