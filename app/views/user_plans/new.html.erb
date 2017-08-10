@@ -7,20 +7,18 @@
     <%= f.label :plan %>
     <%= f.collection_select(:plan_id, Plan.all, :id, :name) %>
   </section>
-  <%= f.fields_for :holding, @user_plan.holdings.build do |b| %>
-    <section>
-      <%= b.label :iso_currency %>
-      <%= b.select :iso_currency, options_for_select([['USD', 'USD'], ['EUR', 'EUR'], ['GBP', 'GBP']]) %>
-    </section>
-    <section>
-      <%= b.label :iou %>
-      <%= b.check_box :iou %>
-    </section>
-    <section>
-      <%= b.label :amount %>
-      <%= b.number_field :amount, value: number_to_currency(b.object.amount.to_f, delimiter: '', unit: ''), step: :any %>
-    </section>
-  <% end %>
+  <section>
+    <%= f.label :iso_currency %>
+    <%= f.select :iso_currency, options_for_select([['USD', 'USD'], ['EUR', 'EUR'], ['GBP', 'GBP']]) %>
+  </section>
+  <section>
+    <%= f.label :iou %>
+    <%= f.check_box :iou %>
+  </section>
+  <section>
+    <%= f.label :amount %>
+    <%= f.number_field :amount, value: number_to_currency(f.object.amount.to_f, delimiter: '', unit: ''), step: :any %>
+  </section>
   <%= f.submit 'Create' %>
 <% end %>
 

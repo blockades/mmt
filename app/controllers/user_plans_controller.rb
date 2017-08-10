@@ -17,7 +17,7 @@ class UserPlansController < ApplicationController
   private
 
   def user_plan_params
-    params.require(:user_plan).permit(:user_id, :plan_id, holdings_attributes: [ :id, :amount, :coin_id ] )
+    params.require(:user_plan).permit(:user_id, :plan_id, :iso_currency, :iou, :amount)
   end
 
 end
