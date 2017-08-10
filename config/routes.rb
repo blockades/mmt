@@ -5,5 +5,6 @@ Rails.application.routes.draw do
   root to: 'users#index'
 
   resources :user_plans, only: [ :new, :create ]
+  resources :holdings
 
 end

@@ -1,0 +1,11 @@
+<% @holdings.each do |holding| %>
+  <section>
+    <h3>User</h3>
+    User: <%= holding.user_plan.user.email %><br>
+    <h3>Investment</h3>
+    Amount: <%= holding.amount.to_f %> <%= holding.user_plan.iso_currency %><br>
+    <h3>Holding</h3>
+    <%= holding.crypto %> <%= holding.coin.code %><br>
+  </section>
+  <hr>
+<% end %>
