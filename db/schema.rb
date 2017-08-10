@@ -10,7 +10,34 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170806103416) do
+ActiveRecord::Schema.define(version: 20170810104950) do
+
+  create_table "holdings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_plan_id"
+    t.integer  "coin_id"
+    t.integer  "admin_id"
+    t.decimal  "amount",                   precision: 10, scale: 2,  default: "0.0"
+    t.decimal  "crypto_amount",            precision: 20, scale: 15, default: "0.0"
+    t.string   "currency",      limit: 50,                           default: "United States Dollar"
+    t.string   "iso_currency",  limit: 4,                            default: "USD"
+    t.string   "sale_type",                                          default: "B"
+    t.boolean  "iou",                                                default: false
+    t.datetime "created_at",                                                                          null: false
+    t.datetime "updated_at",                                                                          null: false
+  end
+
+  create_table "plans", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.string   "name"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
+
+  create_table "user_plans", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+    t.integer  "user_id"
+    t.integer  "plan_id"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+  end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
     t.string   "email",                  default: "", null: false
@@ -25,6 +52,7 @@ ActiveRecord::Schema.define(version: 20170806103416) do
     t.string   "last_sign_in_ip"
     t.datetime "created_at",                          null: false
     t.datetime "updated_at",                          null: false
+    t.boolean  "admin"
     t.index ["email"], name: "index_users_on_email", unique: true, using: :btree
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
