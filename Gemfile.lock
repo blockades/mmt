@@ -96,6 +96,10 @@ GEM
     httparty (0.15.6)
       multi_xml (>= 0.5.2)
     i18n (0.8.6)
+    interactor (3.1.0)
+    interactor-rails (2.1.1)
+      interactor (~> 3.0)
+      rails (>= 4.2, < 5.2)
     jbuilder (2.7.0)
       activesupport (>= 4.2.0)
       multi_json (>= 1.2)
@@ -258,6 +262,7 @@ DEPENDENCIES
   dotenv-rails
   factory_girl_rails
   faker
+  interactor-rails
   jbuilder (~> 2.5)
   jquery-rails
   kraken_ruby
