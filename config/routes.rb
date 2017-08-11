@@ -4,6 +4,8 @@ Rails.application.routes.draw do
 
   root to: 'users#index'
 
+  resources :plans, only: [ :index, :new, :create ]
+
   resources :user_plans, only: [ :new, :create ]
   resources :holdings
 
