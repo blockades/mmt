@@ -1,6 +1,6 @@
 class Plan < ApplicationRecord
 
-  has_many :details, ->{ where type: 'PlanDetail' }
+  has_many :details, ->{ where type: 'PlanDetail' }, dependent: :destroy
   has_many :user_plans
   has_many :holdings, through: :user_plans
 
