@@ -8,21 +8,9 @@ class UserPlan < ApplicationRecord
 
   private
 
-  def high_risk_amount
-    amount
-  end
-
-  def medium_risk_amount
-    amount / 3
-  end
-
-  def low_risk_amount
-    amount / 2
-  end
-
   def calculate_holdings
-    Coin.send(plan.name.downcase.to_sym).each do |coin|
-      holdings.create coin_id: coin.id, amount: self.send("#{plan.name.downcase}_risk_amount".to_sym)
+    plan.details.each do |detail|
+      holdings.create coin_id: detail.coin.id, amount: amount * ( detail.rate / 100 )
     end
   end
 end
