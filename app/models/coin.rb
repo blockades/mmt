@@ -2,10 +2,6 @@ class Coin < ApplicationRecord
 
   validates_uniqueness_of :code
 
-  scope :high, -> { where(code: ['ANS']) }
-  scope :medium, -> { where(code: ['BTC', 'ETH', 'ANS']) }
-  scope :low, -> { where(code: ['BTC', 'ETH']) }
-
   def value(iso_currency)
     send("#{code.downcase}_value", iso_currency)
   end
@@ -13,6 +9,7 @@ class Coin < ApplicationRecord
   private
 
   # %%TODO%% Extract API logic into PORO (Plain old ruby object)
+  # Is this another model? CoinTimestamp
   def btc_value(iso_currency)
     BigDecimal.new HTTParty.get('https://api.coinbase.com/v2/exchange-rates?currency=BTC').parsed_response['data']['rates'][iso_currency]
   end
