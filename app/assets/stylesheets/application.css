@@ -13,3 +13,19 @@
  *= require skeleton
  *= require_self
  */
+
+.inline-block {
+  display: inline-block;
+}
+
+.detail {
+  border: 1px solid grey;
+  margin: 1em;
+  padding: 1em;
+}
+
+section.title {
+  border: 1px solid grey;
+  margin: 1em;
+  padding: 1em;
+}
