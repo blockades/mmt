@@ -17,6 +17,7 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.string   "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["code"], name: "index_coins_on_code", using: :btree
   end
 
   create_table "details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -26,6 +27,8 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.decimal  "rate",       precision: 5, scale: 2, default: "100.0"
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
+    t.index ["coin_id"], name: "index_details_on_coin_id", using: :btree
+    t.index ["plan_id"], name: "index_details_on_plan_id", using: :btree
   end
 
   create_table "holdings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -37,6 +40,9 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.decimal  "rate",         precision: 10, scale: 8,  default: "0.0"
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
+    t.index ["admin_id"], name: "index_holdings_on_admin_id", using: :btree
+    t.index ["coin_id"], name: "index_holdings_on_coin_id", using: :btree
+    t.index ["user_plan_id"], name: "index_holdings_on_user_plan_id", using: :btree
   end
 
   create_table "plans", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
@@ -55,6 +61,8 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.boolean  "iou",                                              default: false
     t.datetime "created_at",                                                                        null: false
     t.datetime "updated_at",                                                                        null: false
+    t.index ["plan_id"], name: "index_user_plans_on_plan_id", using: :btree
+    t.index ["user_id"], name: "index_user_plans_on_user_id", using: :btree
   end
 
   create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
