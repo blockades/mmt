@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20170810174135) do
     t.integer  "admin_id"
     t.decimal  "amount",       precision: 10, scale: 2,  default: "0.0"
     t.decimal  "crypto",       precision: 20, scale: 15, default: "0.0"
+    t.decimal  "rate",         precision: 10, scale: 8,  default: "0.0"
     t.datetime "created_at",                                             null: false
     t.datetime "updated_at",                                             null: false
   end

@@ -7,6 +7,7 @@ class CreateHoldings < ActiveRecord::Migration[5.0]
 
       t.decimal :amount, precision: 10, scale: 2, default: 0.0
       t.decimal :crypto, precision: 20, scale: 15, default: 0.0
+      t.decimal :rate, precision: 10, scale: 8, default: 0.0
 
       t.timestamps
     end
