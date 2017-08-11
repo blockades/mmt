@@ -1,0 +1,32 @@
+<%= form_for @plan do |f| %>
+  <section>
+    <%= f.label :name %>
+    <%= f.text_field :name %>
+  </section>
+  <section class="details">
+    <div class="detail">
+      <%= f.fields_for :details, @plan.details.build do |b| %>
+        <%= render 'details/fields', f: b %>
+      <% end %>
+    </div>
+  </section>
+  <%= link_to_add_fields 'Add Detail', f, :details %><br>
+  <%= f.submit %>
+<% end %>
+
+<script type="text/javascript">
+  $(function () {
+    $('.add_fields').on('click', function (e) {
+      time = new Date().getTime();
+      regexp = new RegExp($(this).data('id'), 'g');
+      $(this).before($(this).data('fields').replace(regexp, time));
+      e.preventDefault();
+    })
+
+    $('.remove_fields').on('click', function (e) {
+      $(this).prev('input[type=hidden]').val('1');
+      $(this).closest('fieldset').hide();
+      e.preventDefault();
+    });
+  });
+</script>
