@@ -7,4 +7,13 @@ class Plan < ApplicationRecord
   accepts_nested_attributes_for :details, allow_destroy: true
 
   validates_uniqueness_of :name
+  validate :total_detail_rate
+
+  private
+
+  def total_detail_rate
+    unless details.sum(&:rate) == 100
+      errors.add(:total_detail_rate, "Detail rate sum must equal 100")
+    end
+  end
 end
