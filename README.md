@@ -17,7 +17,9 @@ rake
 Development Environment
 -----------------------
 
-`touch .env`
+`touch .env && echo APP_DOMAIN='blockades.dev' >> .env`
+`rails s`
+Navigate to [mmt.blockades.dev:9999](http://mmt.blockades.dev:9999/)
 
 <hr>
 
