@@ -5,13 +5,14 @@ class UserPlansController < ApplicationController
   end
 
   def create
-    user_plan = UserPlan.new(user_plan_params)
-    if user_plan.save
-      flash[:notice] = "Success"
+    context = CalculateHoldings.call(user_plan_params: user_plan_params)
+    if context.success?
+      flash[:notice] = context.message
+      redirect_to holdings_path
     else
-      flash[:error] = "ePiC fAiL!"
+      flash[:error] = context.error
+      redirect_to new_user_plan_path
     end
-    redirect_to new_user_plan_path
   end
 
   private
