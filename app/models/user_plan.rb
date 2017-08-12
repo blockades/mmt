@@ -4,10 +4,7 @@ class UserPlan < ApplicationRecord
 
   has_many :holdings
 
-  after_commit :calculate_holdings, on: :create
-
-  private
-
+  # %%TODO%% work out how to decouple this. Perhaps put into interactor / PORO?
   def calculate_holdings
     plan.details.each do |detail|
       holdings.create coin_id: detail.coin.id, amount: amount * ( detail.rate / 100 )
