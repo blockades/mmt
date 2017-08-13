@@ -1,10 +1,11 @@
 class PopulateDefaultPlans < ActiveRecord::Migration[5.0]
   def self.up
     plans.each do |plan|
-      Plan.create(name: plan[:name]).tap do |p|
+      Plan.new(name: plan[:name]).tap do |p|
         plan[:details].each do |detail|
-          p.details.create(coin_id: detail[:coin_id], rate: detail[:rate])
+          p.details.new(coin_id: detail[:coin_id], rate: detail[:rate])
         end
+        p.save
       end
     end
   end
