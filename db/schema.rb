@@ -12,7 +12,10 @@
 
 ActiveRecord::Schema.define(version: 20170811174135) do
 
-  create_table "coins", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
+  create_table "coins", force: :cascade do |t|
     t.string   "name"
     t.string   "code"
     t.datetime "created_at", null: false
@@ -20,7 +23,7 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.index ["code"], name: "index_coins_on_code", using: :btree
   end
 
-  create_table "details", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "details", force: :cascade do |t|
     t.string   "type"
     t.integer  "plan_id"
     t.integer  "coin_id"
@@ -31,7 +34,7 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.index ["plan_id"], name: "index_details_on_plan_id", using: :btree
   end
 
-  create_table "holdings", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "holdings", force: :cascade do |t|
     t.integer  "user_plan_id"
     t.integer  "coin_id"
     t.integer  "admin_id"
@@ -45,13 +48,13 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.index ["user_plan_id"], name: "index_holdings_on_user_plan_id", using: :btree
   end
 
-  create_table "plans", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "plans", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end
 
-  create_table "user_plans", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "user_plans", force: :cascade do |t|
     t.integer  "user_id"
     t.integer  "plan_id"
     t.decimal  "amount",                  precision: 10, scale: 2, default: "0.0"
@@ -65,7 +68,7 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.index ["user_id"], name: "index_user_plans_on_user_id", using: :btree
   end
 
-  create_table "users", force: :cascade, options: "ENGINE=InnoDB DEFAULT CHARSET=utf8" do |t|
+  create_table "users", force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
