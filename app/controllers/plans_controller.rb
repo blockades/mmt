@@ -21,7 +21,7 @@ class PlansController < ApplicationController
   private
 
   def plan_params
-    params.require(:plan).permit(:name, details_attributes: [ :id, :type, :coin_id, :plan_id, :rate ])
+    params.require(:plan).permit(:name, details_attributes: [ :id, :type, :coin_id, :plan_id, :proportion ])
   end
 
 end

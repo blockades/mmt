@@ -24,7 +24,7 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.string   "type"
     t.integer  "plan_id"
     t.integer  "coin_id"
-    t.decimal  "rate",       precision: 5, scale: 2, default: "100.0"
+    t.decimal  "proportion", precision: 5, scale: 2, default: "100.0"
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
     t.index ["coin_id"], name: "index_details_on_coin_id", using: :btree

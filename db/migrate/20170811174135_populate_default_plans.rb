@@ -3,7 +3,7 @@ class PopulateDefaultPlans < ActiveRecord::Migration[5.0]
     plans.each do |plan|
       Plan.new(name: plan[:name]).tap do |p|
         plan[:details].each do |detail|
-          p.details.new(coin_id: detail[:coin_id], rate: detail[:rate])
+          p.details.new(coin_id: detail[:coin_id], proportion: detail[:proportion])
         end
         p.save
       end
@@ -30,9 +30,9 @@ class PopulateDefaultPlans < ActiveRecord::Migration[5.0]
 
   def plans
     [
-      { name: 'High', details: [ { coin_id: ans.id, rate: 100.00 } ] },
-      { name: 'Medium', details: [ { coin_id: ans.id, rate: 33.34 }, { coin_id: eth.id, rate: 33.33 }, { coin_id: btc.id, rate: 33.33 } ] },
-      { name: 'Low', details: [ { coin_id: btc.id, rate: 50.00 }, { coin_id: eth.id, rate: 50.00 } ] }
+      { name: 'High', details: [ { coin_id: ans.id, proportion: 100.00 } ] },
+      { name: 'Medium', details: [ { coin_id: ans.id, proportion: 33.34 }, { coin_id: eth.id, proportion: 33.33 }, { coin_id: btc.id, proportion: 33.33 } ] },
+      { name: 'Low', details: [ { coin_id: btc.id, proportion: 50.00 }, { coin_id: eth.id, proportion: 50.00 } ] }
     ]
   end
 

@@ -3,7 +3,7 @@
     <%= f.label :coin, class: 'inline-block' %>
     <%= f.collection_select(:coin_id, Coin.all, :id, :code, class: 'inline-block') %>
     <%# %%TODO%% work out correct delimitation to 2 decimal places %>
-    <%= f.label :rate, class: 'inline-block' %>
-    <%= f.number_field :rate, value: number_to_currency(f.object.rate.to_f, delimiter: '', unit: ''), step: :any, class: 'inline-block' %>
+    <%= f.label :proportion, class: 'inline-block' %>
+    <%= f.number_field :proportion, value: number_to_currency(f.object.proportion.to_f, delimiter: '', unit: ''), step: :any, class: 'inline-block' %>
   </fieldset>
 </div>

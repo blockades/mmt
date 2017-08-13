@@ -38,7 +38,7 @@ describe PlansController do
 
   describe '#create' do
     let(:coin) { create :coin }
-    let(:plan_params) { { name: Faker::Name.name, details_attributes: { '0' => { coin_id: coin.id, rate: 50.00 }, '1' => { coin_id: coin.id, rate: 50.00 } } } }
+    let(:plan_params) { { name: Faker::Name.name, details_attributes: { '0' => { coin_id: coin.id, proportion: 50.00 }, '1' => { coin_id: coin.id, proportion: 50.00 } } } }
     let(:post_create) { post :create, params: { plan: plan_params } }
 
     it 'retusn a 302' do
