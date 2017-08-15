@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170811174135) do
+ActiveRecord::Schema.define(version: 20170813105757) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,7 +27,7 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.string   "type"
     t.integer  "plan_id"
     t.integer  "coin_id"
-    t.decimal  "proportion", precision: 5, scale: 2, default: "100.0"
+    t.decimal  "rate",       precision: 5, scale: 2, default: "100.0"
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
     t.index ["coin_id"], name: "index_details_on_coin_id", using: :btree
@@ -86,4 +86,11 @@ ActiveRecord::Schema.define(version: 20170811174135) do
     t.index ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   end
 
+  add_foreign_key "details", "coins", name: "details_coin_id_fk"
+  add_foreign_key "details", "plans", name: "details_plan_id_fk"
+  add_foreign_key "holdings", "coins", name: "holdings_coin_id_fk"
+  add_foreign_key "holdings", "user_plans", name: "holdings_user_plan_id_fk"
+  add_foreign_key "holdings", "users", column: "admin_id", name: "holdings_admin_id_fk"
+  add_foreign_key "user_plans", "plans", name: "user_plans_plan_id_fk"
+  add_foreign_key "user_plans", "users", name: "user_plans_user_id_fk"
 end
