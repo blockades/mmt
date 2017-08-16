@@ -1,4 +1,7 @@
 class Coin < ApplicationRecord
+  has_many :holdings
+  has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
+  has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
 
   validates_uniqueness_of :code
 

@@ -1,7 +1,6 @@
 class Holding < ApplicationRecord
-  belongs_to :user_plan
   belongs_to :coin
-  belongs_to :admin, class_name: 'User', foreign_key: :admin_id
+  belongs_to :portfolio
 
   delegate :user, to: :user_plan, :allow_nil => true
 
