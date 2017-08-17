@@ -2,13 +2,14 @@ class Holding < ApplicationRecord
   belongs_to :coin
   belongs_to :portfolio
 
-  delegate :user, to: :user_plan, :allow_nil => true
+  before_save :calculate_rate
 
-  before_create :calculate_crypto_value
+  attr_readonly(:coin_id, :crypto, :initial_btc_rate,
+                :deposit, :withdrawal, :portfolio_id)
 
   private
 
-  def calculate_crypto_value
-    self.crypto = amount / coin.value(user_plan.iso_currency)
+  def calculate_rate
+    self.initial_btc_rate = coin.btc_rate
   end
 end

@@ -4,7 +4,7 @@ class User < ApplicationRecord
   devise :database_authenticatable, :registerable,
          :recoverable, :rememberable, :trackable, :validatable
 
-  has_many :user_plans
-  has_many :holdings, through: :user_plans
-  has_many :managed_holdings, -> { where(admin_id: id) }
+  has_one :live_portfolio, -> { live }, foreign_key: :user_id, class_name: "Portfolio"
+  has_many :portfolios
+  has_many :holdings, through: :live_portfolio
 end

@@ -3,11 +3,30 @@ class Coin < ApplicationRecord
   has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
   has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
 
-  validates_uniqueness_of :code
+  attr_readonly :code
+
+  validates :code, uniqueness: true
+  validates :subdivision, :code, presence: true
+  validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
+  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_value }
 
   # %%TODO%% This is not a long term solution
   def value(iso_currency)
-    value = send("#{code.downcase}_value", iso_currency)
+    btc_rate * 1.0 / fiat_btc_rate(iso_currency)
+  end
+
+  # @return The amount of this currency that buys one BTC
+  def btc_rate
+    crypto_currency ? crypto_btc_rate : fiat_btc_rate
+  end
+
+  def central_reserve
+    BigDecimal.new(central_reserve_in_sub_units) / 10**subdivision
+  end
+
+  # @return The value of the live holdings
+  def live_holdings_value
+    live_holdings.sum(:crypto)
   end
 
   private
@@ -17,20 +36,25 @@ class Coin < ApplicationRecord
   # We need to be able to deal with
   # - Coin rebranding eg. ANS => NEO
 
-  def btc_value(iso_currency)
-    BigDecimal.new HTTParty.get('https://api.coinbase.com/v2/exchange-rates?currency=BTC').parsed_response['data']['rates'][iso_currency]
+  def fiat_btc_rate(iso_currency = nil)
+    BigDecimal.new(
+      HTTParty.get('https://api.coinbase.com/v2/exchange-rates?currency=BTC')
+      .parsed_response['data']['rates'][iso_currency || code]
+    )
   end
 
-  def eth_value(iso_currency)
-    BigDecimal.new HTTParty.get('https://api.coinbase.com/v2/exchange-rates?currency=ETH').parsed_response['data']['rates'][iso_currency]
-  end
-
-  def ans_value(iso_currency)
+  def crypto_btc_rate
+    return 1.0 if code == 'BTC'
     response = HTTParty.get('https://bittrex.com/api/v1.1/public/getmarketsummaries').parsed_response['result']
-    market = response.select do |market|
-      market['MarketName'] == 'BTC-NEO'
-    end
-    btc_value(iso_currency) * BigDecimal.new(market.first['Last'].to_s)
+    from_btc = response.select do |market|
+      market['MarketName'] == "BTC-#{code}"
+    end['Bid']
+    1.0 / from_btc
   end
 
+  def ensure_subdivision_multiple_of_ten
+    return unless subdivision
+    return unless (subdivision % 10).zero?
+    errors.add :subdivision, 'must be a multiple of 10'
+  end
 end
