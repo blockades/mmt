@@ -1,7 +1,8 @@
 FactoryGirl.define do
-
   factory :holding do
-    amount { BigDecimal.new rand(123.45..15046.23).to_s }
+    quantity 40
+    initial_btc_rate 0.5
+    coin
+    portfolio
   end
-
 end

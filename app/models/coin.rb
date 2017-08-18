@@ -8,7 +8,7 @@ class Coin < ApplicationRecord
   validates :code, uniqueness: true
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
-  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_value }
+  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
 
   # %%TODO%% This is not a long term solution
   def value(iso_currency)
@@ -24,9 +24,13 @@ class Coin < ApplicationRecord
     BigDecimal.new(central_reserve_in_sub_units) / 10**subdivision
   end
 
-  # @return The value of the live holdings
-  def live_holdings_value
-    live_holdings.sum(:crypto)
+  # @return <Integer> The value of the live holdings
+  def live_holdings_quantity
+    live_holdings.sum(:quantity) || 0
+  end
+
+  def max_buyable_quantity
+    central_reserve_in_sub_units - live_holdings_quantity
   end
 
   private
