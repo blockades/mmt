@@ -9,4 +9,12 @@ class Portfolio < ApplicationRecord
   validates_associated :holdings
 
   attr_readonly :user_id, :portfolio_id
+
+  def next_portfolio=(new_next_portfolio)
+    return if !new_next_portfolio || next_portfolio_id
+    self.class.transaction do
+      update(next_portfolio_at: Time.current)
+      update(next_portfolio_id: new_next_portfolio.tap(&:save).id)
+    end
+  end
 end

@@ -59,10 +59,11 @@ ActiveRecord::Schema.define(version: 20170817184722) do
   create_table "portfolios", force: :cascade do |t|
     t.integer  "user_id",           null: false
     t.integer  "next_portfolio_id"
+    t.datetime "next_portfolio_at"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
     t.index ["next_portfolio_id"], name: "index_portfolios_on_next_portfolio_id", unique: true, using: :btree
-    t.index ["user_id"], name: "index_portfolios_on_user_id", unique: true, where: "(next_portfolio_id IS NULL)", using: :btree
+    t.index ["user_id"], name: "index_portfolios_on_user_id", unique: true, where: "(next_portfolio_at IS NULL)", using: :btree
   end
 
   create_table "user_plans", force: :cascade do |t|

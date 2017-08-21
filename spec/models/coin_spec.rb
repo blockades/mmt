@@ -1,6 +1,6 @@
 require 'rails_helper'
 
-describe Coin do
+describe Coin, type: :model do
   it "#live_holdings_value" do
     subject = create :coin
     expect(subject.live_holdings_value).to eq 0
