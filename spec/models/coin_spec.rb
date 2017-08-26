@@ -1,4 +1,6 @@
-require 'rails_helper'
+# frozen_string_literal: true
+
+require "rails_helper"
 
 describe Coin, type: :model do
   it "#live_holdings_quantity" do
@@ -11,7 +13,7 @@ describe Coin, type: :model do
     expect(subject.live_holdings_quantity).to eq 10
   end
 
-  it '#central_reserve' do
+  it "#central_reserve" do
     subject.assign_attributes(
       central_reserve_in_sub_units: 150,
       subdivision: 2

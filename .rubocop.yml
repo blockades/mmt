@@ -1,0 +1,56 @@
+Style/Documentation:
+  Enabled: false
+
+LineLength:
+   Max: 120
+
+Rails:
+  Enabled: true
+
+AllCops:
+  Exclude:
+    - "bin/**/*"
+    - "db/**/*"
+    - "engines/*/db/**/*"
+    - "engines/*/spec/test_app/**/*"
+
+Style/Lambda:
+  Enabled: false
+
+Style/StringLiterals:
+  EnforcedStyle: "double_quotes"
+
+Style/NumericPredicate:
+  Enabled: false
+
+# Removing Blocks Cop for RSpec so we can do expect { ... }
+Style/BlockDelimiters:
+  Exclude:
+    - 'spec/**/*'
+
+Style/SymbolArray:
+  Enabled: false
+
+# DSLs are allowed long blocks.
+Metrics/BlockLength:
+  Enabled: false
+
+Rails/HttpPositionalArguments:
+  Enabled: false
+
+Style/TrailingCommaInLiteral:
+  Enabled: false
+
+Rails/SkipsModelValidations:
+  Enabled: false
+
+# Can remove when bbatsov/rubocop#4189 is released
+Lint/AmbiguousBlockAssociation:
+  Enabled: false
+
+# This is buggy https://github.com/bbatsov/rubocop/issues/4321
+Style/RedundantSelf:
+  Enabled: false
+
+Security/YAMLLoad:
+  Enabled: false

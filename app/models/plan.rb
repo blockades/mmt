@@ -1,12 +1,13 @@
-class Plan < ApplicationRecord
+# frozen_string_literal: true
 
-  has_many :details, ->{ where type: 'PlanDetail' }, dependent: :destroy
+class Plan < ApplicationRecord
+  has_many :details, -> { where type: "PlanDetail" }, dependent: :destroy
   has_many :user_plans
   has_many :holdings, through: :user_plans
 
   accepts_nested_attributes_for :details, allow_destroy: true
 
-  validates_uniqueness_of :name
+  validates :name, uniqueness: true
   validate :sum_detail_proportion
 
   private

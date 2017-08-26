@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class Coin < ApplicationRecord
   has_many :holdings
   has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
@@ -48,16 +50,16 @@ class Coin < ApplicationRecord
   end
 
   def crypto_btc_rate
-    return 1.0 if code == 'BTC'
-    response = HTTParty.get('https://bittrex.com/api/v1.1/public/getmarketsummaries').parsed_response['result']
+    return 1.0 if code == "BTC"
+    response = HTTParty.get("https://bittrex.com/api/v1.1/public/getmarketsummaries").parsed_response["result"]
     response.find do |market|
-      market['MarketName'] == "BTC-#{code}"
-    end['Bid']
+      market["MarketName"] == "BTC-#{code}"
+    end["Bid"]
   end
 
   def ensure_subdivision_multiple_of_ten
     return unless subdivision
     return unless (subdivision % 10).zero?
-    errors.add :subdivision, 'must be a multiple of 10'
+    errors.add :subdivision, "must be a multiple of 10"
   end
 end
