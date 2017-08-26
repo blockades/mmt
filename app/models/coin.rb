@@ -41,19 +41,18 @@ class Coin < ApplicationRecord
   # - Coin rebranding eg. ANS => NEO
 
   def fiat_btc_rate(iso_currency = nil)
-    BigDecimal.new(
-      HTTParty.get('https://api.coinbase.com/v2/exchange-rates?currency=BTC')
-      .parsed_response['data']['rates'][iso_currency || code]
+    1.0 / BigDecimal.new(
+      HTTParty.get("https://api.coinbase.com/v2/exchange-rates?currency=BTC")
+      .parsed_response["data"]["rates"][iso_currency || code]
     )
   end
 
   def crypto_btc_rate
     return 1.0 if code == 'BTC'
     response = HTTParty.get('https://bittrex.com/api/v1.1/public/getmarketsummaries').parsed_response['result']
-    from_btc = response.select do |market|
+    response.find do |market|
       market['MarketName'] == "BTC-#{code}"
     end['Bid']
-    1.0 / from_btc
   end
 
   def ensure_subdivision_multiple_of_ten
