@@ -17,4 +17,19 @@ describe Portfolio, type: :model do
     expect(portfolio.reload.next_portfolio).to eq next_portfolio
     expect(portfolio.next_portfolio_at).to_not be_blank
   end
+
+  describe "#btc_value", mocked_rates: true do
+    let(:eth) { create :coin, code: "ETH" }
+    let(:btc) { create :coin, code: "BTC" }
+
+    before do
+      create :holding, quantity: 10, coin: eth, portfolio: portfolio
+      create :holding, quantity: 1, coin: btc, portfolio: portfolio
+      portfolio.reload
+    end
+
+    it "sums the holdings in BTC" do
+      expect(portfolio.btc_value).to eq(10 * @btc_eth_bid + 1)
+    end
+  end
 end

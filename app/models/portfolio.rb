@@ -17,4 +17,8 @@ class Portfolio < ApplicationRecord
       update(next_portfolio_id: new_next_portfolio.tap(&:save).id)
     end
   end
+
+  def btc_value
+    holdings.to_a.sum(&:btc_value)
+  end
 end
