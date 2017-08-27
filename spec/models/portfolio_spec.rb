@@ -34,4 +34,15 @@ describe Portfolio, type: :model do
       expect(portfolio.btc_value).to eq(10 * @btc_eth_bid + 1)
     end
   end
+
+  describe "#initial_btc_value" do
+    before do
+      create :holding, quantity: 3, portfolio: portfolio, initial_btc_rate: 0.1
+      create :holding, quantity: 2, portfolio: portfolio, initial_btc_rate: 0.2
+    end
+
+    it "sums the initial_btc_rate * quantity of holdings" do
+      expect(portfolio.initial_btc_value).to eq 0.7
+    end
+  end
 end

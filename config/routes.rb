@@ -10,4 +10,8 @@ Rails.application.routes.draw do
 
   resources :user_plans, only: [:new, :create]
   resources :holdings
+
+  namespace :admin do
+    resources :portfolios, only: [:index, :new, :create]
+  end
 end

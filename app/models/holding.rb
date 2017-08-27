@@ -2,7 +2,7 @@
 
 class Holding < ApplicationRecord
   belongs_to :coin
-  belongs_to :portfolio
+  belongs_to :portfolio, inverse_of: :holdings
 
   before_save :calculate_rate
 

@@ -25,6 +25,8 @@ gem "blockchain-api"
 gem "coinbase"
 gem "kraken_ruby"
 
+gem "slim-rails"
+
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do

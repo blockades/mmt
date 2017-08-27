@@ -3,13 +3,14 @@
 class Portfolio < ApplicationRecord
   belongs_to :user
   belongs_to :next_portfolio, class_name: "Portfolio", optional: true
-  has_many :holdings
+  has_many :holdings, inverse_of: :portfolio
   has_one :previous_portfolio, class_name: "Portfolio", foreign_key: :next_portfolio_id
 
   scope :live, -> { where next_portfolio_id: nil }
 
   validates_associated :holdings
 
+  accepts_nested_attributes_for :holdings
   attr_readonly :user_id, :portfolio_id
 
   def next_portfolio=(new_next_portfolio)
@@ -22,5 +23,10 @@ class Portfolio < ApplicationRecord
 
   def btc_value
     holdings.to_a.sum(&:btc_value)
+  end
+
+  def initial_btc_value
+    holdings_table = Holding.arel_table
+    holdings.sum(holdings_table[:initial_btc_rate] * holdings_table[:quantity])
   end
 end

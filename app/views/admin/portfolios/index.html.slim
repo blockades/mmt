@@ -1,0 +1,11 @@
+table
+  thead
+    th Email
+    th Value (when created)
+    th Created at
+  tbody
+    - @portfolios.each do |portfolio|
+      tr
+        td- portfolio.user.email
+        td- portfolio.initial_btc_value
+        td- portfolio.created_at
