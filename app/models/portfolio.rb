@@ -7,14 +7,16 @@ class Portfolio < ApplicationRecord
   has_one :previous_portfolio, class_name: "Portfolio", foreign_key: :next_portfolio_id
 
   scope :live, -> { where next_portfolio_id: nil }
+  scope :with_user, -> { includes(:user) }
 
   validates_associated :holdings
 
-  accepts_nested_attributes_for :holdings
+  accepts_nested_attributes_for :holdings, reject_if: proc { |attributes| attributes[:quantity].blank? }
   attr_readonly :user_id, :portfolio_id
 
   def next_portfolio=(new_next_portfolio)
     return if !new_next_portfolio || next_portfolio_id
+    new_next_portfolio.user = user
     self.class.transaction do
       update(next_portfolio_at: Time.current)
       update(next_portfolio_id: new_next_portfolio.tap(&:save).id)
@@ -29,4 +31,6 @@ class Portfolio < ApplicationRecord
     holdings_table = Holding.arel_table
     holdings.sum(holdings_table[:initial_btc_rate] * holdings_table[:quantity])
   end
+
+  def previous_portfolio_id; end
 end

@@ -12,6 +12,6 @@ Rails.application.routes.draw do
   resources :holdings
 
   namespace :admin do
-    resources :portfolios, only: [:index, :new, :create]
+    resources :portfolios, only: [:index, :new, :create, :show]
   end
 end

@@ -6,6 +6,14 @@ module Admin
       @portfolios = Portfolio.live.all.includes(:user)
     end
 
+    def show
+      @portfolio = Portfolio.find(params[:id])
+
+      respond_to do |format|
+        format.json
+      end
+    end
+
     def create
       portfolio = Portfolio.new permitted_params
       if previous_portfolio && portfolio.valid? && previous_portfolio.update(next_portfolio: portfolio)
@@ -15,6 +23,10 @@ module Admin
         flash[:error] = "Portfolio failed to be created"
         render :new
       end
+    end
+
+    def new
+      @portfolio = Portfolio.new
     end
 
     private

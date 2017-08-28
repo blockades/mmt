@@ -5,6 +5,8 @@ class Coin < ApplicationRecord
   has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
   has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
 
+  scope :ordered, -> { order(:code) }
+
   attr_readonly :code
 
   validates :code, uniqueness: true
@@ -44,15 +46,25 @@ class Coin < ApplicationRecord
 
   def fiat_btc_rate(iso_currency = nil)
     1.0 / BigDecimal.new(
-      HTTParty.get("https://api.coinbase.com/v2/exchange-rates?currency=BTC")
-      .parsed_response["data"]["rates"][iso_currency || code]
+      coinbase_rates.parsed_response["data"]["rates"][iso_currency || code]
     )
+  end
+
+  def coinbase_rates
+    Rails.cache.fetch("coinbase_rates", expires_in: 30.minutes, race_condition_ttl: 5.seconds) do
+      HTTParty.get("https://api.coinbase.com/v2/exchange-rates?currency=BTC")
+    end
+  end
+
+  def bittrex_rates
+    Rails.cache.fetch("bittrex_rates", expires_in: 30.minutes, race_condition_ttl: 5.seconds) do
+      HTTParty.get("https://bittrex.com/api/v1.1/public/getmarketsummaries")
+    end
   end
 
   def crypto_btc_rate
     return 1.0 if code == "BTC"
-    response = HTTParty.get("https://bittrex.com/api/v1.1/public/getmarketsummaries").parsed_response["result"]
-    response.find do |market|
+    bittrex_rates.parsed_response["result"].find do |market|
       market["MarketName"] == "BTC-#{code}"
     end["Bid"]
   end

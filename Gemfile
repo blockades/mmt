@@ -26,7 +26,7 @@ gem "coinbase"
 gem "kraken_ruby"
 
 gem "slim-rails"
-
+gem "select2-rails"
 # gem 'capistrano-rails', group: :development
 
 group :development, :test do

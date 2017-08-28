@@ -1,0 +1,52 @@
+.container
+  = form_for @portfolio, url: admin_portfolios_path do |f|
+    .row
+      .two.columns
+      .four.columns Previous
+      .four.columns Next
+    .row
+      .two.columns
+      .eight.columns
+        = f.select(:previous_portfolio_id, Portfolio.live.with_user.collect {|p| [ p.user.email, p.id ] }, { include_blank: true }, class: "select2")
+    .row
+      .two.columns
+      .eight.columns Current BTC value
+    .row
+      .two.columns
+      .four.columns id="previous_btc_value" -
+      .four.columns id="next_btc_value"
+    - Coin.ordered.each do |coin|
+      = f.fields_for :holdings, @portfolio.holdings.build do |hf|
+        = hf.number_field :coin_id, class: "hidden", value: coin.id
+        .row
+          .two.columns
+          .four.columns="Holding of #{coin.name} (BTC rate)"
+          .four.columns= hf.number_field :initial_btc_rate, value: coin.btc_rate, min: 0, step: :any
+        .row
+          .two.columns
+          .four.columns id="previous_#{coin.id}" -
+          .four.columns= hf.number_field :quantity, min: 0, step: :any, class: "quantity_#{coin.id}"
+    .row
+      .two.columns
+      .four.columns = f.submit "Create Portfolio"
+
+javascript:
+
+  var updateHolding = function(i, holding) {
+    $("#previous_" + holding.coin_id).text(holding.quantity);
+    $(".quantity_" + holding.coin_id).val(holding.quantity);
+  };
+
+  var updatePrevious = function(portfolio) {
+    $("#previous_btc_value").text(portfolio.btc_value);
+    $.each(portfolio.holdings, updateHolding)
+  };
+
+   $('.select2').on('change', function() {
+    var portfolioId = $(".select2 option:selected").val();
+    $.ajax({
+      url: "#{admin_portfolios_path}/" + portfolioId,
+      success: updatePrevious,
+      dataType: "json"
+    });
+  });
