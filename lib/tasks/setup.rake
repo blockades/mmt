@@ -18,21 +18,24 @@ namespace :setup do
   end
 
   task coins: :environment do
-    Coin.find_or_create_by(
+    Coin.find_or_initialize_by(
       name: "Bitcoin",
-      code: "BTC",
+      code: "BTC"
+    ).update!(
       central_reserve_in_sub_units: 1_000_000_000
     )
 
-    Coin.find_or_create_by(
-      name: "Etherium",
-      code: "ETH",
+    Coin.find_or_initialize_by(
+      name: "Ethereum",
+      code: "ETH"
+    ).update!(
       central_reserve_in_sub_units: 1_000_000_000
     )
 
-    Coin.find_or_create_by(
+    Coin.find_or_initialize_by(
       name: "Sterling",
-      code: "GBP",
+      code: "GBP"
+    ).update!(
       central_reserve_in_sub_units: 1_000,
       crypto_currency: false,
       subdivision: 2
