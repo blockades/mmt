@@ -30,7 +30,7 @@ ActiveRecord::Schema.define(version: 20170826132553) do
     t.string   "type"
     t.integer  "plan_id"
     t.integer  "coin_id"
-    t.decimal  "rate",       precision: 5, scale: 2, default: "100.0"
+    t.decimal  "proportion", precision: 5, scale: 2, default: "100.0"
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
     t.index ["coin_id"], name: "index_details_on_coin_id", using: :btree
@@ -39,9 +39,9 @@ ActiveRecord::Schema.define(version: 20170826132553) do
 
   create_table "holdings", force: :cascade do |t|
     t.integer  "coin_id",                                                   null: false
+    t.decimal  "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
     t.datetime "created_at",                                                null: false
     t.datetime "updated_at",                                                null: false
-    t.decimal  "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
     t.boolean  "deposit",                                   default: false, null: false
     t.boolean  "withdrawal",                                default: false, null: false
     t.integer  "portfolio_id",                                              null: false

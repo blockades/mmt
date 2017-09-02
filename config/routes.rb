@@ -13,5 +13,7 @@ Rails.application.routes.draw do
 
   namespace :admin do
     resources :portfolios, only: [:index, :new, :create, :show]
+    resources :coins, only: [:index, :edit, :update]
+    resources :users, only: [:index, :new, :create, :edit, :update]
   end
 end
