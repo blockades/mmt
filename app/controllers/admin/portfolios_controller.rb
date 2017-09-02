@@ -16,7 +16,8 @@ module Admin
 
     def create
       portfolio = Portfolio.new permitted_params
-      if previous_portfolio && portfolio.valid? && previous_portfolio.update(next_portfolio: portfolio)
+      if (previous_portfolio && portfolio.valid? && previous_portfolio.update(next_portfolio: portfolio)) ||
+          portfolio.save
         flash[:success] = "Portfolio created"
         redirect_to action: :index
       else

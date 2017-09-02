@@ -7,7 +7,13 @@
     .row
       .two.columns
       .eight.columns
-        = f.select(:previous_portfolio_id, Portfolio.live.with_user.collect {|p| [ p.user.email, p.id ] }, { include_blank: true }, class: "select2")
+        span Previous portfolio - &nbsp;
+        = f.select(:previous_portfolio_id, Portfolio.live.with_user.collect {|p| [ p.user.email, p.id ] }, { include_blank: true }, class: "select2", id: "previous_portfolio_select")
+    .row
+      .two.columns
+      .eight.columns
+        span User (with no previous portfolio) - &nbsp;
+        = f.select(:user_id, User.no_portfolio {|usr| [ usr.email, usr.id ] }, { include_blank: true }, class: "select2", id: "portfolio_user_id")
     .row
       .two.columns
       .eight.columns Current BTC value
@@ -32,6 +38,8 @@
 
 javascript:
 
+  var userSelect = $("#portfolio_user_id");
+  var previousPortfolioSelect = $("#previous_portfolio_select");
   var updateHolding = function(i, holding) {
     $("#previous_" + holding.coin_id).text(holding.quantity);
     $(".quantity_" + holding.coin_id).val(holding.quantity);
@@ -42,8 +50,14 @@ javascript:
     $.each(portfolio.holdings, updateHolding)
   };
 
-   $('.select2').on('change', function() {
-    var portfolioId = $(".select2 option:selected").val();
+  userSelect.on('change', function() {
+    var userId = $("#portfolio_user_id option:selected").val();
+    previousPortfolioSelect.attr("disabled", !!userId);
+  })
+
+  previousPortfolioSelect.on('change', function() {
+    var portfolioId = $("#previous_portfolio_select option:selected").val();
+    userSelect.attr("disabled", !!portfolioId);
     $.ajax({
       url: "#{admin_portfolios_path}/" + portfolioId,
       success: updatePrevious,
