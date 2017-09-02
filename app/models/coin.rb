@@ -33,6 +33,10 @@ class Coin < ApplicationRecord
     live_holdings.sum(:quantity) || 0
   end
 
+  def live_holdings
+    live_holdings_quantity / 10**subdivision
+  end
+
   def max_buyable_quantity
     central_reserve_in_sub_units - live_holdings_quantity
   end
@@ -46,25 +50,25 @@ class Coin < ApplicationRecord
 
   def fiat_btc_rate(iso_currency = nil)
     1.0 / BigDecimal.new(
-      coinbase_rates.parsed_response["data"]["rates"][iso_currency || code]
+      coinbase_rates["data"]["rates"][iso_currency || code]
     )
   end
 
   def coinbase_rates
     Rails.cache.fetch("coinbase_rates", expires_in: 30.minutes, race_condition_ttl: 5.seconds) do
-      HTTParty.get("https://api.coinbase.com/v2/exchange-rates?currency=BTC")
+      HTTParty.get("https://api.coinbase.com/v2/exchange-rates?currency=BTC").parsed_response
     end
   end
 
   def bittrex_rates
     Rails.cache.fetch("bittrex_rates", expires_in: 30.minutes, race_condition_ttl: 5.seconds) do
-      HTTParty.get("https://bittrex.com/api/v1.1/public/getmarketsummaries")
+      HTTParty.get("https://bittrex.com/api/v1.1/public/getmarketsummaries").parsed_response
     end
   end
 
   def crypto_btc_rate
     return 1.0 if code == "BTC"
-    bittrex_rates.parsed_response["result"].find do |market|
+    bittrex_rates["result"].compact.find do |market|
       market["MarketName"] == "BTC-#{code}"
     end["Bid"]
   end
