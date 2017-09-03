@@ -1,5 +1,5 @@
 .container
-  = form_for @portfolio, url: admin_portfolios_path do |f|
+  = form_for [:admin, @portfolio] do |f|
     .row
       .two.columns
       .four.columns Previous

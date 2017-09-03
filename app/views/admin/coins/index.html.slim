@@ -7,11 +7,11 @@ table
     th BTC rate (bittrex)
     th
   tbody
-    - @coin.each do |coin|
+    - @coins.each do |coin|
       tr
         td= coin.name
         td= coin.code
         td= coin.central_reserve
-        td= coin.live_holdings
+        td= coin.live_holdings_quantity_display
         td= coin.btc_rate
-        td= link_to "Edit", edit_admin_coin_path(coin)
+        td= link_to "Edit", edit_admin_coin_path(coin), class: "button"

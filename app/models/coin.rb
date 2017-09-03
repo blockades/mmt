@@ -33,7 +33,7 @@ class Coin < ApplicationRecord
     live_holdings.sum(:quantity) || 0
   end
 
-  def live_holdings
+  def live_holdings_quantity_display
     live_holdings_quantity / 10**subdivision
   end
 
