@@ -9,6 +9,13 @@
   </head>
 
   <body>
+    <%- if current_user&.admin? %>
+      <div class="nav primary">
+        <%= link_to "Portfolios", admin_portfolios_path, class: "button button-primary" %>
+        <%= link_to "Coins", admin_coins_path, class: "button button-primary" %>
+        <%= link_to "Users", admin_users_path, class: "button button-primary" %>
+      </div>
+    <%- end %>
     <%= flash_notices %>
     <%= yield %>
   </body>

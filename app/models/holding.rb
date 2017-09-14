@@ -1,15 +1,30 @@
+# frozen_string_literal: true
+
 class Holding < ApplicationRecord
-  belongs_to :user_plan
   belongs_to :coin
-  belongs_to :admin, class_name: 'User', foreign_key: :admin_id
+  belongs_to :portfolio, inverse_of: :holdings
 
-  delegate :user, to: :user_plan, :allow_nil => true
+  before_save :calculate_rate
 
-  before_create :calculate_crypto_value
+  attr_readonly(:coin_id, :crypto, :initial_btc_rate,
+                :deposit, :withdrawal, :portfolio_id)
+
+  validates :coin, :portfolio, :quantity, presence: true
+  validates :quantity, numericality: { greater_than: 0 }
+  validate :ensure_less_than_central_reserve, on: :create
+
+  def btc_value
+    coin.btc_rate * quantity
+  end
 
   private
 
-  def calculate_crypto_value
-    self.crypto = amount / coin.value(user_plan.iso_currency)
+  def ensure_less_than_central_reserve
+    return if coin && quantity < coin.max_buyable_quantity
+    errors.add :quantity, "must be less than #{coin.max_buyable_quantity}"
+  end
+
+  def calculate_rate
+    self.initial_btc_rate ||= coin.btc_rate
   end
 end

@@ -1,5 +1,6 @@
-class PlansController < ApplicationController
+# frozen_string_literal: true
 
+class PlansController < ApplicationController
   def index
     @plans = Plan.all
   end
@@ -21,7 +22,6 @@ class PlansController < ApplicationController
   private
 
   def plan_params
-    params.require(:plan).permit(:name, details_attributes: [ :id, :type, :coin_id, :plan_id, :proportion ])
+    params.require(:plan).permit(:name, details_attributes: [:id, :type, :coin_id, :plan_id, :proportion])
   end
-
 end

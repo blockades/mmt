@@ -21,3 +21,5 @@
 
 # Ignore simplecov
 /coverage
+
+routes.txt

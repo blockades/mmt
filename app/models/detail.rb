@@ -1,9 +1,11 @@
+# frozen_string_literal: true
+
 class Detail < ApplicationRecord
-  scope :plan, ->{ where type: 'PlanDetail' }
+  scope :plan, -> { where type: "PlanDetail" }
 
   class << self
     def types
-      [ :plan ]
+      [:plan]
     end
   end
 end

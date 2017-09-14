@@ -11,6 +11,7 @@
  * It is generally better to create a new file per style scope.
  *
  *= require skeleton
+ *= require select2
  *= require_self
  */
 
@@ -28,4 +29,7 @@ section.title {
   border: 1px solid grey;
   margin: 1em;
   padding: 1em;
+}
+.hidden {
+  display: none;
 }

@@ -1,0 +1,10 @@
+h2 New user
+
+= form_for [:admin, @user] do |f|
+  section
+    = f.label :email
+    = f.email_field :email
+  section
+    = f.label :password
+    = f.password_field :password, placeholder: "Password"
+  = f.submit "Create User"

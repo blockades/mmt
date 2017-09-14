@@ -1,5 +1,6 @@
-class UserPlansController < ApplicationController
+# frozen_string_literal: true
 
+class UserPlansController < ApplicationController
   def new
     @user_plan = UserPlan.new
   end
@@ -20,5 +21,4 @@ class UserPlansController < ApplicationController
   def user_plan_params
     params.require(:user_plan).permit(:user_id, :plan_id, :iso_currency, :iou, :amount)
   end
-
 end

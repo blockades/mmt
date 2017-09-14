@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170813105757) do
+ActiveRecord::Schema.define(version: 20170826132553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -18,16 +18,19 @@ ActiveRecord::Schema.define(version: 20170813105757) do
   create_table "coins", force: :cascade do |t|
     t.string   "name"
     t.string   "code"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["code"], name: "index_coins_on_code", using: :btree
+    t.datetime "created_at",                                  null: false
+    t.datetime "updated_at",                                  null: false
+    t.integer  "central_reserve_in_sub_units", default: 0,    null: false
+    t.boolean  "crypto_currency",              default: true, null: false
+    t.integer  "subdivision",                  default: 8,    null: false
+    t.index ["code"], name: "index_coins_on_code", unique: true, using: :btree
   end
 
   create_table "details", force: :cascade do |t|
     t.string   "type"
     t.integer  "plan_id"
     t.integer  "coin_id"
-    t.decimal  "rate",       precision: 5, scale: 2, default: "100.0"
+    t.decimal  "proportion", precision: 5, scale: 2, default: "100.0"
     t.datetime "created_at",                                           null: false
     t.datetime "updated_at",                                           null: false
     t.index ["coin_id"], name: "index_details_on_coin_id", using: :btree
@@ -35,23 +38,32 @@ ActiveRecord::Schema.define(version: 20170813105757) do
   end
 
   create_table "holdings", force: :cascade do |t|
-    t.integer  "user_plan_id"
-    t.integer  "coin_id"
-    t.integer  "admin_id"
-    t.decimal  "amount",       precision: 10, scale: 2,  default: "0.0"
-    t.decimal  "crypto",       precision: 20, scale: 15, default: "0.0"
-    t.decimal  "rate",         precision: 10, scale: 8,  default: "0.0"
-    t.datetime "created_at",                                             null: false
-    t.datetime "updated_at",                                             null: false
-    t.index ["admin_id"], name: "index_holdings_on_admin_id", using: :btree
-    t.index ["coin_id"], name: "index_holdings_on_coin_id", using: :btree
-    t.index ["user_plan_id"], name: "index_holdings_on_user_plan_id", using: :btree
+    t.integer  "coin_id",                                                   null: false
+    t.decimal  "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
+    t.datetime "created_at",                                                null: false
+    t.datetime "updated_at",                                                null: false
+    t.boolean  "deposit",                                   default: false, null: false
+    t.boolean  "withdrawal",                                default: false, null: false
+    t.integer  "portfolio_id",                                              null: false
+    t.integer  "quantity",                                                  null: false
+    t.index ["coin_id", "portfolio_id"], name: "index_holdings_on_coin_id_and_portfolio_id", unique: true, using: :btree
+    t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id", using: :btree
   end
 
   create_table "plans", force: :cascade do |t|
     t.string   "name"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+  end
+
+  create_table "portfolios", force: :cascade do |t|
+    t.integer  "user_id",           null: false
+    t.integer  "next_portfolio_id"
+    t.datetime "next_portfolio_at"
+    t.datetime "created_at",        null: false
+    t.datetime "updated_at",        null: false
+    t.index ["next_portfolio_id"], name: "index_portfolios_on_next_portfolio_id", unique: true, using: :btree
+    t.index ["user_id"], name: "index_portfolios_on_user_id", unique: true, where: "(next_portfolio_at IS NULL)", using: :btree
   end
 
   create_table "user_plans", force: :cascade do |t|
@@ -89,8 +101,9 @@ ActiveRecord::Schema.define(version: 20170813105757) do
   add_foreign_key "details", "coins", name: "details_coin_id_fk"
   add_foreign_key "details", "plans", name: "details_plan_id_fk"
   add_foreign_key "holdings", "coins", name: "holdings_coin_id_fk"
-  add_foreign_key "holdings", "user_plans", name: "holdings_user_plan_id_fk"
-  add_foreign_key "holdings", "users", column: "admin_id", name: "holdings_admin_id_fk"
+  add_foreign_key "holdings", "portfolios"
+  add_foreign_key "portfolios", "portfolios", column: "next_portfolio_id"
+  add_foreign_key "portfolios", "users"
   add_foreign_key "user_plans", "plans", name: "user_plans_plan_id_fk"
   add_foreign_key "user_plans", "users", name: "user_plans_user_id_fk"
 end
