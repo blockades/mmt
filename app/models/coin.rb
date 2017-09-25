@@ -43,11 +43,6 @@ class Coin < ApplicationRecord
 
   private
 
-  # %%TODO%% Extract API logic into PORO (Plain old ruby object) and initializers
-  # Is this another model? CoinTimestamp
-  # We need to be able to deal with
-  # - Coin rebranding eg. ANS => NEO
-
   def fiat_btc_rate(iso_currency = nil)
     1.0 / BigDecimal.new(
       coinbase_rates["data"]["rates"][iso_currency || code]

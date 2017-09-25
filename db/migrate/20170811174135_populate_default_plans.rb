@@ -17,7 +17,7 @@ class PopulateDefaultPlans < ActiveRecord::Migration[5.0]
   private
 
   def ans
-    @ans ||= Coin.find_by(code: 'ANS')
+    @ans ||= Coin.find_by(code: 'NEO')
   end
 
   def btc
