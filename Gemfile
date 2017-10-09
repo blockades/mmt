@@ -7,8 +7,6 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem "acts_as_paranoid"
-gem "coffee-rails", "~> 4.2"
 gem "pg"
 gem "puma", "~> 3.0"
 gem "rails", "~> 5.0.5"
@@ -31,6 +29,7 @@ gem "select2-rails"
 
 group :development, :test do
   gem "pry-byebug", platform: :mri
+  gem 'awesome_print'
 end
 
 group :development do

@@ -38,12 +38,10 @@ GEM
       i18n (~> 0.7)
       minitest (~> 5.1)
       tzinfo (~> 1.1)
-    acts_as_paranoid (0.5.0)
-      activerecord (>= 4.0, < 5.1)
-      activesupport (>= 4.0, < 5.1)
     addressable (2.5.1)
       public_suffix (~> 2.0, >= 2.0.2)
     arel (7.1.4)
+    awesome_print (1.8.0)
     bcrypt (3.1.11)
     bindex (0.5.0)
     blockchain-api (0.1.1)
@@ -58,13 +56,6 @@ GEM
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
     coderay (1.1.1)
-    coffee-rails (4.2.2)
-      coffee-script (>= 2.2.0)
-      railties (>= 4.0.0)
-    coffee-script (2.4.1)
-      coffee-script-source
-      execjs
-    coffee-script-source (1.12.2)
     coinbase (4.1.0)
     concurrent-ruby (1.0.5)
     crack (0.4.3)
@@ -271,10 +262,9 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
-  acts_as_paranoid
+  awesome_print
   blockchain-api
   capybara
-  coffee-rails (~> 4.2)
   coinbase
   database_cleaner
   devise
@@ -306,4 +296,4 @@ DEPENDENCIES
   webmock
 
 BUNDLED WITH
-   1.15.1
+   1.15.4
