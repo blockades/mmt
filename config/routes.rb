@@ -1,13 +1,9 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :members, controllers: { invitations: 'members/invitations' }
+  devise_for :members, skip: [:registrations], controllers: { invitations: 'admin/invitations' }
 
   root to: "members#index"
-
-  resources :plans, only: [:index, :new, :create]
-
-  resources :member_plans, only: [:new, :create]
   resources :holdings
 
   namespace :admin do
