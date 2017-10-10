@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171009172208) do
+ActiveRecord::Schema.define(version: 20170826132553) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -27,6 +27,7 @@ ActiveRecord::Schema.define(version: 20171009172208) do
   end
 
   create_table "holdings", force: :cascade do |t|
+    t.integer  "member_plan_id"
     t.integer  "coin_id",                                                   null: false
     t.decimal  "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
     t.datetime "created_at",                                                null: false
@@ -36,6 +37,7 @@ ActiveRecord::Schema.define(version: 20171009172208) do
     t.integer  "portfolio_id",                                              null: false
     t.integer  "quantity",                                                  null: false
     t.index ["coin_id", "portfolio_id"], name: "index_holdings_on_coin_id_and_portfolio_id", unique: true, using: :btree
+    t.index ["member_plan_id"], name: "index_holdings_on_member_plan_id", using: :btree
     t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id", using: :btree
   end
 
