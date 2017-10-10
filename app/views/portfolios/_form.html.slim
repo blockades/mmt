@@ -1,31 +1,18 @@
-
-<%= form_for @plan do |f| %>
-  <div class="row">
-    <div class="one columns"></div>
-    <div class="three columns">
-      <section class="title">
-        <%= f.label :name, class: 'inline-block' %>
-        <%= f.text_field :name, class: 'inline-block' %>
-      </section>
-    </div>
-    <div class="eight columns">
-      <div class="row">
-        <section class="details">
-          <%= f.fields_for :details, @plan.details.build do |b| %>
-            <%= render 'details/fields', f: b %>
-          <% end %>
-        </section>
-      </div>
-    </div>
-  </div>
-  <div class="row">
-    <div class="twelve columns">
-      <section class="title">
-        <%= link_to_add_fields 'Add Detail', f, :details %><br>
-        <%= f.submit %>
-      </section>
-    </div>
-  </div>
-<% end %>
-
-
+= form_for @plan do |f|
+  .row
+    .one.columns
+    .three.columns
+      section.title
+        = f.label :name, class: 'inline-block'
+        = f.text_field :name, class: 'inline-block'
+    .eight.columns
+      .row
+        section.details
+          = f.fields_for :details, @plan.details.build do |b|
+            = render 'details/fields', f: b
+  .row
+    .twelve.columns
+      section.title
+        = link_to_add_fields 'Add Detail', f, :details
+        br/
+        = f.submit
