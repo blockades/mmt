@@ -1,8 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :members
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  devise_for :members, controllers: { invitations: 'members/invitations' }
 
   root to: "members#index"
 
@@ -12,6 +11,7 @@ Rails.application.routes.draw do
   resources :holdings
 
   namespace :admin do
+    resources :dashboard, only: [:index]
     resources :portfolios, only: [:index, :new, :create, :show]
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit, :update]
