@@ -14,6 +14,7 @@ gem "sass-rails", "~> 5.0"
 gem "uglifier", ">= 1.3.0"
 
 gem "devise"
+gem "devise_invitable"
 gem "interactor-rails"
 gem "jbuilder", "~> 2.5"
 gem "jquery-rails"
@@ -25,7 +26,6 @@ gem "kraken_ruby"
 
 gem "slim-rails"
 gem "select2-rails"
-# gem 'capistrano-rails', group: :development
 
 group :development, :test do
   gem "pry-byebug", platform: :mri
