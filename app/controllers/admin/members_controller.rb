@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admin
-  class MembersController < ApplicationController
+  class MembersController < AdminController
     def index
       @members = Member.all
     end
@@ -11,7 +11,7 @@ module Admin
     end
 
     def edit
-      member
+
     end
 
     def create
