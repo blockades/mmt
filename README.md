@@ -7,28 +7,36 @@
 Database Engine
 --------
 
+Install the correct Postgres for your Linux OS.
+For Ubuntu and Mint users, this can be done with apt specifying the correct source repository e.g. xenial, trusty etc.
+For Mint users, xenial should work.
+
 ```
+sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ <YOUR UBUNTU VERSION>-pgdg main"
+wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt-get update
-sudo apt-get install postgresql-9.6 postgresql-contrib-9.6
+sudo apt-get install -y postgresql-9.6 postgresql-contrib-9.6 libpq-dev
 ```
+
+Then with your preferred text editor
+
+```
+sudo vim /etc/postgresql/9.6/main/pg_hba.conf
+
+# For IPv4 and IPv6 local connections, change 'md5' to 'trust'
+# Save and exit
+
+/etc/init.d/postgresql restart
+```
+
 
 Development Environment
 -----------------------
 
-Install and configure DNSMasq
-
-```
-sudo apt-get install dnsmasq
-sudo echo 'address=/dev/127.0.0.1' >> /etc/dnsmasq.conf
-sudo cp /etc/dnsmasq.conf /etc/dnsmasq.conf.pkg
-sudo echo '127.0.0.1^Iblockades.dev' >> /etc/hosts
-sudo /etc/init.d/dnsmasq restart
-```
-
 Install a JavaScript runtime
 
 ```
-sudo apt-get install nodejs
+sudo apt-get install -y nodejs
 ```
 
 Setup Rails
@@ -42,7 +50,6 @@ gem install rails
 
 # Clone the repository
 git clone git@github.com:ten-thousand-things/mmt.git && cd mmt
-touch .env && echo "APP_DOMAIN='blockades.dev'" >> .env
 
 # Install dependencies
 bundle
