@@ -10,6 +10,10 @@ class ApplicationController < ActionController::Base
 
   private
 
+  def verify_admin
+    forbidden unless current_member&.admin?
+  end
+
   def forbidden
     raise Forbidden.new, '403 Forbidden'
   end
