@@ -1,7 +1,7 @@
-class CreateUserPlans < ActiveRecord::Migration[5.0]
+class CreateMemberPlans < ActiveRecord::Migration[5.0]
   def change
-    create_table :user_plans do |t|
-      t.integer :user_id, index: true
+    create_table :member_plans do |t|
+      t.integer :member_id, index: true
       t.integer :plan_id, index: true
       t.decimal :amount, precision: 10, scale: 2, default: 0.0
       t.string :currency, limit: 50, default: 'United States Dollar'

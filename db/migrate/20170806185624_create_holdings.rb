@@ -1,7 +1,7 @@
 class CreateHoldings < ActiveRecord::Migration[5.0]
   def change
     create_table :holdings do |t|
-      t.integer :user_plan_id, index: true
+      t.integer :member_plan_id, index: true
       t.integer :coin_id, index: true
       t.integer :admin_id, index: true
 

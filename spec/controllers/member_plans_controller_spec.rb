@@ -2,7 +2,7 @@
 
 require "./spec/rails_helper"
 
-describe UserPlansController do
+describe MemberPlansController do
   describe "#new" do
     let(:get_new) { get :new }
 
@@ -11,8 +11,8 @@ describe UserPlansController do
       expect(response.status).to eq 200
     end
 
-    it "assigns @user" do
-      expect { get_new }.to change { assigns :user_plan }
+    it "assigns @member" do
+      expect { get_new }.to change { assigns :member_plan }
     end
 
     it "renders the new template" do

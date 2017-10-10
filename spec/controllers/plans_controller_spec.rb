@@ -11,7 +11,7 @@ describe PlansController do
       expect(response.status).to eq 200
     end
 
-    it "assigns @users" do
+    it "assigns @members" do
       expect { get_index }.to change { assigns :plans }
     end
 
@@ -28,7 +28,7 @@ describe PlansController do
       expect(response.status).to eq 200
     end
 
-    it "assigns @user" do
+    it "assigns @member" do
       expect { get_new }.to change { assigns :plan }
     end
 

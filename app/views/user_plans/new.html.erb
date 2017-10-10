@@ -1,7 +1,7 @@
-<%= form_for @user_plan do |f| %>
+<%= form_for @member_plan do |f| %>
   <section>
-    <%= f.label :user %>
-    <%= f.collection_select(:user_id, User.all, :id, :email) %>
+    <%= f.label :member %>
+    <%= f.collection_select(:member_id, Member.all, :id, :email) %>
   </section>
   <section>
     <%= f.label :plan %>

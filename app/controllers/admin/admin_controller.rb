@@ -7,7 +7,7 @@ module Admin
     private
 
     def verify_admin
-      raise ActiveRecord::RecordNotFound unless current_user&.admin?
+      raise ActiveRecord::RecordNotFound unless current_member&.admin?
     end
   end
 end

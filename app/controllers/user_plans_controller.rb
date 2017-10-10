@@ -1,24 +1,24 @@
 # frozen_string_literal: true
 
-class UserPlansController < ApplicationController
+class MemberPlansController < ApplicationController
   def new
-    @user_plan = UserPlan.new
+    @member_plan = MemberPlan.new
   end
 
   def create
-    context = CalculateHoldings.call(user_plan_params: user_plan_params)
+    context = CalculateHoldings.call(member_plan_params: member_plan_params)
     if context.success?
       flash[:notice] = context.message
       redirect_to holdings_path
     else
       flash[:error] = context.error
-      redirect_to new_user_plan_path
+      redirect_to new_member_plan_path
     end
   end
 
   private
 
-  def user_plan_params
-    params.require(:user_plan).permit(:user_id, :plan_id, :iso_currency, :iou, :amount)
+  def member_plan_params
+    params.require(:member_plan).permit(:member_id, :plan_id, :iso_currency, :iou, :amount)
   end
 end

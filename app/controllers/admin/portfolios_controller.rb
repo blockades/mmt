@@ -3,7 +3,7 @@
 module Admin
   class PortfoliosController < ApplicationController
     def index
-      @portfolios = Portfolio.live.all.includes(:user)
+      @portfolios = Portfolio.live.all.includes(:member)
     end
 
     def show
@@ -38,7 +38,7 @@ module Admin
 
     def permitted_params
       params.require(:portfolio)
-            .permit(:user_id, holdings_attributes: [:coin_id, :initial_btc_rate, :deposit, :withdrawal, :quantity])
+            .permit(:member_id, holdings_attributes: [:coin_id, :initial_btc_rate, :deposit, :withdrawal, :quantity])
     end
   end
 end

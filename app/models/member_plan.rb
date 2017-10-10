@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-class UserPlan < ApplicationRecord
-  belongs_to :user
+class MemberPlan < ApplicationRecord
+  belongs_to :member
   belongs_to :plan
 
   has_many :holdings

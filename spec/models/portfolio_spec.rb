@@ -4,10 +4,10 @@ require "rails_helper"
 
 describe Portfolio, type: :model do
   let(:portfolio) { create :portfolio }
-  let(:user) { portfolio.user }
-  let(:next_portfolio) { build :portfolio, user: user }
+  let(:member) { portfolio.member }
+  let(:next_portfolio) { build :portfolio, member: member }
 
-  it "can only have one live portfolio per user" do
+  it "can only have one live portfolio per member" do
     expect { next_portfolio.save! }.to raise_error ActiveRecord::RecordNotUnique
   end
 

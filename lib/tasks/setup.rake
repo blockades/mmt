@@ -2,14 +2,14 @@
 
 namespace :setup do
   task portfolios: :environment do
-    user = User.find_or_initialize_by(email: "someone@example.com") do |usr|
+    member = Member.find_or_initialize_by(email: "someone@example.com") do |usr|
       usr.update!(admin: true, password: "password")
     end
 
     btc = Coin.find_by(code: "BTC")
     eth = Coin.find_by(code: "ETH")
     Portfolio.create!(
-      user: user,
+      member: member,
       holdings_attributes: [
         { coin_id: btc.id, quantity: 1.2 },
         { coin_id: eth.id, quantity: 2.1 },
