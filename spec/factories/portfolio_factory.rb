@@ -2,7 +2,7 @@
 
 FactoryGirl.define do
   factory :portfolio do
-    user
+    member
     trait :spent do
       association(:next_portfolio, factory: :portfolio)
     end

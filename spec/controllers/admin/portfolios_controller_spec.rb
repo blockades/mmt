@@ -3,11 +3,11 @@
 require "rails_helper"
 
 describe Admin::PortfoliosController do
-  let(:user) { create :user, :admin }
+  let(:member) { create :member, :admin }
   let(:resource) { create :portfolio, :with_holdings }
 
   before do
-    sign_in user
+    sign_in member
   end
 
   it "GET index.html" do
@@ -18,7 +18,7 @@ describe Admin::PortfoliosController do
 
   it "POST create.html" do
     portfolio_params = {
-      user_id: resource.user_id,
+      member_id: resource.member_id,
       previous_portfolio_id: resource.id,
       holdings_attributes: [{
         coin_id: resource.holdings[0].coin_id,

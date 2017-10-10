@@ -8,12 +8,12 @@
       .two.columns
       .eight.columns
         span Previous portfolio - &nbsp;
-        = f.select(:previous_portfolio_id, Portfolio.live.with_user.collect {|p| [ p.user.email, p.id ] }, { include_blank: true }, class: "select2", id: "previous_portfolio_select")
+        = f.select(:previous_portfolio_id, Portfolio.live.with_member.collect {|p| [ p.member.email, p.id ] }, { include_blank: true }, class: "select2", id: "previous_portfolio_select")
     .row
       .two.columns
       .eight.columns
-        span User (with no previous portfolio) - &nbsp;
-        = f.select(:user_id, User.no_portfolio {|usr| [ usr.email, usr.id ] }, { include_blank: true }, class: "select2", id: "portfolio_user_id")
+        span Member (with no previous portfolio) - &nbsp;
+        = f.select(:member_id, Member.no_portfolio {|usr| [ usr.email, usr.id ] }, { include_blank: true }, class: "select2", id: "portfolio_member_id")
     .row
       .two.columns
       .eight.columns Current BTC value
@@ -38,7 +38,7 @@
 
 javascript:
 
-  var userSelect = $("#portfolio_user_id");
+  var memberSelect = $("#portfolio_member_id");
   var previousPortfolioSelect = $("#previous_portfolio_select");
   var updateHolding = function(i, holding) {
     $("#previous_" + holding.coin_id).text(holding.quantity);
@@ -50,14 +50,14 @@ javascript:
     $.each(portfolio.holdings, updateHolding)
   };
 
-  userSelect.on('change', function() {
-    var userId = $("#portfolio_user_id option:selected").val();
-    previousPortfolioSelect.attr("disabled", !!userId);
+  memberSelect.on('change', function() {
+    var memberId = $("#portfolio_member_id option:selected").val();
+    previousPortfolioSelect.attr("disabled", !!memberId);
   })
 
   previousPortfolioSelect.on('change', function() {
     var portfolioId = $("#previous_portfolio_select option:selected").val();
-    userSelect.attr("disabled", !!portfolioId);
+    memberSelect.attr("disabled", !!portfolioId);
     $.ajax({
       url: "#{admin_portfolios_path}/" + portfolioId,
       success: updatePrevious,

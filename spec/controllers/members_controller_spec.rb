@@ -2,7 +2,7 @@
 
 require "./spec/rails_helper"
 
-describe UsersController do
+describe MembersController do
   describe "#index" do
     let(:get_index) { get :index }
 
@@ -11,8 +11,8 @@ describe UsersController do
       expect(response.status).to eq 200
     end
 
-    it "assigns @users" do
-      expect { get_index }.to change { assigns :users }
+    it "assigns @members" do
+      expect { get_index }.to change { assigns :members }
     end
 
     it "renders the index template" do

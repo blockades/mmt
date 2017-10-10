@@ -1,0 +1,11 @@
+=link_to "New member", new_admin_member_path, class: "button"
+
+table
+  thead
+    th Email
+    th
+  tbody
+    - @members.each do |member|
+      tr
+        td= member.email
+        td= link_to "Edit", edit_admin_member_path(member), class: "button"

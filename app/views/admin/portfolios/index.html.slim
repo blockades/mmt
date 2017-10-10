@@ -8,6 +8,6 @@ table
   tbody
     - @portfolios.each do |portfolio|
       tr
-        td= portfolio.user.email
+        td= portfolio.member.email
         td= portfolio.initial_btc_value
         td= portfolio.created_at
