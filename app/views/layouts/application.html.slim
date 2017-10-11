@@ -8,9 +8,9 @@ html
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   body
     - if current_member&.admin?
-    nav.primary
-      = link_to "Portfolios", admin_portfolios_path, class: "button button-primary"
-      = link_to "Coins", admin_coins_path, class: "button button-primary"
-      = link_to "Members", admin_members_path, class: "button button-primary"
+      nav.primary
+        = link_to "Portfolios", admins_portfolios_path, class: "button button-primary"
+        = link_to "Coins", admins_coins_path, class: "button button-primary"
+        = link_to "Members", admins_members_path, class: "button button-primary"
     = flash_notices
     = yield

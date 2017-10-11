@@ -1,5 +1,5 @@
 .container
-  = form_for [:admin, @portfolio] do |f|
+  = form_for [:admins, @portfolio] do |f|
     .row
       .two.columns
       .four.columns Previous
@@ -59,7 +59,7 @@ javascript:
     var portfolioId = $("#previous_portfolio_select option:selected").val();
     memberSelect.attr("disabled", !!portfolioId);
     $.ajax({
-      url: "#{admin_portfolios_path}/" + portfolioId,
+      url: "#{admins_portfolios_path}/" + portfolioId,
       success: updatePrevious,
       dataType: "json"
     });

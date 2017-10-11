@@ -1,6 +1,6 @@
 h2 Editing #{@coin.code}
 
-= form_for [:admin, @coin] do |f|
+= form_for [:admins, @coin] do |f|
   = f.label :name
   = f.text_field :name
   = f.label :central_reserve_in_sub_units
