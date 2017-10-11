@@ -2,7 +2,7 @@
 
 require "rails_helper"
 
-describe Admin::PortfoliosController do
+describe Admins::PortfoliosController do
   let(:member) { create :member, :admin }
   let(:resource) { create :portfolio, :with_holdings }
 
