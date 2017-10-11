@@ -325,3 +325,7 @@ Devise.setup do |config|
   # so you need to do it manually. For the members scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/members/auth'
 end
+
+Rails.application.config.to_prepare do
+  Devise::SessionsController.layout 'devise'
+end

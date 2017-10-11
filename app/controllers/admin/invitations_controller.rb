@@ -1,6 +1,7 @@
 module Admin
   class InvitationsController < Devise::InvitationsController
-    before_action :verify_admin
+    before_action :verify_admin, except: [:edit, :update]
+    layout 'application', only: [:index, :new]
 
     def index
       @not_accepted = Member.invitation_not_accepted
@@ -15,7 +16,7 @@ module Admin
     private
 
     def invitation_params
-      params.require(:member).permit(:email)
+      params.require(:member).permit(:email, :password, :password_confirmation)
     end
   end
 end
