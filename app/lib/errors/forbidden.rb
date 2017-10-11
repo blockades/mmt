@@ -1,0 +1,2 @@
+class Forbidden < StandardError
+end

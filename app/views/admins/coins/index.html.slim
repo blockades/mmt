@@ -1,0 +1,17 @@
+table
+  thead
+    th Name
+    th Code
+    th Central Reserve
+    th In members holdings
+    th BTC rate (bittrex)
+    th
+  tbody
+    - @coins.each do |coin|
+      tr
+        td= coin.name
+        td= coin.code
+        td= coin.central_reserve
+        td= coin.live_holdings_quantity_display
+        td= coin.btc_rate
+        td= link_to "Edit", edit_admins_coin_path(coin), class: "button"

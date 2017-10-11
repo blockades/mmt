@@ -1,9 +1,0 @@
-h2 Editing #{@coin.code}
-
-= form_for [:admin, @coin] do |f|
-  = f.label :name
-  = f.text_field :name
-  = f.label :central_reserve_in_sub_units
-  = f.number_field :central_reserve_in_sub_units, step: 1, min: 0
-  section
-    = f.submit "Update Coin"

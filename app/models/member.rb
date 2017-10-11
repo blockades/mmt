@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
-  devise :database_authenticatable, :registerable,
+  devise :invitable, :database_authenticatable,
          :recoverable, :rememberable, :trackable, :validatable
 
   has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"

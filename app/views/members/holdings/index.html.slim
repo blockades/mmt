@@ -1,0 +1,13 @@
+- @holdings.each do |holding|
+  section
+    h3 Member
+    | Member: #{holding.member_plan.member.email}
+    br/
+    h3 Investment
+    | Amount: #{holding.amount} #{holding.member_plan.iso_currency}
+    br/
+    h3 Holding
+    = holding.crypto
+    = holding.coin.code
+    br/
+  hr/

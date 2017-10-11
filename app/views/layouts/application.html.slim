@@ -1,0 +1,16 @@
+doctype html
+html
+  head
+    meta content=("text/html; charset=UTF-8") http-equiv="Content-Type" /
+    title MMT
+    = csrf_meta_tags
+    = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
+    = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+  body
+    - if current_member&.admin?
+      nav.primary
+        = link_to "Portfolios", admins_portfolios_path, class: "button button-primary"
+        = link_to "Coins", admins_coins_path, class: "button button-primary"
+        = link_to "Members", admins_members_path, class: "button button-primary"
+    = flash_notices
+    = yield

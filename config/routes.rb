@@ -1,17 +1,17 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :members
-  # For details on the DSL available within this file, see http://guides.rubyonrails.org/routing.html
+  devise_for :members, skip: [:registrations], controllers: { invitations: 'admins/invitations' }
 
-  root to: "members#index"
+  scope module: :members do
+    root to: "dashboard#index"
+    resources :members, only: [:edit, :update]
+    resources :holdings, only: [:index, :edit]
+    resources :portfolios, only: [:index, :edit]
+  end
 
-  resources :plans, only: [:index, :new, :create]
-
-  resources :member_plans, only: [:new, :create]
-  resources :holdings
-
-  namespace :admin do
+  namespace :admins do
+    root to: 'dashboard#index'
     resources :portfolios, only: [:index, :new, :create, :show]
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit, :update]
