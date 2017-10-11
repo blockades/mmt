@@ -2,7 +2,7 @@
 
 class Member < ApplicationRecord
   devise :invitable, :database_authenticatable, :recoverable,
-    :rememberable, :trackable, :validatable, authentication_keys: [:login]
+    :trackable, :validatable, authentication_keys: [:login]
 
   has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"
   has_many :portfolios
