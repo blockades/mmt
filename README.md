@@ -64,6 +64,13 @@ rails s
 
 Navigate to [app.blockades.dev:5000](http://app.blockades.dev:5000/)
 
+Install [mailcatcher](https://mailcatcher.me/)
+
+```
+gem install mailcatcher
+```
+
+
 <hr>
 
 # Process
