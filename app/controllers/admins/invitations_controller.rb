@@ -5,14 +5,9 @@ module Admins
     before_action :verify_admin, except: [:edit, :update]
     layout 'application', only: [:index, :new]
 
-    def index
-      @not_accepted = Member.invitation_not_accepted
-      @recently_accepted = Member.invitation_accepted
-    end
-
     def create
       member = Member.invite! invitation_params
-      redirect_to member_invitation_path, notice: "Invitation sent to #{member.email}"
+      redirect_to new_member_invitation_path, notice: "Invitation sent to #{member.email}"
     end
 
     private
