@@ -4,11 +4,15 @@ h2= t 'devise.invitations.edit.header'
   = f.hidden_field :invitation_token
   - if f.object.class.require_password_on_accepting
     p
+      = f.label :username
+      br/
+      = f.text_field :username
+    p
       = f.label :password
       br/
-      = f.password_field :password
+      = f.password_field :password, required: true
     p
       = f.label :password_confirmation
       br/
-      = f.password_field :password_confirmation
+      = f.password_field :password_confirmation, required: true
   p= f.submit t("devise.invitations.edit.submit_button")
