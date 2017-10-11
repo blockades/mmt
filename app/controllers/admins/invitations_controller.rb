@@ -1,4 +1,6 @@
-module Admin
+# frozen_string_literal: true
+
+module Admins
   class InvitationsController < Devise::InvitationsController
     before_action :verify_admin, except: [:edit, :update]
     layout 'application', only: [:index, :new]
@@ -10,7 +12,7 @@ module Admin
 
     def create
       member = Member.invite! invitation_params
-      redirect_to admin_members_path, notice: "Invitation sent to #{member.email}"
+      redirect_to member_invitation_path, notice: "Invitation sent to #{member.email}"
     end
 
     private

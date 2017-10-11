@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Admin
-  class CoinsController < AdminController
+module Admins
+  class CoinsController < AdminsController
     def index
       @coins = Coin.all
     end

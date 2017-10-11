@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Admin
-  class PortfoliosController < ApplicationController
+module Admins
+  class PortfoliosController < AdminsController
     def index
       @portfolios = Portfolio.live.all.includes(:member)
     end

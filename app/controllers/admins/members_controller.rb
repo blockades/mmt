@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module Admin
-  class MembersController < AdminController
+module Admins
+  class MembersController < AdminsController
     def index
       @members = Member.all
     end
