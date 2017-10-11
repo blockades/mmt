@@ -23,10 +23,10 @@ class ApplicationController < ActionController::Base
   end
 
   def rescue_404
-    redirect_to 'https://http.cat/404'
+    render file: 'public/404', status: 404, layout: false
   end
 
   def rescue_403
-    redirect_to 'https://http.cat/403'
+    render file: 'public/403', status: 403, layout: false
   end
 end
