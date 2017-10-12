@@ -1,6 +1,8 @@
 ruby:
   my_profile = @member == current_member
 
+h1= @member.username
+
 - if my_profile
   = form_for @member do |f|
     = f.label :username

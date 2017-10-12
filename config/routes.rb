@@ -5,7 +5,7 @@ Rails.application.routes.draw do
 
   scope module: :members do
     root to: "dashboard#index"
-    resources :members, only: [:show, :update]
+    resources :members, only: [:index, :show, :update]
     get 'profile', to: 'members#show', as: :profile
     resources :holdings, only: [:index, :edit]
     resources :portfolios, only: [:index, :edit]
