@@ -14,8 +14,11 @@ class Member < ApplicationRecord
   scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
 
   validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
+  validates :slug, uniqueness: { case_sensitive: true }
   validate :username_against_inaccessible_words
   validate :email_against_username
+
+  before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
 
   attr_accessor :login
 
@@ -38,5 +41,9 @@ class Member < ApplicationRecord
 
   def username_against_inaccessible_words
     errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
+  end
+
+  def adjust_slug
+    self.slug = username
   end
 end
