@@ -15,6 +15,7 @@ gem "uglifier", ">= 1.3.0"
 
 gem "devise"
 gem "devise_invitable"
+gem "friendly_id", "~> 5.1.0"
 gem "interactor-rails"
 gem "jbuilder", "~> 2.5"
 gem "jquery-rails"
