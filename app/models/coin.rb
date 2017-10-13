@@ -1,6 +1,9 @@
 # frozen_string_literal: true
 
 class Coin < ApplicationRecord
+  extend FriendlyId
+  friendly_id :code, use: :slugged
+
   has_many :holdings
   has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
   has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
@@ -10,6 +13,7 @@ class Coin < ApplicationRecord
   attr_readonly :code
 
   validates :code, uniqueness: true
+  validate :code_against_inaccessible_words
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
   validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
@@ -72,5 +76,9 @@ class Coin < ApplicationRecord
     return unless subdivision
     return unless (subdivision % 10).zero?
     errors.add :subdivision, "must be a multiple of 10"
+  end
+
+  def code_against_inaccessible_words
+    errors.add(:code, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? code.downcase
   end
 end
