@@ -14,7 +14,7 @@ module Members
     private
 
     def find_member
-      @member = params[:id] ? Member.find(params[:id]) : current_member
+      @member = params[:id] ? Member.friendly.find(params[:id]) : current_member
     end
   end
 end

@@ -23,7 +23,7 @@ module Admins
     private
 
     def coin
-      @coin ||= Coin.find params[:id]
+      @coin ||= Coin.friendly.find params[:id]
     end
   end
 end
