@@ -26,5 +26,9 @@ module MMT
     config.generators do |g|
       g.orm :active_record, primary_key_type: :uuid
     end
+
+    config.before_initialize do
+      require Rails.root.join 'config', 'initializers', 'magic_money_tree'
+    end
   end
 end
