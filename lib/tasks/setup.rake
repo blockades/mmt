@@ -2,8 +2,8 @@
 
 namespace :setup do
   task portfolios: :environment do
-    member = Member.find_or_initialize_by(email: "someone@example.com") do |usr|
-      usr.update!(admin: true, password: "password")
+    member = Member.find_or_initialize_by(email: "someone@example.com") do |member|
+      member.update!(admin: true, password: "password", username: member.email.split('@').first.downcase)
     end
 
     btc = Coin.find_by(code: "BTC")
