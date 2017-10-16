@@ -70,12 +70,6 @@ Install [mailcatcher](https://mailcatcher.me/)
 gem install mailcatcher
 ```
 
-Notes for developers
--------------------
-
-- When generating new migrations, all id's are UUIDs. Please ensure you do not use integers as a UUID.
-
-
 <hr>
 
 # Tools to make your life easier...

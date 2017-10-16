@@ -1,6 +1,6 @@
 class CreatePortfolios < ActiveRecord::Migration[5.0]
   def change
-    create_table :portfolios, id: :uuid, default: 'uuid_generate_v4()' do |t|
+    create_table :portfolios, id: :uuid do |t|
       t.references :member, type: :uuid, foreign_key: true, index: false, null: false
       t.uuid :next_portfolio_id
       t.datetime :next_portfolio_at
