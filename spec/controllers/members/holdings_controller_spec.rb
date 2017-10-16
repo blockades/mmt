@@ -3,6 +3,10 @@
 require "./spec/rails_helper"
 
 describe Members::HoldingsController do
+  let(:member) { create :member, :admin }
+
+  before { sign_in member }
+
   describe "#index" do
     let(:get_index) { get :index }
 

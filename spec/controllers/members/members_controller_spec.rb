@@ -3,20 +3,24 @@
 require "./spec/rails_helper"
 
 describe Members::MembersController do
-  describe "#index" do
-    let(:get_index) { get :index }
+  let(:member) { create :member, :admin }
+
+  before { sign_in member }
+
+  describe "GET #show" do
+    let(:get_show) { get :show, id: member.id }
 
     it "returns a 200" do
-      get_index
+      get_show
       expect(response.status).to eq 200
     end
 
     it "assigns @members" do
-      expect { get_index }.to change { assigns :members }
+      expect { get_show }.to change { assigns :member }
     end
 
     it "renders the index template" do
-      expect(get_index).to render_template :index
+      expect(get_index).to render_template :show
     end
   end
 end

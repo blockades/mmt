@@ -33,7 +33,7 @@ module Admins
     private
 
     def previous_portfolio
-      Portfolio.live.find(params[:portfolio][:previous_portfolio_id])
+      Portfolio.live.find_by(id: params[:portfolio][:previous_portfolio_id])
     end
 
     def permitted_params
