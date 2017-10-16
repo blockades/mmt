@@ -13,7 +13,7 @@
       .two.columns
       .eight.columns
         span Member (with no previous portfolio) - &nbsp;
-        = f.select(:member_id, Member.no_portfolio {|usr| [ usr.email, usr.id ] }, { include_blank: true }, class: "select2", id: "portfolio_member_id")
+        = f.select(:member_id, Member.no_portfolio.collect {|usr| [ usr.email, usr.id ] }, { include_blank: true }, class: "select2", id: "portfolio_member_id")
     .row
       .two.columns
       .eight.columns Current BTC value
