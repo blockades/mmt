@@ -19,10 +19,12 @@
   display: inline-block;
 }
 
-.detail {
-  border: 1px solid grey;
-  margin: 1em;
-  padding: 1em;
+.right {
+  float: right;
+}
+
+.left {
+  float: left;
 }
 
 section.title {
@@ -36,4 +38,15 @@ section.title {
 
 .button {
   margin: 5px;
+}
+
+nav {
+  ul {
+    list-style: none;
+    display: flex;
+    li {
+      margin: 0;
+      list-style-type: none;
+    }
+  }
 }

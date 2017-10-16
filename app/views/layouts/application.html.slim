@@ -8,11 +8,12 @@ html
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   body
     nav.primary
-      ul
-      - if current_member&.admin?
-        li= link_to "Portfolios", admins_portfolios_path, class: "button button-primary"
-        li= link_to "Coins", admins_coins_path, class: "button button-primary"
-        li= link_to "Members", admins_members_path, class: "button button-primary"
-      li= link_to 'Log out', destroy_member_session_path, method: :delete, class: "button button-primary"
+      ul.left
+        - if current_member&.admin?
+          li= link_to "Portfolios", admins_portfolios_path, class: "button button-primary"
+          li= link_to "Coins", admins_coins_path, class: "button button-primary"
+          li= link_to "Members", admins_members_path, class: "button button-primary"
+      ul.right
+        li= link_to 'Log out', destroy_member_session_path, method: :delete, class: "button button-primary"
     = flash_notices
     = yield
