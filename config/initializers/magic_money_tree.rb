@@ -2,7 +2,7 @@ module MagicMoneyTree
   module InaccessibleWords
     class << self
       def all
-        tables + reserved + blocked
+        [tables, reserved, blocked].reduce([], :concat).uniq.sort
       end
 
       def tables
