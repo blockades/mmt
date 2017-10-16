@@ -1,11 +1,12 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :members, skip: [:registrations], controllers: { invitations: 'admins/invitations' }
+  devise_for :members, only: [:sessions, :passwords], path: :auth, path_names: { sign_in: 'login', sign_out: 'logout' }
+  devise_for :members, only: :invitations, controllers: { invitations: 'admins/invitations' }
 
   scope module: :members do
     root to: "dashboard#index"
-    resources :members, only: [:edit, :update]
+    resources :members, only: [:index, :show, :update]
     resources :holdings, only: [:index, :edit]
     resources :portfolios, only: [:index, :edit]
   end

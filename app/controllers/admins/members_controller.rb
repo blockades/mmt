@@ -27,6 +27,10 @@ module Admins
 
     private
 
+    def find_member
+      @member = Member.friendly.find params[:id]
+    end
+
     def permitted_params
       params.require(:member).permit :email, :password
     end

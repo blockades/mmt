@@ -2,16 +2,17 @@
 
 module Admins
   class CoinsController < AdminsController
+    before_action :find_coin, only: [:edit, :update]
+
     def index
       @coins = Coin.all
     end
 
     def edit
-      coin
     end
 
     def update
-      if coin.save
+      if @coin.update coin_params
         flash[:success] = "Coin created"
         redirect_to action: :index
       else
@@ -22,8 +23,12 @@ module Admins
 
     private
 
-    def coin
-      @coin ||= Coin.find params[:id]
+    def find_coin
+      @coin ||= Coin.friendly.find params[:id]
+    end
+
+    def coin_params
+      params.require(:coin).permit(:name, :code, :central_reserve_in_sub_units)
     end
   end
 end

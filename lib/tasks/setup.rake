@@ -19,23 +19,39 @@ namespace :setup do
 
   task coins: :environment do
     Coin.find_or_initialize_by(
-      name: "Bitcoin",
+      code: "NEO"
+    ).update!(
+      name: "AntShares",
+      central_reserve_in_sub_units: 1_000_000_000
+    )
+
+    Coin.find_or_initialize_by(
       code: "BTC"
     ).update!(
+      name: "Bitcoin",
       central_reserve_in_sub_units: 1_000_000_000
     )
 
     Coin.find_or_initialize_by(
-      name: "Ethereum",
       code: "ETH"
     ).update!(
+      name: "Ethereum",
       central_reserve_in_sub_units: 1_000_000_000
     )
 
     Coin.find_or_initialize_by(
-      name: "Sterling",
       code: "GBP"
     ).update!(
+      name: "Sterling",
+      central_reserve_in_sub_units: 1_000,
+      crypto_currency: false,
+      subdivision: 2
+    )
+
+    Coin.find_or_initialize_by(
+      code: "USD"
+    ).update!(
+      name: "United States Dollar",
       central_reserve_in_sub_units: 1_000,
       crypto_currency: false,
       subdivision: 2

@@ -4,14 +4,21 @@ class Member < ApplicationRecord
   devise :invitable, :database_authenticatable, :recoverable,
     :trackable, :validatable, authentication_keys: [:login]
 
+  extend FriendlyId
+  friendly_id :username, use: :slugged
+
   has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"
   has_many :portfolios
   has_many :holdings, through: :live_portfolio
 
   scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
 
-  validates :username, uniqueness: { case_sensitive: false }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }
+  validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
+  validates :slug, uniqueness: { case_sensitive: true }
+  validate :username_against_inaccessible_words
   validate :email_against_username
+
+  before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
 
   attr_accessor :login
 
@@ -29,8 +36,14 @@ class Member < ApplicationRecord
   private
 
   def email_against_username
-    if Member.where(email: username).exists?
-      errors.add(:username, :invalid)
-    end
+    errors.add(:username, :invalid) if Member.where(email: username).exists?
+  end
+
+  def username_against_inaccessible_words
+    errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
+  end
+
+  def adjust_slug
+    self.slug = username
   end
 end
