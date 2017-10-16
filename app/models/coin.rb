@@ -12,7 +12,7 @@ class Coin < ApplicationRecord
 
   attr_readonly :code
 
-  validates :code, uniqueness: true
+  validates :code, uniqueness: { case_sensitive: true }, format: { with: /\A[a-zA-Z0-9_\.]*\z/ }
   validate :code_against_inaccessible_words
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }

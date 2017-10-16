@@ -14,7 +14,7 @@ module Members
     def update
       respond_to do |format|
         if @member.update member_params
-          format.html { redirect_to member_path(@member), notice: "Successfull updated" }
+          format.html { redirect_to member_path(@member), notice: "Successfully updated" }
           format.json { render json: { success: true, member: @member }.to_json }
         else
           format.html { redirect_to member_path(@member), error: "Failed to update" }
