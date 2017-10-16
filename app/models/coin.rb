@@ -18,7 +18,6 @@ class Coin < ApplicationRecord
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
   validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
 
-  # %%TODO%% This is not a long term solution
   def value(iso_currency)
     btc_rate * 1.0 / fiat_btc_rate(iso_currency)
   end
