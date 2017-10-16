@@ -18,6 +18,8 @@ class Coin < ApplicationRecord
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
   validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
 
+  before_validation :adjust_slug, on: :update, if: proc { |c| c.code_changed? }
+
   def value(iso_currency)
     btc_rate * 1.0 / fiat_btc_rate(iso_currency)
   end
@@ -79,5 +81,9 @@ class Coin < ApplicationRecord
 
   def code_against_inaccessible_words
     errors.add(:code, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? code.downcase
+  end
+
+  def adjust_slug
+    self.slug = code
   end
 end
