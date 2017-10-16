@@ -8,7 +8,7 @@ describe Members::MembersController do
   before { sign_in member }
 
   describe "GET #show" do
-    let(:get_show) { get :show, id: member.id }
+    let(:get_show) { get :show, params: { id: member.id } }
 
     it "returns a 200" do
       get_show
@@ -19,8 +19,8 @@ describe Members::MembersController do
       expect { get_show }.to change { assigns :member }
     end
 
-    it "renders the index template" do
-      expect(get_index).to render_template :show
+    it "renders the show template" do
+      expect(get_show).to render_template :show
     end
   end
 end
