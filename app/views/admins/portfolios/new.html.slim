@@ -23,7 +23,7 @@
       .four.columns id="next_btc_value"
     - Coin.ordered.each do |coin|
       = f.fields_for :holdings, @portfolio.holdings.build do |hf|
-        = hf.number_field :coin_id, class: "hidden", value: coin.id
+        = hf.hidden_field :coin_id, class: "hidden", value: coin.id
         .row
           .two.columns
           .four.columns="Holding of #{coin.name} (BTC rate)"
