@@ -1,6 +1,6 @@
 class DeviseCreateMembers < ActiveRecord::Migration[5.0]
   def change
-    create_table :members do |t|
+    create_table :members, id: :uuid do |t|
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""
@@ -29,7 +29,6 @@ class DeviseCreateMembers < ActiveRecord::Migration[5.0]
       # t.integer  :failed_attempts, default: 0, null: false # Only if lock strategy is :failed_attempts
       # t.string   :unlock_token # Only if unlock strategy is :email or :both
       # t.datetime :locked_at
-
 
       t.timestamps null: false
     end

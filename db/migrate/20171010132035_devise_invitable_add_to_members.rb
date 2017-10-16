@@ -1,4 +1,4 @@
-class DeviseInvitableAddToMembers < ActiveRecord::Migration
+class DeviseInvitableAddToMembers < ActiveRecord::Migration[5.0]
   def up
     change_table :members do |t|
       t.string     :invitation_token
@@ -6,7 +6,7 @@ class DeviseInvitableAddToMembers < ActiveRecord::Migration
       t.datetime   :invitation_sent_at
       t.datetime   :invitation_accepted_at
       t.integer    :invitation_limit
-      t.references :invited_by, polymorphic: true
+      t.references :invited_by, type: :uuid, polymorphic: true
       t.integer    :invitations_count, default: 0
       t.index      :invitations_count
       t.index      :invitation_token, unique: true # for invitable
