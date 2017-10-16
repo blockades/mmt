@@ -7,12 +7,12 @@
 Database Engine
 --------
 
-Install the correct Postgres for your Linux OS.
-For Ubuntu and Mint users, this can be done with apt specifying the correct source repository e.g. xenial, trusty etc.
-For Mint users, xenial should work.
+Install the correct Postgres for your Linux distribution.
+The `lsb_release -cs` sub-command below returns the name of your Ubuntu distribution, such as xenial.
+For Mint users, you might have to change $(lsb_release -cs) to your parent Ubuntu distribution.
 
 ```
-sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ <YOUR UBUNTU VERSION>-pgdg main"
+sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main"
 wget --quiet -O - https://www.postgresql.org/media/keys/ACCC4CF8.asc | sudo apt-key add -
 sudo apt-get update
 sudo apt-get install -y postgresql-9.6 postgresql-contrib-9.6 libpq-dev
@@ -70,6 +70,13 @@ Install [mailcatcher](https://mailcatcher.me/)
 gem install mailcatcher
 ```
 
+<hr>
+
+# Tools to make your life easier...
+
+- Install [oh-my-zsh](https://github.com/robbyrussell/oh-my-zsh) for pre-configured git aliases
+- Install [Hub](https://hub.github.com/) for easy pull requesting
+- We use [Keybase](https://keybase.io/) for communications (because we love crypto)
 
 <hr>
 
