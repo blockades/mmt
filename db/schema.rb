@@ -14,8 +14,9 @@ ActiveRecord::Schema.define(version: 20171011114908) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
+  enable_extension "uuid-ossp"
 
-  create_table "coins", force: :cascade do |t|
+  create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string   "name"
     t.string   "code"
     t.datetime "created_at",                                  null: false
@@ -26,22 +27,20 @@ ActiveRecord::Schema.define(version: 20171011114908) do
     t.index ["code"], name: "index_coins_on_code", unique: true, using: :btree
   end
 
-  create_table "holdings", force: :cascade do |t|
-    t.integer  "member_plan_id"
-    t.integer  "coin_id",                                                   null: false
+  create_table "holdings", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid     "coin_id",                                                   null: false
     t.decimal  "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
     t.datetime "created_at",                                                null: false
     t.datetime "updated_at",                                                null: false
     t.boolean  "deposit",                                   default: false, null: false
     t.boolean  "withdrawal",                                default: false, null: false
-    t.integer  "portfolio_id",                                              null: false
+    t.uuid     "portfolio_id",                                              null: false
     t.integer  "quantity",                                                  null: false
     t.index ["coin_id", "portfolio_id"], name: "index_holdings_on_coin_id_and_portfolio_id", unique: true, using: :btree
-    t.index ["member_plan_id"], name: "index_holdings_on_member_plan_id", using: :btree
     t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id", using: :btree
   end
 
-  create_table "members", force: :cascade do |t|
+  create_table "members", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string   "email",                  default: "", null: false
     t.string   "encrypted_password",     default: "", null: false
     t.string   "reset_password_token"
@@ -61,7 +60,7 @@ ActiveRecord::Schema.define(version: 20171011114908) do
     t.datetime "invitation_accepted_at"
     t.integer  "invitation_limit"
     t.string   "invited_by_type"
-    t.integer  "invited_by_id"
+    t.uuid     "invited_by_id"
     t.integer  "invitations_count",      default: 0
     t.string   "username"
     t.index ["email"], name: "index_members_on_email", unique: true, using: :btree
@@ -72,9 +71,9 @@ ActiveRecord::Schema.define(version: 20171011114908) do
     t.index ["username"], name: "index_members_on_username", unique: true, using: :btree
   end
 
-  create_table "portfolios", force: :cascade do |t|
-    t.integer  "member_id",         null: false
-    t.integer  "next_portfolio_id"
+  create_table "portfolios", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid     "member_id",         null: false
+    t.uuid     "next_portfolio_id"
     t.datetime "next_portfolio_at"
     t.datetime "created_at",        null: false
     t.datetime "updated_at",        null: false
