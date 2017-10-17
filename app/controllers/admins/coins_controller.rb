@@ -12,6 +12,7 @@ module Admins
     end
 
     def update
+      # %%TODO%% UPDATE ACTION must be replaced with build new coin with new central reserve value is central reserve is being updated!!!
       if @coin.update coin_params
         flash[:success] = "Coin created"
         redirect_to action: :index
@@ -28,7 +29,7 @@ module Admins
     end
 
     def coin_params
-      params.require(:coin).permit(:name, :code, :central_reserve_in_sub_units)
+      params.require(:coin).permit(:name, :central_reserve_in_sub_units)
     end
   end
 end
