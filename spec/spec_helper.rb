@@ -25,3 +25,9 @@ RSpec.configure do |config|
 
   Kernel.srand config.seed
 end
+
+module SpecHelperMethods
+  def json_fixture(name)
+    File.read(Rails.root.join('spec/support/fixtures', name+'.json'))
+  end
+end

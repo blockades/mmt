@@ -13,6 +13,8 @@ class Holding < ApplicationRecord
   validates :quantity, numericality: { greater_than: 0 }
   validate :ensure_less_than_central_reserve, on: :create
 
+  scope :with_coins, -> { includes(:coin) }
+
   def btc_value
     coin.btc_rate * quantity
   end

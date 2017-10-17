@@ -68,9 +68,17 @@ class Coin < ApplicationRecord
 
   def crypto_btc_rate
     return 1.0 if code == "BTC"
+    # %%TODO%% We need a way to deal with missing codes so it doesn't cascade through and break the system
+    # raise BittrexError, "Bittrex does not supply rates for #{code}" unless coins_by_bittrex.include? code
     bittrex_rates["result"].compact.find do |market|
       market["MarketName"] == "BTC-#{code}"
     end["Bid"]
+  end
+
+  def coins_by_bittrex
+    bittrex_rates["result"].compact.map do |market|
+      market["MarketName"].split('-').last
+    end
   end
 
   def ensure_subdivision_multiple_of_ten
