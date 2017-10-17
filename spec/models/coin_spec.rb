@@ -56,7 +56,7 @@ describe Coin, type: :model do
         stub_request(:get, "https://bittrex.com/api/v1.1/public/getmarketsummaries")
           .to_return(
             status: 200, headers: { "Content-Type" => "application/json" },
-            body: '{"result":[{"MarketName":"BTC-ETH","Bid":0.08}]}'
+            body: json_fixture('market_rates') # '{"result":[{"MarketName":"BTC-ETH","Bid":0.08}]}'
           )
       end
 
