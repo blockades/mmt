@@ -3,6 +3,9 @@
 require "rails_helper"
 
 describe Coin, type: :model do
+
+  it_behaves_like 'sluggable', :code
+
   it "#live_holdings_quantity" do
     subject = create :coin
     expect(subject.live_holdings_quantity).to eq 0
