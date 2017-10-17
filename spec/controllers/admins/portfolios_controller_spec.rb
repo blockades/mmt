@@ -3,8 +3,9 @@
 require "rails_helper"
 
 describe Admins::PortfoliosController do
-  let(:member) { create :member, :admin }
   let(:resource) { create :portfolio, :with_holdings }
+
+  let(:member) { create :member, :admin }
   let(:json) { JSON.parse(response.body) }
 
   before do
@@ -87,3 +88,4 @@ describe Admins::PortfoliosController do
     end
   end
 end
+

@@ -13,12 +13,13 @@ module Members
 
     def update
       respond_to do |format|
+        # %%TODO%% Event store - are we going to allow members to do an update action on their profile like this?
         if @member.update member_params
           format.html { redirect_to member_path(@member), notice: "Successfully updated" }
-          format.json { render json: { success: true, member: @member }.to_json }
+          format.json { render json: { success: true, member: @member } }
         else
           format.html { redirect_to member_path(@member), error: "Failed to update" }
-          format.json { render json: { success: false, errors: @member.errors, member: @member }.to_json }
+          format.json { render json: { success: false, errors: @member.errors, member: @member } }
         end
       end
     end
