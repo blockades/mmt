@@ -21,6 +21,8 @@ gem "devise_invitable"
 gem 'devise-two-factor', ">= 3.0.0"
 gem "attr_encrypted", ">= 3.0.0"
 gem "encryptor", ">= 3.0.0"
+gem 'rqrcode-with-patches', '~> 0.5.4'
+gem 'mini_magick'
 
 gem "friendly_id", "~> 5.1.0"
 gem "interactor-rails"
