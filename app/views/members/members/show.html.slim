@@ -13,5 +13,5 @@ h1= @member.username
       h3 Setup Two Factor Authentication
       .two_factor
         = link_to 'Setup using an app', new_two_factor_authentication_path, remote: true, class: 'button'
-        = link_to 'QR Code', qr_codes_path(qr_code: { text: SecureRandom.uuid }), method: :post, class: 'button'
+      .qr_code
 

@@ -2,22 +2,12 @@
 
 module Members
   class QrCodesController < ApplicationController
-
-    def new
-    end
+    helper_method :qr_code_svg
 
     def create
       respond_to do |format|
-        format.svg do
-          render inline: qr_code_svg
-        end
+        format.js
       end
-    end
-
-    private
-
-    def qr_code_params
-      params.require(:qr_code).permit(:text)
     end
 
     def qr_code_svg
@@ -28,5 +18,10 @@ module Members
       )
     end
 
+    private
+
+    def qr_code_params
+      params.require(:qr_code).permit(:text)
+    end
   end
 end
