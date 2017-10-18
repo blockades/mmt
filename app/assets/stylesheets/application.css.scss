@@ -27,6 +27,26 @@
   float: left;
 }
 
+body {
+  padding-bottom: 100px;
+}
+
+.container {
+  margin-top: 3em;
+}
+
+nav {
+  height: 54px;
+  ul {
+    list-style: none;
+    display: flex;
+    li {
+      margin: 0;
+      list-style-type: none;
+    }
+  }
+}
+
 section.title {
   border: 1px solid grey;
   margin: 1em;
@@ -40,13 +60,3 @@ section.title {
   margin: 5px;
 }
 
-nav {
-  ul {
-    list-style: none;
-    display: flex;
-    li {
-      margin: 0;
-      list-style-type: none;
-    }
-  }
-}
