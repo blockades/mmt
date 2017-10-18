@@ -9,11 +9,7 @@ module Members
     def create
       respond_to do |format|
         format.svg do
-          render inline: RQRCode::QRCode.new(qr_code_params[:text]).as_svg(
-            offset: 0, color: '000',
-            shape_rendering: 'crispEdges',
-            module_size: 8
-          )
+          render inline: qr_code_svg
         end
       end
     end
@@ -22,6 +18,14 @@ module Members
 
     def qr_code_params
       params.require(:qr_code).permit(:text)
+    end
+
+    def qr_code_svg
+      RQRCode::QRCode.new(qr_code_params[:text]).as_svg(
+        offset: 0, color: '000',
+        shape_rendering: 'crispEdges',
+        module_size: 8
+      )
     end
 
   end
