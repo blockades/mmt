@@ -18,6 +18,10 @@ gem "sidekiq"
 
 gem "devise"
 gem "devise_invitable"
+gem 'devise-two-factor', ">= 3.0.0"
+gem "attr_encrypted", ">= 3.0.0"
+gem "encryptor", ">= 3.0.0"
+
 gem "friendly_id", "~> 5.1.0"
 gem "interactor-rails"
 gem "jbuilder", "~> 2.5"
