@@ -7,6 +7,8 @@ Rails.application.routes.draw do
   scope module: :members do
     root to: "dashboard#index"
     resources :members, only: [:show, :update]
+    resources :two_factor_authentication, only: [:new]
+    resources :qr_codes, only: [:new, :create], defaults: { format: :svg }
     resources :portfolios, only: [:show]
   end
 
