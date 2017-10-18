@@ -3,10 +3,13 @@
 require "./spec/rails_helper"
 
 describe Members::MembersController do
-  let(:member) { create :member, :admin }
+  let(:portfolio) { create :portfolio }
+  let(:member) { portfolio.member }
   let(:json) { JSON.parse(response.body) }
 
-  before { sign_in member }
+  before do
+    sign_in member
+  end
 
   describe "GET #show" do
     let(:get_show) { get :show, params: { id: member.id } }

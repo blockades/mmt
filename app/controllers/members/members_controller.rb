@@ -2,11 +2,7 @@
 
 module Members
   class MembersController < ApplicationController
-    before_action :find_member, only: [:show, :edit, :update]
-
-    def index
-      @members = Member.all
-    end
+    before_action :find_member, only: [:show, :update]
 
     def show
     end
