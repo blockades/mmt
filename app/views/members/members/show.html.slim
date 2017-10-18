@@ -1,10 +1,17 @@
 h1= @member.username
-
-- if my_profile?
-  = form_for @member do |f|
-    = f.label :username
-    = f.text_field :username
-    = f.submit :submit
-    = f.label :enable_two_factor_authentication
-    = f.check_box :otp_required_for_login, checked: @member.otp_required_for_login?
+.row
+  .six.columns
+    - if my_profile?
+      = form_for @member do |f|
+        .field
+          = f.label :username
+          = f.text_field :username
+        .field
+          = f.submit :submit
+  .six.columns
+    - if my_profile?
+      h3 Setup Two Factor Authentication
+      .two_factor
+        = link_to 'Setup using an app', new_two_factor_authentication_path, remote: true, class: 'button'
+        = link_to 'QR Code', qr_codes_path(qr_code: { text: SecureRandom.uuid }), method: :post, class: 'button'
 

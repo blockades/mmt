@@ -1,0 +1,11 @@
+table.qr-code
+  - @qr.modules.each_index do |x|
+    tr
+      - @qr.modules.each_index do |y|
+        - if @qr.dark?(x,y)
+          td.black
+        - else
+          td.white
+br/
+br/
+
