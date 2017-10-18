@@ -5,4 +5,6 @@ h1= @member.username
     = f.label :username
     = f.text_field :username
     = f.submit :submit
+    = f.label :enable_two_factor_authentication
+    = f.check_box :otp_required_for_login, checked: @member.otp_required_for_login?
 
