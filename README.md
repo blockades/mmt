@@ -84,12 +84,21 @@ gem install mailcatcher
 
 Contributing
 -----------
-- Pull master branch
-- Checkout to a feature branch
+
+- Pull master and development branch
+- Checkout to development branch
+- Checkout to feature/your-new-feature branch
 - Make your changes
-- Pull request into master
+- Pull request into development
+
+Projects
+-------
+
+- Feature and project workflows can be viewed in the repository's [projects section](https://github.com/blockades/mmt/projects)
 
 Issues
 ------
+
 - Create new issue
 - Add a label
+
