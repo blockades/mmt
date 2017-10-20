@@ -15,7 +15,10 @@ module Members
 
     def add_asset
       execute Command::AddAssetToPorfolio.new(asset_params)
-      head :ok
+
+      respond_to do |format|
+        format.js { flash[:notice] = "Successfully added to asset to your portfolio" }
+      end
     end
 
     private
