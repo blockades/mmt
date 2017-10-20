@@ -10,8 +10,8 @@ Rails.application.routes.draw do
     resources :holdings, only: [:index, :edit]
     resources :portfolios, only: [:index, :show, :new] do
       member do
-        post :add_asset
-        post :remove_asset
+        post :add_asset, format: :js
+        post :remove_asset, format: :js
       end
     end
   end
