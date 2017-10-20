@@ -29,6 +29,7 @@ gem "interactor-rails"
 gem "jbuilder", "~> 2.5"
 gem "jquery-rails"
 gem "turbolinks", "~> 5"
+gem "rails_event_store"
 
 gem "blockchain-api"
 gem "coinbase"
