@@ -29,6 +29,19 @@ ActiveRecord::Schema.define(version: 20171030104608) do
     t.index ["code"], name: "index_coins_on_code", unique: true
   end
 
+  create_table "event_store_events", id: :serial, force: :cascade do |t|
+    t.string "stream", null: false
+    t.string "event_type", null: false
+    t.string "event_id", null: false
+    t.text "metadata"
+    t.text "data", null: false
+    t.datetime "created_at", null: false
+    t.index ["created_at"], name: "index_event_store_events_on_created_at"
+    t.index ["event_id"], name: "index_event_store_events_on_event_id", unique: true
+    t.index ["event_type"], name: "index_event_store_events_on_event_type"
+    t.index ["stream"], name: "index_event_store_events_on_stream"
+  end
+
   create_table "friendly_id_slugs", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "slug", null: false
     t.uuid "sluggable_id", null: false
