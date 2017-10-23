@@ -6,8 +6,11 @@ module Domain
     PorfolioExpired = Class.new(StandardError)
     MissingMember = Class.new(StandardError)
 
-    def initialize(id)
-      @id = id
+    attr_reader :id, :member_id
+
+    def initialize(portfolio_id:, member_id:)
+      @id = portfolio_id
+      @member_id = member_id
       @state = :draft
       @assets = []
     end
@@ -21,7 +24,7 @@ module Domain
 
     def add_asset(coin_id)
       raise AlreadySubmitted if state == :finalised
-      apply Events::AssetAddedToPortfolio.new(data: { portfolio_id: id, coin_id: coin_id })
+      apply Events::AssetAddedToPortfolio.new(data: { portfolio_id: id, coin_id: coin_id, member_id: member_id })
     end
 
     def remove_asset(coin_id)
@@ -29,8 +32,8 @@ module Domain
       apply Events::AssetRemovedFromPortfolio.new(data: { portfolio_id: id, coin_id: coin_id })
     end
 
-    attr_reader :id
     private
+
     attr_accessor :state, :member_id, :assets
 
     def apply_portfolio_finalised(event)

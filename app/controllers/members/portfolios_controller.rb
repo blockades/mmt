@@ -36,7 +36,10 @@ module Members
     private
 
     def asset_params
-      params.require(:asset).permit(:coin_id).merge(portfolio_id: params[:id])
+      params.require(:asset).permit(:coin_id).merge(
+        portfolio_id: params[:id],
+        member_id: current_member.id
+      )
     end
 
     def portfolio_params

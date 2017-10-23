@@ -9,7 +9,7 @@ module Workers
     end
 
     def call(event)
-      create_draft_portfolio(event.data[:portfolio_id])
+      create_draft_portfolio(portfolio_params(event))
       asset = find_asset(asset_params(event)) ||
               create_asset(asset_params(event))
       # Here we want to adjust the assets value and save it
@@ -17,10 +17,11 @@ module Workers
 
     private
 
-    def create_draft_portfolio(uid)
-      return if ::Portfolio.where(uid: uid).exists?
+    def create_draft_portfolio(id:, member_id:)
+      return if ::Portfolio.where(id: id).exists?
       ::Portfolio.create!(
-        uid: uid,
+        id: id,
+        member_id: member_id,
         state: :draft,
       )
     end
@@ -39,6 +40,10 @@ module Workers
 
     def asset_params(event)
       { coin_id: event.data[:coin_id], portfolio_id: event.data[:portfolio_id] }
+    end
+
+    def portfolio_params(event)
+      { id: event.data[:portfolio_id], member_id: event.data[:member_id] }
     end
   end
 end
