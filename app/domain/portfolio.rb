@@ -24,6 +24,7 @@ module Domain
 
     def add_asset(coin_id)
       raise AlreadySubmitted if state == :finalised
+      raise MissingMember unless member_id
       apply Events::AssetAddedToPortfolio.new(data: { portfolio_id: id, coin_id: coin_id, member_id: member_id })
     end
 
