@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-module Denormalizers
+module Workers
   class AssetAddedToPortfolio < ApplicationJob
     queue_as :default
 
