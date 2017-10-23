@@ -40,11 +40,8 @@ module Domain
     def apply_asset_added_to_portfolio(event)
       coin_id = event.data[:coin_id]
       asset = find_asset(coin_id)
-      if asset.any?
-        Command::UpdateAssetValue.new(asset_id)
-      else
-        @assets << create_asset(id, coin_id)
-      end
+      return unless asset.any?
+      @assets << create_asset(id, coin_id)
     end
 
     def apply_asset_removed_from_portfolio(event)

@@ -9,7 +9,7 @@ module Workers
       call(YAML.load(args.first))
     end
 
-    private
+    protected
 
     def call(event)
       create_draft_portfolio(event.data[:portfolio_id])
@@ -17,6 +17,8 @@ module Workers
               create_asset(asset_params(event))
       # Here we want to adjust the assets value and save it
     end
+
+    private
 
     def create_draft_portfolio(uid)
       return if ::Portfolio.where(uid: uid).exists?

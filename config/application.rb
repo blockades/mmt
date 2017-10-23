@@ -26,6 +26,7 @@ module MMT
   class Application < Rails::Application
 
     config.autoload_paths += Dir["#{config.root}/app/**/"]
+
     config.event_store = RailsEventStore::Client.new
 
     config.generators do |g|
