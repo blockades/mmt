@@ -9,7 +9,7 @@ module Command
 
     def handler_for(command)
       {
-        Command::AddAssetToPorfolio => CommandHandler::AddAssetToPortfolio.new,
+        Command::AddAssetToPortfolio => CommandHandler::AddAssetToPortfolio.new,
         Command::UpdateAssetValue => CommandHandler::UpdateAssetValue.new,
         Command::FinalisePortfolio => CommandHandler::FinalisePortfolio.new
       }.fetch(command.class)

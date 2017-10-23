@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20170806090614) do
+ActiveRecord::Schema.define(version: 20171023141137) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -106,6 +106,7 @@ ActiveRecord::Schema.define(version: 20170806090614) do
     t.datetime "next_portfolio_at"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "state"
     t.index ["member_id"], name: "index_portfolios_on_member_id", unique: true, where: "(next_portfolio_at IS NULL)"
     t.index ["next_portfolio_id"], name: "index_portfolios_on_next_portfolio_id", unique: true
   end

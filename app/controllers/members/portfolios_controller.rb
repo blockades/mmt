@@ -14,7 +14,7 @@ module Members
     end
 
     def add_asset
-      execute Command::AddAssetToPorfolio.new(asset_params)
+      execute Command::AddAssetToPortfolio.new(asset_params)
 
       respond_to do |format|
         format.js { flash[:notice] = "Successfully added to asset to your portfolio" }
@@ -30,12 +30,8 @@ module Members
 
     def show
       @portfolio = Portfolio.find_by_uid(params[:uid])
-      if @portfolio.nil?
-        redirect_back fallback_location: root_path, notice: "Invalid portfolio"
-      else
-        @stream = "Domain::Portfolio$#{@portfolio.uid}"
-        @events = Rails.application.config.event_store.read_events_backward(@stream)
-      end
+      @stream = "Domain::Portfolio$#{@portfolio.uid}"
+      @events = Rails.application.config.event_store.read_events_backward(@stream)
     end
 
     private

@@ -1,5 +1,6 @@
 h1 Portfolios
 
+= link_to 'New', new_portfolio_path
 table
   thead
     tr
@@ -10,8 +11,6 @@ table
   tbody
     - @portfolios.each do |portfolio|
       tr
-        td= coin.name
-        td= coin.code
-        td= link_to 'Add', add_asset_portfolio_path(id: @portfolio_id, coin_id: coin.id), method: :post, remote: true
-        td= link_to 'Add', remove_asset_portfolio_path(id: @portfolio_id, coin_id: coin.id), method: :post, remote: true
+        td= portfolio
+        td= link_to 'here', portfolio_path(portfolio)
 
