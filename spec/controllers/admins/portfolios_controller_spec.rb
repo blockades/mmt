@@ -3,7 +3,7 @@
 require "rails_helper"
 
 describe Admins::PortfoliosController do
-  let(:resource) { create :portfolio, :with_holdings }
+  let(:resource) { create :portfolio, :with_assets }
 
   let(:member) { create :member, :admin }
   let(:json) { JSON.parse(response.body) }
@@ -70,8 +70,8 @@ describe Admins::PortfoliosController do
       portfolio_params = {
         member_id: resource.member_id,
         previous_portfolio_id: resource.id,
-        holdings_attributes: [{
-          coin_id: resource.holdings[0].coin_id,
+        assets_attributes: [{
+          coin_id: resource.assets[0].coin_id,
           initial_btc_rate: 0.1,
           quantity: 10,
         }]
@@ -83,8 +83,8 @@ describe Admins::PortfoliosController do
 
       expect(response.status).to eq 302
       expect(created_portfolio).to be_a Portfolio
-      expect(created_portfolio.holdings.count).to eq 1
-      expect(created_portfolio.holdings[0].quantity).to eq 10
+      expect(created_portfolio.assets.count).to eq 1
+      expect(created_portfolio.assets[0].quantity).to eq 10
     end
   end
 end

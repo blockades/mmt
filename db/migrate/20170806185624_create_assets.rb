@@ -1,6 +1,6 @@
-class CreateHoldings < ActiveRecord::Migration[5.0]
+class CreateAssets < ActiveRecord::Migration[5.0]
   def change
-    create_table :holdings, id: :uuid do |t|
+    create_table :assets, id: :uuid do |t|
       t.uuid :coin_id, index: true, foreign_key: true
       t.uuid :admin_id, index: true, foreign_key: true
 

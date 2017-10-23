@@ -10,7 +10,7 @@ namespace :setup do
     eth = Coin.find_by(code: "ETH")
     Portfolio.create!(
       member: member,
-      holdings_attributes: [
+      assets_attributes: [
         { coin_id: btc.id, quantity: 1.2 },
         { coin_id: eth.id, quantity: 2.1 },
       ]

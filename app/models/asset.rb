@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class Holding < ApplicationRecord
+class Asset < ApplicationRecord
   belongs_to :coin
-  belongs_to :portfolio, inverse_of: :holdings
+  belongs_to :portfolio, inverse_of: :assets
 
   before_save :calculate_rate
 

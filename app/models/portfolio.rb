@@ -3,16 +3,16 @@
 class Portfolio < ApplicationRecord
   belongs_to :member
   belongs_to :next_portfolio, class_name: "Portfolio", optional: true
-  has_many :holdings, inverse_of: :portfolio
+  has_many :assets, inverse_of: :portfolio
   has_one :previous_portfolio, class_name: "Portfolio", foreign_key: :next_portfolio_id
 
   scope :live, -> { where next_portfolio_id: nil }
   scope :with_member, -> { includes(:member) }
 
-  validates_associated :holdings
+  validates_associated :assets
   validates :state, inclusion: { in: [ 'finalised', 'expired', 'draft' ] }
 
-  accepts_nested_attributes_for :holdings, reject_if: proc { |attributes| attributes[:quantity].blank? }
+  accepts_nested_attributes_for :assets, reject_if: proc { |attributes| attributes[:quantity].blank? }
   attr_readonly :member_id, :portfolio_id
 
   def next_portfolio=(new_next_portfolio)
@@ -25,12 +25,12 @@ class Portfolio < ApplicationRecord
   end
 
   def btc_value
-    holdings.to_a.sum(&:btc_value)
+    assets.to_a.sum(&:btc_value)
   end
 
   def initial_btc_value
-    holdings_table = Holding.arel_table
-    holdings.sum(holdings_table[:initial_btc_rate] * holdings_table[:quantity])
+    assets_table = Asset.arel_table
+    assets.sum(assets_table[:initial_btc_rate] * assets_table[:quantity])
   end
 
   def previous_portfolio_id; end

@@ -25,23 +25,23 @@ describe Portfolio, type: :model do
     let(:btc) { create :coin, code: "BTC" }
 
     before do
-      create :holding, quantity: 10, coin: eth, portfolio: portfolio
-      create :holding, quantity: 1, coin: btc, portfolio: portfolio
+      create :asset, quantity: 10, coin: eth, portfolio: portfolio
+      create :asset, quantity: 1, coin: btc, portfolio: portfolio
       portfolio.reload
     end
 
-    it "sums the holdings in BTC" do
+    it "sums the assets in BTC" do
       expect(portfolio.btc_value).to eq(10 * @btc_eth_bid + 1)
     end
   end
 
   describe "#initial_btc_value" do
     before do
-      create :holding, quantity: 3, portfolio: portfolio, initial_btc_rate: 0.1
-      create :holding, quantity: 2, portfolio: portfolio, initial_btc_rate: 0.2
+      create :asset, quantity: 3, portfolio: portfolio, initial_btc_rate: 0.1
+      create :asset, quantity: 2, portfolio: portfolio, initial_btc_rate: 0.2
     end
 
-    it "sums the initial_btc_rate * quantity of holdings" do
+    it "sums the initial_btc_rate * quantity of assets" do
       expect(portfolio.initial_btc_value).to eq 0.7
     end
   end

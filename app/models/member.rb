@@ -8,7 +8,7 @@ class Member < ApplicationRecord
   friendly_id :username, use: :slugged
 
   has_many :portfolios
-  has_many :holdings, through: :live_portfolio
+  has_many :assets, through: :live_portfolio
 
   validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
   validates :slug, uniqueness: { case_sensitive: true }

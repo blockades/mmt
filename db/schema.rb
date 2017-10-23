@@ -17,6 +17,19 @@ ActiveRecord::Schema.define(version: 20171023141137) do
   enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
 
+  create_table "assets", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+    t.uuid "coin_id", null: false
+    t.decimal "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.boolean "deposit", default: false, null: false
+    t.boolean "withdrawal", default: false, null: false
+    t.uuid "portfolio_id", null: false
+    t.integer "quantity", null: false
+    t.index ["coin_id", "portfolio_id"], name: "index_assets_on_coin_id_and_portfolio_id", unique: true
+    t.index ["portfolio_id"], name: "index_assets_on_portfolio_id"
+  end
+
   create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -52,19 +65,6 @@ ActiveRecord::Schema.define(version: 20171023141137) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
-  end
-
-  create_table "holdings", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
-    t.uuid "coin_id", null: false
-    t.decimal "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "deposit", default: false, null: false
-    t.boolean "withdrawal", default: false, null: false
-    t.uuid "portfolio_id", null: false
-    t.integer "quantity", null: false
-    t.index ["coin_id", "portfolio_id"], name: "index_holdings_on_coin_id_and_portfolio_id", unique: true
-    t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id"
   end
 
   create_table "members", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -111,7 +111,7 @@ ActiveRecord::Schema.define(version: 20171023141137) do
     t.index ["next_portfolio_id"], name: "index_portfolios_on_next_portfolio_id", unique: true
   end
 
-  add_foreign_key "holdings", "portfolios"
+  add_foreign_key "assets", "portfolios"
   add_foreign_key "portfolios", "members"
   add_foreign_key "portfolios", "portfolios", column: "next_portfolio_id"
 end

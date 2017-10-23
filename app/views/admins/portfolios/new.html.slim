@@ -21,11 +21,11 @@
     .four.columns id="previous_btc_value" -
     .four.columns id="next_btc_value"
   - Coin.ordered.each do |coin|
-    = f.fields_for :holdings, @portfolio.holdings.build do |hf|
+    = f.fields_for :assets, @portfolio.assets.build do |hf|
       = hf.hidden_field :coin_id, class: "hidden", value: coin.id
       .row
         .two.columns
-        .four.columns="Holding of #{coin.name} (BTC rate)"
+        .four.columns="Asset of #{coin.name} (BTC rate)"
         .four.columns= hf.number_field :initial_btc_rate, value: coin.btc_rate, min: 0, step: :any
       .row
         .two.columns
@@ -39,14 +39,14 @@ javascript:
 
   var memberSelect = $("#portfolio_member_id");
   var previousPortfolioSelect = $("#previous_portfolio_select");
-  var updateHolding = function(i, holding) {
-    $("#previous_" + holding.coin_id).text(holding.quantity);
-    $(".quantity_" + holding.coin_id).val(holding.quantity);
+  var updateAsset = function(i, asset) {
+    $("#previous_" + asset.coin_id).text(asset.quantity);
+    $(".quantity_" + asset.coin_id).val(asset.quantity);
   };
 
   var updatePrevious = function(portfolio) {
     $("#previous_btc_value").text(portfolio.btc_value);
-    $.each(portfolio.holdings, updateHolding)
+    $.each(portfolio.assets, updateAsset)
   };
 
   memberSelect.on('change', function() {

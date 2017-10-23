@@ -7,14 +7,14 @@ FactoryGirl.define do
       association(:next_portfolio, factory: :portfolio)
     end
 
-    trait :with_holdings do
+    trait :with_assets do
       transient do
-        holdings_count 1
+        assets_count 1
       end
 
       after(:build, :stub) do |portfolio, evaluator|
-        holdings = build_list(:holding, evaluator.holdings_count, portfolio: portfolio)
-        portfolio.holdings = holdings
+        assets = build_list(:asset, evaluator.assets_count, portfolio: portfolio)
+        portfolio.assets = assets
       end
     end
   end

@@ -43,7 +43,7 @@ module Admins
     def portfolio_params
       params.require(:portfolio).permit(
         :member_id,
-        holdings_attributes: [:coin_id, :initial_btc_rate, :deposit, :withdrawal, :quantity]
+        assets_attributes: [:coin_id, :initial_btc_rate, :deposit, :withdrawal, :quantity]
       )
     end
   end
