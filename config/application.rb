@@ -30,5 +30,13 @@ module MMT
     config.before_initialize do
       require Rails.root.join 'config', 'initializers', 'magic_money_tree'
     end
+
+    config.cache_store = :redis_store, {
+      host: ENV.fetch('REDIS_HOST') { 'localhost' },
+      port: 6379,
+      db: 0,
+      # namespace: ENV.fetch('REDIS_NAMESPACE') { Rails.env }
+    }
+
   end
 end
