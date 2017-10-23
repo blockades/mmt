@@ -1,0 +1,17 @@
+h1 Portfolios
+
+table
+  thead
+    tr
+      th Primitive Name
+      th
+      th
+      th
+  tbody
+    - @portfolios.each do |portfolio|
+      tr
+        td= coin.name
+        td= coin.code
+        td= link_to 'Add', add_asset_portfolio_path(id: @portfolio_id, coin_id: coin.id), method: :post, remote: true
+        td= link_to 'Add', remove_asset_portfolio_path(id: @portfolio_id, coin_id: coin.id), method: :post, remote: true
+

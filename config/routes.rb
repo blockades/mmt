@@ -8,7 +8,11 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :members, only: [:show, :update]
     resources :holdings, only: [:index, :edit]
+<<<<<<< 0f93f873b2bc14c1647f7585bb737d86307119e5
     resources :portfolios, only: [:index, :show, :new] do
+=======
+    resources :portfolios, only: [:index, :new, :create, :show], param: :uid do
+>>>>>>> Views and routes to show events for portfolio
       member do
         post :add_asset, format: :js
         post :remove_asset, format: :js

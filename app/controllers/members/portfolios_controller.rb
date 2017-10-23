@@ -8,7 +8,7 @@ module Members
     end
 
     def new
-      @portfolio_id = SecureRandom.uuid
+      @portfolio = Portfolio.new(uid: SecureRandom.uuid)
       @coins = Coin.all
       @members = Member.all
     end
@@ -21,11 +21,32 @@ module Members
       end
     end
 
+    def create
+      command = Command::FinalisePortfolio.new(portfolio_id: portfolio.uid, member_id: portfolio.member_id)
+      execute command
+
+      redirect_to portfolios_path, notice: "Portfolio successfully created"
+    end
+
+    def show
+      @portfolio = Portfolio.find_by_uid(params[:uid])
+      if @portfolio.nil?
+        redirect_back fallback_location: root_path, notice: "Invalid portfolio"
+      else
+        @stream = "Domain::Portfolio$#{@portfolio.uid}"
+        @events = Rails.application.config.event_store.read_events_backward(@stream)
+      end
+    end
+
     private
 
     def asset_params
-      parameters = params.permit(:coin_id, :id)
-      { coin_id: parameters[:coin_id], portfolio_id: parameters[:id] }
+      parameters = params.permit(:coin_id, :uid)
+      { coin_id: parameters[:coin_id], portfolio_id: parameters[:uid] }
+    end
+
+    def portfolio_params
+      params.require(:portfolio).permit(:id, :uid)
     end
 
   end
