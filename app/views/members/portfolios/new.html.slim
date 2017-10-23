@@ -12,12 +12,12 @@ table
       tr
         td= coin.name
         td= coin.code
-        td= link_to 'Add', add_asset_portfolio_path(uid: @portfolio.uid, coin_id: coin.id), method: :post, remote: true
-        td= link_to 'Add', remove_asset_portfolio_path(uid: @portfolio.uid, coin_id: coin.id), method: :post, remote: true
+        td= link_to 'Add', add_asset_portfolio_path(id: @portfolio.id, asset: { coin_id: coin.id }), method: :post, remote: true
+        td= link_to 'Add', remove_asset_portfolio_path(id: @portfolio.id, asset: { coin_id: coin.id }), method: :post, remote: true
 
 
 = form_for @portfolio do |f|
-  = f.hidden_field :uid, value: @portfolio.uid
+  = f.hidden_field :portfolio_id, value: @portfolio.id
   = f.submit 'Finalise', class: 'button button-primary'
 
 

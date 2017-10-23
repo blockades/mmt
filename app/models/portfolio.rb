@@ -10,6 +10,7 @@ class Portfolio < ApplicationRecord
   scope :with_member, -> { includes(:member) }
 
   validates_associated :holdings
+  validates :state, inclusion: { in: [ 'finalised', 'expired', 'draft' ] }
 
   accepts_nested_attributes_for :holdings, reject_if: proc { |attributes| attributes[:quantity].blank? }
   attr_readonly :member_id, :portfolio_id

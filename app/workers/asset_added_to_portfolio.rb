@@ -5,11 +5,8 @@ module Workers
     queue_as :default
 
     def perform(*args)
-      # Calls the first argument passed by the subscriber
       call(YAML.load(args.first))
     end
-
-    protected
 
     def call(event)
       create_draft_portfolio(event.data[:portfolio_id])

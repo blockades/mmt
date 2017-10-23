@@ -8,7 +8,7 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :members, only: [:show, :update]
     resources :holdings, only: [:index, :edit]
-    resources :portfolios, only: [:index, :new, :create, :show], param: :uid do
+    resources :portfolios, only: [:index, :new, :create, :show] do
       member do
         post :add_asset, format: :js
         post :remove_asset, format: :js

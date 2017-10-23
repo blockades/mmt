@@ -8,7 +8,7 @@ module Members
     end
 
     def new
-      @portfolio = Portfolio.new(uid: SecureRandom.uuid)
+      @portfolio = Portfolio.new(id: SecureRandom.uuid)
       @coins = Coin.all
       @members = Member.all
     end
@@ -22,27 +22,25 @@ module Members
     end
 
     def create
-      command = Command::FinalisePortfolio.new(portfolio_id: portfolio.uid, member_id: portfolio.member_id)
-      execute command
+      execute Command::FinalisePortfolio.new(portfolio_params.merge(member_id: current_member.id))
 
       redirect_to portfolios_path, notice: "Portfolio successfully created"
     end
 
     def show
-      @portfolio = Portfolio.find_by_uid(params[:uid])
-      @stream = "Domain::Portfolio$#{@portfolio.uid}"
+      @portfolio = Portfolio.find params[:id]
+      @stream = "Domain::Portfolio$#{@portfolio.id}"
       @events = Rails.application.config.event_store.read_events_backward(@stream)
     end
 
     private
 
     def asset_params
-      parameters = params.permit(:coin_id, :uid)
-      { coin_id: parameters[:coin_id], portfolio_id: parameters[:uid] }
+      params.require(:asset).permit(:coin_id).merge(portfolio_id: params[:id])
     end
 
     def portfolio_params
-      params.require(:portfolio).permit(:id, :uid)
+      params.require(:portfolio).permit(:portfolio_id)
     end
 
   end

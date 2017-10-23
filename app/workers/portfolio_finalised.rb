@@ -6,9 +6,15 @@ module Workers
       call(YAML.load(args.first))
     end
 
-    protected
+    def call(event)
+      portfolio = find_portfolio(event.data[:portfolio_id])
+      # Build next portfolio
+    end
 
-    def call
+    private
+
+    def find_portfolio(id)
+      ::Portfolio.find_by(id: id)
     end
   end
 end
