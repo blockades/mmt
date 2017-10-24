@@ -10,7 +10,7 @@ class CreatePortfolios < ActiveRecord::Migration[5.0]
 
     add_index :portfolios, :next_portfolio_id, unique: true
     add_foreign_key :portfolios, :portfolios, type: :uuid, column: :next_portfolio_id
-    add_reference :holdings, :portfolio, type: :uuid, index: true, foreign_key: true
+    add_reference :assets, :portfolio, type: :uuid, index: true, foreign_key: true
     add_index :portfolios, :member_id, unique: true, where: "next_portfolio_at is NULL"
   end
 end

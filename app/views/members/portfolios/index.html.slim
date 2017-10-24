@@ -1,0 +1,73 @@
+.row
+  .ten.columns
+    h1 Portfolios
+  .two.columns
+    = link_to 'New', new_portfolio_path
+
+- unless @live_portfolio.blank?
+  .row
+    .ten.columns
+      h2 Live Portfolio
+      table
+        thead
+          tr
+            th Name
+            th Code
+            th.align-right Quantity
+            th.align-right BTC Rate
+            th.align-right Current BTC value
+        tbody
+          - @live_portfolio.assets.each do |asset|
+            tr
+              td= asset.coin.name
+              td= asset.coin.code
+              td.align-right= asset.quantity
+              td.align-right= asset.initial_btc_rate
+              td.align-right= asset.btc_value
+        tfoot
+          tr
+            th.align-right colspan="5"
+              strong Total (in BTC)
+          tr
+            td.align-right colspan="5"
+              = @live_portfolio.initial_btc_value
+
+    .two.columns
+      = link_to 'View', portfolio_path(@live_portfolio)
+
+  hr
+  h3 Portfolio History
+  - @portfolios.expired.date_order.each do |portfolio|
+    p Portfolio closed on #{portfolio.next_portfolio_at.strftime('%d/%m/%Y')}
+    .row
+      .ten.columns
+        table
+          thead
+            tr
+              th Name
+              th Code
+              th.align-right Quantity
+              th.align-right BTC Rate
+              th.align-right Current BTC value
+          tbody
+            - portfolio.assets.each do |asset|
+              tr
+                td= asset.coin.name
+                td= asset.coin.code
+                td.align-right= asset.quantity
+                td.align-right= asset.initial_btc_rate
+                td.align-right= asset.btc_value
+          tfoot
+            tr
+              th.align-right colspan="5"
+                strong Total (in BTC)
+            tr
+              td.align-right colspan="5"
+                = portfolio.initial_btc_value
+      .two.columns
+        = link_to 'View', portfolio_path(portfolio)
+    hr
+- else
+  .row
+    .twelve.columns
+      p You have no portfolios!

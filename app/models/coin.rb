@@ -4,9 +4,9 @@ class Coin < ApplicationRecord
   extend FriendlyId
   friendly_id :code, use: :slugged
 
-  has_many :holdings
-  has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
-  has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
+  has_many :assets
+  has_many :live_portfolios, -> { live }, through: :assets, source: :portfolio
+  has_many :live_assets, through: :live_portfolios, class_name: "Asset", source: :assets
 
   scope :ordered, -> { order(:code) }
 
@@ -16,7 +16,7 @@ class Coin < ApplicationRecord
   validate :code_against_inaccessible_words
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
-  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
+  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_assets_quantity }
 
   before_validation :adjust_slug, on: :update, if: proc { |c| c.code_changed? }
 
@@ -33,17 +33,17 @@ class Coin < ApplicationRecord
     BigDecimal.new(central_reserve_in_sub_units) / 10**subdivision
   end
 
-  # @return <Integer> The value of the live holdings
-  def live_holdings_quantity
-    live_holdings.sum(:quantity) || 0
+  # @return <Integer> The value of the live assets
+  def live_assets_quantity
+    live_assets.sum(:quantity) || 0
   end
 
-  def live_holdings_quantity_display
-    live_holdings_quantity / 10**subdivision
+  def live_assets_quantity_display
+    live_assets_quantity / 10**subdivision
   end
 
   def max_buyable_quantity
-    central_reserve_in_sub_units - live_holdings_quantity
+    central_reserve_in_sub_units - live_assets_quantity
   end
 
   private

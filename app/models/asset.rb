@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-class Holding < ApplicationRecord
+class Asset < ApplicationRecord
   belongs_to :coin
-  belongs_to :portfolio, inverse_of: :holdings
+  belongs_to :portfolio, inverse_of: :assets
 
   before_save :calculate_rate
 
@@ -27,6 +27,6 @@ class Holding < ApplicationRecord
   end
 
   def calculate_rate
-    self.initial_btc_rate ||= coin.btc_rate
+    self.initial_btc_rate = coin.btc_rate
   end
 end

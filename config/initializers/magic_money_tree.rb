@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MagicMoneyTree
   module InaccessibleWords
     class << self

@@ -16,7 +16,7 @@ describe Members::PortfoliosController do
       expect(response.status).to eq 200
     end
 
-    it "assigns @holdings" do
+    it "assigns @assets" do
       expect { get_show }.to change { assigns :portfolio }
     end
 

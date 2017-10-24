@@ -7,11 +7,11 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
-  has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"
+  has_one :live_portfolio, -> { live  }, foreign_key: :member_id, class_name: "Portfolio"
   has_many :portfolios
-  has_many :holdings, through: :live_portfolio
+  has_many :assets, through: :live_portfolio
 
-  scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
+  scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil  }).references(:portfolios)  }
 
   validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
   validates :slug, uniqueness: { case_sensitive: true }

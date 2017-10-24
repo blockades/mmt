@@ -2,7 +2,7 @@
 
 # require "./spec/rails_helper"
 
-# describe Members::HoldingsController do
+# describe Members::AssetsController do
 #   let(:member) { create :member, :admin }
 
 #   before { sign_in member }
@@ -15,8 +15,8 @@
 #       expect(response.status).to eq 200
 #     end
 
-#     it "assigns @holdings" do
-#       expect { get_index }.to change { assigns :holdings }
+#     it "assigns @assets" do
+#       expect { get_index }.to change { assigns :assets }
 #     end
 
 #     it "renders the index template" do
