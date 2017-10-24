@@ -27,6 +27,6 @@ class Asset < ApplicationRecord
   end
 
   def calculate_rate
-    self.initial_btc_rate ||= coin.btc_rate
+    self.initial_btc_rate = coin.btc_rate
   end
 end

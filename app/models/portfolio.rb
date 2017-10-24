@@ -13,6 +13,8 @@ class Portfolio < ApplicationRecord
   scope :finalised, -> { where state: 'finalised' }
   scope :expired, -> { where state: 'expired' }
 
+  scope :date_order, -> { order('next_portfolio_at DESC NULLS FIRST')  }
+
   validates_associated :assets
   validates :state, inclusion: { in: [ 'finalised', 'expired', 'draft' ] }
 
