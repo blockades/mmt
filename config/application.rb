@@ -24,26 +24,17 @@ Bundler.require(*Rails.groups)
 
 module MMT
   class Application < Rails::Application
-
     config.autoload_paths += Dir["#{config.root}/app/**/"]
-
-    config.event_store = RailsEventStore::Client.new
-
-    config.generators do |g|
-      g.orm :active_record, primary_key_type: :uuid
-    end
-
+    config.event_store = RailsEventStore::Client.new(
+      event_broker: RailsEventStore::EventBroker.new(
+        dispatcher: RailsEventStore::ActiveJobDispatcher.new(
+          proxy_strategy: RailsEventStore::AsyncProxyStrategy::AfterCommit.new
+        )
+      )
+    )
     config.before_initialize do
       require config.root.join 'config', 'initializers', 'magic_money_tree'
     end
-
-    config.cache_store = :redis_store, {
-      host: ENV.fetch('REDIS_HOST') { 'localhost' },
-      port: 6379,
-      db: 0,
-      # namespace: ENV.fetch('REDIS_NAMESPACE') { Rails.env }
-    }
-
   end
 
   AggregateRoot.configure do |config|

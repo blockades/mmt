@@ -15,7 +15,6 @@ gem "uglifier", ">= 1.3.0"
 
 gem "redis-rails"
 gem "sidekiq"
-
 gem "devise"
 gem "devise_invitable"
 gem "friendly_id", "~> 5.1.0"

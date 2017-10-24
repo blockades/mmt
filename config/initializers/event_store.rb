@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 Rails.application.config.event_store.tap do |event_store|
   event_store.subscribe(Workers::AssetAddedToPortfolio, [Events::AssetAddedToPortfolio])
   event_store.subscribe(Workers::AssetRemovedFromPortfolio, [Events::AssetRemovedFromPortfolio])
