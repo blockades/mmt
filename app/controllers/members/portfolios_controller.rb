@@ -4,7 +4,8 @@ module Members
   class PortfoliosController < ApplicationController
 
     def index
-      @portfolios = Portfolio.all
+      @live_portfolio = current_member.live_portfolio
+      @portfolios = current_member.portfolios
     end
 
     def new
@@ -13,11 +14,11 @@ module Members
       @members = Member.all
     end
 
-    def add_asset
+    def assign_asset
       execute Command::AddAssetToPortfolio.new(asset_params)
 
       respond_to do |format|
-        format.js { flash[:notice] = "Successfully added to asset to your portfolio" }
+        format.js { flash[:notice] = "Asset assigned" }
       end
     end
 
@@ -36,7 +37,7 @@ module Members
     private
 
     def asset_params
-      params.require(:asset).permit(:coin_id).merge(
+      params.require(:asset).permit(:coin_id, :quantity).merge(
         portfolio_id: params[:id],
         member_id: current_member.id
       )

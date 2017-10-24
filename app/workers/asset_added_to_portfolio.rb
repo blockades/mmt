@@ -1,49 +1,46 @@
 # frozen_string_literal: true
 
 module Workers
-  class AssetAddedToPortfolio < ApplicationJob
-    queue_as :default
+  class AssetAddedToPortfolio
 
-    def perform(*args)
-      call(YAML.load(args.first))
-    end
+    attr_reader :asset_params, :portfolio_params, :portfolio, :asset
 
     def call(event)
-      create_draft_portfolio(portfolio_params(event))
-      asset = find_asset(asset_params(event)) ||
-              create_asset(asset_params(event))
-      # Here we want to adjust the assets value and save it
+      event_asset_attributes(event)
+      event_portfolio_attributes(event)
+
+      create_portfolio unless find_portfolio
+      if find_asset
+        asset.update(asset_params)
+      else
+        create_asset
+      end
     end
 
     private
 
-    def create_draft_portfolio(id:, member_id:)
-      return if ::Portfolio.where(id: id).exists?
-      ::Portfolio.create!(
-        id: id,
-        member_id: member_id,
-        state: :draft,
-      )
+    def find_portfolio
+      @portfolio = ::Portfolio.find_by(portfolio_params)
     end
 
-    def find_asset(coin_id:, portfolio_id:)
-      ::Asset.where(coin_id: coin_id, portfolio_id: portfolio_id).first
+    def create_portfolio
+      @portfolio = ::Portfolio.new(portfolio_params.merge(state: :draft)).tap(&:save)
     end
 
-    def create_asset(coin_id:, portfolio_id:)
-      ::Asset.new.tap do |asset|
-        asset.coin_id = coin_id
-        asset.portfolio_id = portfolio_id
-        asset.save!
-      end
+    def find_asset
+      @asset = ::Asset.find_by(asset_params.except(:quantity))
     end
 
-    def asset_params(event)
-      { coin_id: event.data[:coin_id], portfolio_id: event.data[:portfolio_id] }
+    def create_asset
+      @asset = ::Asset.new(asset_params).tap(&:save)
     end
 
-    def portfolio_params(event)
-      { id: event.data[:portfolio_id], member_id: event.data[:member_id] }
+    def event_asset_attributes(event)
+      @asset_params = { coin_id: event.data.fetch(:coin_id), portfolio_id: event.data.fetch(:portfolio_id), quantity: event.data.fetch(:quantity) }
+    end
+
+    def event_portfolio_attributes(event)
+      @portfolio_params = { id: event.data.fetch(:portfolio_id), member_id: event.data.fetch(:member_id) }
     end
   end
 end

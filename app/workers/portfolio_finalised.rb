@@ -1,20 +1,26 @@
 module Workers
-  class PortfolioFinalised < ApplicationJob
-    queue_as :default
-
-    def perform(*args)
-      call(YAML.load(args.first))
-    end
+  class PortfolioFinalised
 
     def call(event)
-      portfolio = find_portfolio(event.data[:portfolio_id])
-      # Build next portfolio
+      previous_portfolio = find_member(event.data.fetch(:member_id)).live_portfolio
+      next_portfolio = find_portfolio(event.data.fetch(:portfolio_id))
+      if previous_portfolio
+        previous_portfolio.next_portfolio = next_portfolio
+      else
+        next_portfolio.state = 'finalised'
+        next_portfolio.save!
+      end
     end
 
     private
 
     def find_portfolio(id)
-      ::Portfolio.find_by(id: id)
+      @portfolio = ::Portfolio.find_by(id: id)
     end
+
+    def find_member(member_id)
+      @member = ::Member.find_by(id: member_id)
+    end
+
   end
 end

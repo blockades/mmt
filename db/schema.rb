@@ -107,7 +107,7 @@ ActiveRecord::Schema.define(version: 20171023141137) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.string "state"
-    t.index ["member_id"], name: "index_portfolios_on_member_id", unique: true, where: "(next_portfolio_at IS NULL)"
+    t.index ["member_id"], name: "index_portfolios_on_member_id", unique: true, where: "((next_portfolio_at IS NULL) AND ((state)::text = 'finalised'::text))"
     t.index ["next_portfolio_id"], name: "index_portfolios_on_next_portfolio_id", unique: true
   end
 

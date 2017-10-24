@@ -3,7 +3,7 @@
 module ApplicationHelper
   def flash_notices
     [:notice, :error, :alert].each do |type|
-      render(partial: "shared/notice", locals: { message: flash[type]  }) unless flash[type].blank?
+      render(partial: "shared/notice", locals: { message: flash[type] }) unless flash[type].blank?
     end
     nil
   end

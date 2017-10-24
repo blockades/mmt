@@ -1,5 +1,5 @@
 module CommandHandler
-  class UpdateAssetValue
+  class AdjustAssetValue
     include Command::Handler
 
     def call

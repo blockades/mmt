@@ -6,8 +6,12 @@ class Portfolio < ApplicationRecord
   has_many :assets, inverse_of: :portfolio
   has_one :previous_portfolio, class_name: "Portfolio", foreign_key: :next_portfolio_id
 
-  scope :live, -> { where next_portfolio_id: nil }
+  scope :live, -> { finalised.where next_portfolio_id: nil }
   scope :with_member, -> { includes(:member) }
+
+  scope :draft, -> { where state: 'draft' }
+  scope :finalised, -> { where state: 'finalised' }
+  scope :expired, -> { where state: 'expired' }
 
   validates_associated :assets
   validates :state, inclusion: { in: [ 'finalised', 'expired', 'draft' ] }
@@ -21,6 +25,8 @@ class Portfolio < ApplicationRecord
     self.class.transaction do
       update(next_portfolio_at: Time.current)
       update(next_portfolio_id: new_next_portfolio.tap(&:save).id)
+      update(state: :expired)
+      new_next_portfolio.update(state: :finalised)
     end
   end
 

@@ -7,19 +7,21 @@ Rails.application.routes.draw do
   scope module: :members do
     root to: "dashboard#index"
     resources :members, only: [:show, :update]
-    resources :assets, only: [:index, :edit]
     resources :portfolios, only: [:index, :new, :create, :show] do
       member do
-        post :add_asset, format: :js
-        post :remove_asset, format: :js
+        post :assign_asset, format: :js
       end
     end
   end
 
   namespace :admins do
     root to: 'dashboard#index'
-    resources :portfolios, only: [:index, :new, :create, :show]
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
+    resources :portfolios, only: [:index, :new, :create, :show] do
+      member do
+        post :assign_asset, format: :js
+      end
+    end
   end
 end

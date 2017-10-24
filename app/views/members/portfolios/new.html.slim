@@ -1,24 +1,30 @@
-h1 New Portfolio
-
-table
-  thead
-    tr
-      th Primitive Name
-      th
-      th
-      th
-  tbody
-    - @coins.each do |coin|
-      tr
-        td= coin.name
-        td= coin.code
-        td= link_to 'Add', add_asset_portfolio_path(id: @portfolio.id, asset: { coin_id: coin.id }), method: :post, remote: true
-        td= link_to 'Add', remove_asset_portfolio_path(id: @portfolio.id, asset: { coin_id: coin.id }), method: :post, remote: true
-
-
-= form_for @portfolio do |f|
-  = f.hidden_field :portfolio_id, value: @portfolio.id
-  = f.submit 'Finalise', class: 'button button-primary'
+.row
+  .twelve.columns
+    h1 New Portfolio
+.row
+  .twelve.columns
+    table style='width: 100%;'
+      thead
+        tr
+          th Name
+          th Code
+          th Bitcoin (BTC) trade rate
+          th Quantity
+          th Actions
+      tbody
+        - @coins.ordered.each do |coin|
+          tr data={ coin_id: coin.id }
+            = form_for :asset, url: assign_asset_portfolio_path(id: @portfolio.id), method: :post, remote: true do |f|
+              = f.hidden_field :coin_id, value: coin.id
+              td= coin.name
+              td= coin.code
+              td= coin.btc_rate
+              td= f.number_field :quantity, min: 0, step: :any
+              td= f.submit 'Add'
+.row
+  .twelve.columns
+    = form_for :portfolio, url: portfolios_path(portfolio: { portfolio_id: @portfolio.id }), method: :post do |f|
+      = f.submit 'Finalise', class: 'button button-primary'
 
 
 
