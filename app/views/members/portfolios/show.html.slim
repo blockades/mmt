@@ -1,7 +1,41 @@
 h2 Portfolio
 
-- @events.each do |event|
-  br
-  - event.data.each do |data|
-    = data
-    br
+- if @portfolio.next_portfolio
+  p Portfolio closed on #{@portfolio.next_portfolio_at.strftime('%d/%m/%Y')}
+- else
+  p This portfolio is live
+.row
+  .ten.columns
+    table
+      thead
+        tr
+          th Name
+          th Code
+          th.align-right Quantity
+          th.align-right BTC Rate
+          th.align-right Current BTC value
+      tbody
+        - @portfolio.assets.each do |asset|
+          tr
+            td= asset.coin.name
+            td= asset.coin.code
+            td.align-right= asset.quantity
+            td.align-right= asset.initial_btc_rate
+            td.align-right= asset.btc_value
+      tfoot
+        tr
+          th.align-right colspan="5"
+            strong Total (in BTC)
+        tr
+          td.align-right colspan="5"
+            = @portfolio.initial_btc_value
+table
+  thead
+    tr
+      th Event
+      th Data
+  tbody
+    - @events.each do |event|
+      tr
+        th= event.class
+        th= event.data
