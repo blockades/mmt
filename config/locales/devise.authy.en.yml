@@ -14,7 +14,7 @@ en:
     enable_my_account: 'Enable my account'
 
     devise_authy:
-      user:
+      member:
         enabled: 'Two factor authentication was enabled'
         not_enabled: 'Something went wrong while enabling two factor authentication'
         disabled: 'Two factor authentication was disabled'
