@@ -4,6 +4,7 @@ class Member < ApplicationRecord
   devise :two_factor_authenticatable,
          :database_authenticatable,
          :invitable,
+         :registerable,
          :recoverable,
          :trackable,
          :validatable,
@@ -36,6 +37,19 @@ class Member < ApplicationRecord
     two_factor_enabled? && !unconfirmed_two_factor?
   end
 
+  def confirm_two_factor!(code)
+    update!(unconfirmed_two_factor: false) if authenticate_otp(code)
+  end
+
+  def send_two_factor_authentication_code
+    return unless phone_number.present?
+    TwilioClient.connection.messages.create(
+      from: ENV['TWILIO_PHONE_NUMBER'],
+      to: phone_number,
+      body: ""
+    )
+  end
+
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
@@ -58,7 +72,7 @@ class Member < ApplicationRecord
   end
 
   def valid_two_factor_confirmation
-    return true unless two_factor_just_set || phone_changed_with_two_factor
+    return true unless two_factor_just_set || phone_number_changed_with_two_factor
     self.unconfirmed_two_factor = true
   end
 
@@ -66,8 +80,8 @@ class Member < ApplicationRecord
     two_factor_enabled? && two_factor_enabled_changed?
   end
 
-  def phone_changed_with_two_factor
-    two_factor_enabled? && phone_changed?
+  def phone_number_changed_with_two_factor
+    two_factor_enabled? && phone_number_changed?
   end
 
   def adjust_slug

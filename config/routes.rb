@@ -6,10 +6,13 @@ Rails.application.routes.draw do
 
   scope module: :members do
     root to: "dashboard#index"
-    resources :members, only: [:show, :update]
-    resources :two_factor_authentication, only: [:new]
-    resources :qr_codes, only: [:create], defaults: { format: :js }
     resources :portfolios, only: [:show]
+
+    resources :members, only: [:show, :update]
+    get 'members/otp_auth/setup' => 'two_factor_authentication#setup', as: :setup_two_factor_authentication
+    patch 'members/otp_auth/update' => 'two_factor_authentication#update', as: :update_two_factor_authentication
+    get 'members/otp_auth/access_code' => 'two_factor_authentication#access_code', as: :two_factor_access_code
+    patch 'members/otp_auth/confirm' => 'two_factor_authentication#confirm', as: :confirm_two_factor_authentication
   end
 
   namespace :admins do

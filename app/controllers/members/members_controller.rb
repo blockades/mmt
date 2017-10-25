@@ -27,7 +27,7 @@ module Members
     end
 
     def member_params
-      params.require(:member).permit(:username, :otp_required_for_login)
+      params.require(:member).permit(:username)
     end
   end
 end

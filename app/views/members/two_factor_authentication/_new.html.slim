@@ -1,5 +1,0 @@
-= link_to 'QR Code', qr_codes_path(qr_code: { text: SecureRandom.uuid }), method: :post, remote: true, class: 'button'
-
-= form_for current_member do |f|
-  = f.label :enable_two_factor_authentication
-  = f.check_box :otp_required_for_login, checked: current_member.otp_required_for_login

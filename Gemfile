@@ -19,6 +19,7 @@ gem "sidekiq"
 gem "devise"
 gem "devise_invitable"
 gem 'two_factor_authentication'
+gem 'twilio-ruby', '~> 5.4.2'
 gem 'rqrcode-with-patches', '~> 0.5.4'
 gem 'mini_magick'
 

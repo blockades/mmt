@@ -9,9 +9,5 @@ h1= @member.username
         .field
           = f.submit :submit
   .six.columns
-    - if my_profile?
-      h3 Setup Two Factor Authentication
-      .two_factor
-        = link_to 'Setup using an app', new_two_factor_authentication_path, remote: true, class: 'button'
-      .qr_code
+    br
 
