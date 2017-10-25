@@ -1,6 +1,7 @@
 h2
   | Log in
 = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+  = f.hidden_field :authenticity_token, value: form_authenticity_token
   .field
     = f.label :login
     br

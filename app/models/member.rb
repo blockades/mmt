@@ -2,8 +2,8 @@
 
 class Member < ApplicationRecord
   devise :authy_authenticatable,
-         :invitable,
          :database_authenticatable,
+         :invitable,
          :recoverable,
          :trackable,
          :validatable,
