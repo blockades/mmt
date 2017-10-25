@@ -2,12 +2,15 @@
 
 class Member < ApplicationRecord
   devise :two_factor_authenticatable,
+         :database_authenticatable,
          :invitable,
          :recoverable,
          :trackable,
          :validatable,
          authentication_keys: [:login],
-         otp_secret_encryption_key: ENV['2FA_SECRET_KEY']
+         otp_secret_encryption_key: ENV['OTP_SECRET_ENCRYPTION_KEY']
+
+  has_one_time_password(encrypted: true)
 
   extend FriendlyId
   friendly_id :username, use: :slugged
@@ -25,7 +28,13 @@ class Member < ApplicationRecord
 
   before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
 
+  before_save :valid_two_factor_confirmation
+
   attr_accessor :login
+
+  def need_two_factor_authentication?(request)
+    two_factor_enabled? && !unconfirmed_two_factor?
+  end
 
   class << self
     def find_for_database_authentication(warden_conditions)
@@ -46,6 +55,19 @@ class Member < ApplicationRecord
 
   def username_against_inaccessible_words
     errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
+  end
+
+  def valid_two_factor_confirmation
+    return true unless two_factor_just_set || phone_changed_with_two_factor
+    self.unconfirmed_two_factor = true
+  end
+
+  def two_factor_just_set
+    two_factor_enabled? && two_factor_enabled_changed?
+  end
+
+  def phone_changed_with_two_factor
+    two_factor_enabled? && phone_changed?
   end
 
   def adjust_slug

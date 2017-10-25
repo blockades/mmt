@@ -18,9 +18,7 @@ gem "sidekiq"
 
 gem "devise"
 gem "devise_invitable"
-gem 'devise-two-factor', ">= 3.0.0"
-gem "attr_encrypted", ">= 3.0.0"
-gem "encryptor", ">= 3.0.0"
+gem 'two_factor_authentication'
 gem 'rqrcode-with-patches', '~> 0.5.4'
 gem 'mini_magick'
 
