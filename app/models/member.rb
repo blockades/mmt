@@ -1,8 +1,13 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
-  devise :invitable, :database_authenticatable, :recoverable,
-    :trackable, :validatable, authentication_keys: [:login]
+  devise :authy_authenticatable,
+         :invitable,
+         :database_authenticatable,
+         :recoverable,
+         :trackable,
+         :validatable,
+         authentication_keys: [:login]
 
   extend FriendlyId
   friendly_id :username, use: :slugged
