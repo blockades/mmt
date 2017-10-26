@@ -38,6 +38,14 @@ class Member < ApplicationRecord
     end
   end
 
+  def otp_setup_complete
+    otp_setup_initiated && otp_required_for_login
+  end
+
+  def otp_setup_incomplete
+    otp_setup_initiated && !otp_required_for_login
+  end
+
   private
 
   def email_against_username

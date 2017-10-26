@@ -1,5 +1,0 @@
-h2 Scan QR code and enter result code below to confirm your two factor auth!
-= google_authenticator_qrcode
-= form_for :two_factor, url: confirm_two_factor_members_path, method: :patch do |f|
-  = f.text_field :code
-  = f.submit "Confirm"

@@ -1,0 +1,15 @@
+.row
+  .twelve.columns
+    = form_for :two_factor, url: update_setup_two_factor_members_path , method: :patch do |f|
+      p To enable two factor authentication, please provide a telephone number
+      .field
+        = f.label :country_code
+        br/
+        = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, MagicMoneyTree::MobileCountryCodes.all.detect { |h| h[:code] == current_member.country_code }), include_blank: true
+      .field
+        = f.label :phone_number
+        br/
+        = f.text_field :phone_number, value: current_member.phone_number, autofocus: true
+      .actions
+      = f.submit "Setup"
+

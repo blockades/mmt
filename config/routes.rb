@@ -10,10 +10,14 @@ Rails.application.routes.draw do
 
     resources :members, only: [:show, :update] do
       collection do
-        get 'otp_auth/setup' => 'two_factor#setup', as: :setup_two_factor
-        patch 'otp_auth/update' => 'two_factor#update', as: :update_two_factor
-        get 'otp_auth/code' => 'two_factor#code', as: :two_factor_code
-        patch 'otp_auth/confirm' => 'two_factor#confirm', as: :confirm_two_factor
+        get 'otp_auth/setup' => 'two_factor#GET_setup', as: :setup_two_factor, via: :get
+        patch 'otp_auth/setup' => 'two_factor#PATCH_setup', as: :update_setup_two_factor, via: :patch
+
+        get 'otp_auth/confirm' => 'two_factor#GET_confirm', as: :confirm_two_factor, via: :get
+        patch 'otp_auth/confirm' => 'two_factor#PATCH_confirm', as: :update_confirm_two_factor, via: :get
+
+        get 'otp_auth/disable' => 'two_factor#GET_disable', as: :disable_two_factor, via: :get
+        patch 'otp_auth/disable' => 'two_factor#PATCH_disable', as: :update_disable_two_factor, via: :patch
       end
     end
   end

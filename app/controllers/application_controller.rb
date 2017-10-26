@@ -8,6 +8,7 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_member!
+  before_action :notify_otp_setup_incomplete, if: :otp_setup_not_complete 
 
   protected
 
@@ -37,5 +38,13 @@ class ApplicationController < ActionController::Base
 
   def rescue_403
     render file: 'public/403', status: 403, layout: false
+  end
+
+  def otp_setup_not_complete
+    current_member && current_member.otp_setup_incomplete && params[:controller] != 'members/two_factor'
+  end
+
+  def notify_otp_setup_incomplete
+    flash[:alert] = "Two Factor authentcation setup is incomplete. #{view_context.link_to('Click here to complete setup', setup_two_factor_members_path)}.".html_safe
   end
 end
