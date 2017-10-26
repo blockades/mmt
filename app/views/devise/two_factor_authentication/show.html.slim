@@ -1,5 +1,5 @@
-h2 Hi, you received a code by email, please enter it below, thanks!
-= form_tag([resource_name, :two_factor_authentication], :method => :put) do
+p Please enter your two factor code
+= form_tag([resource_name, :two_factor_authentication], method: :put) do
   = text_field_tag :code
-  = submit_tag "Log in!"
-  = link_to "Sign out", destroy_member_session_path, :method => :delete
+  = submit_tag "Log in"
+  = link_to "Cancel", destroy_member_session_path, method: :delete

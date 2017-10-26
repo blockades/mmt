@@ -45,6 +45,6 @@ class ApplicationController < ActionController::Base
   end
 
   def notify_otp_setup_incomplete
-    flash[:alert] = "Two Factor authentcation setup is incomplete. #{view_context.link_to('Click here to complete setup', setup_two_factor_members_path)}.".html_safe
+    flash[:alert] = "Two Factor authentcation setup is incomplete. #{view_context.link_to('Click here to complete setup', confirm_two_factor_members_path)}.".html_safe
   end
 end

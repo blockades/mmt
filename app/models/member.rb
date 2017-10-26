@@ -40,6 +40,10 @@ class Member < ApplicationRecord
     end
   end
 
+  def need_two_factor_authentication?(request)
+    otp_setup_complete
+  end
+
   def otp_setup_complete
     otp_setup_finalised.present? && otp_secret_key.present?
   end
