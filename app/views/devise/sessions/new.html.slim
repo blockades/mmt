@@ -1,5 +1,4 @@
-h2
-  | Log in
+h2 Log in
 = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
   .field
     = f.label :login
@@ -9,6 +8,10 @@ h2
     = f.label :password
     br
     = f.password_field :password, autocomplete: "off"
+  .field
+    = f.label :otp_attempt
+    br
+    = f.password_field :otp_attempt, autocomplete: "off"
   .actions
     = f.submit "Log in"
 = render "devise/shared/links"

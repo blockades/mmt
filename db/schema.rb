@@ -87,12 +87,14 @@ ActiveRecord::Schema.define(version: 20171026090830) do
     t.datetime "totp_timestamp"
     t.boolean "two_factor_enabled", default: false
     t.boolean "unconfirmed_two_factor", default: false
-    t.string "phone_number"
     t.string "encrypted_otp_secret"
     t.string "encrypted_otp_secret_iv"
     t.string "encrypted_otp_secret_salt"
     t.integer "consumed_timestep"
     t.boolean "otp_required_for_login"
+    t.boolean "otp_setup_initiated"
+    t.string "country_code"
+    t.string "phone_number"
     t.index ["email"], name: "index_members_on_email", unique: true
     t.index ["encrypted_otp_secret_key"], name: "index_members_on_encrypted_otp_secret_key", unique: true
     t.index ["invitation_token"], name: "index_members_on_invitation_token", unique: true
