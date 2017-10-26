@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171013101043) do
+ActiveRecord::Schema.define(version: 20171026090830) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -78,7 +78,23 @@ ActiveRecord::Schema.define(version: 20171013101043) do
     t.integer "invitations_count", default: 0
     t.string "username"
     t.string "slug"
+    t.integer "second_factor_attempts_count", default: 0
+    t.string "encrypted_otp_secret_key"
+    t.string "encrypted_otp_secret_key_iv"
+    t.string "encrypted_otp_secret_key_salt"
+    t.string "direct_otp"
+    t.datetime "direct_otp_sent_at"
+    t.datetime "totp_timestamp"
+    t.boolean "two_factor_enabled", default: false
+    t.boolean "unconfirmed_two_factor", default: false
+    t.string "phone_number"
+    t.string "encrypted_otp_secret"
+    t.string "encrypted_otp_secret_iv"
+    t.string "encrypted_otp_secret_salt"
+    t.integer "consumed_timestep"
+    t.boolean "otp_required_for_login"
     t.index ["email"], name: "index_members_on_email", unique: true
+    t.index ["encrypted_otp_secret_key"], name: "index_members_on_encrypted_otp_secret_key", unique: true
     t.index ["invitation_token"], name: "index_members_on_invitation_token", unique: true
     t.index ["invitations_count"], name: "index_members_on_invitations_count"
     t.index ["invited_by_id"], name: "index_members_on_invited_by_id"

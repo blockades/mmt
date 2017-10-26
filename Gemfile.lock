@@ -41,6 +41,8 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
+    attr_encrypted (3.0.3)
+      encryptor (~> 3.0.0)
     awesome_print (1.8.0)
     bcrypt (3.1.11)
     bindex (0.5.0)
@@ -69,6 +71,12 @@ GEM
       railties (>= 4.1.0, < 5.2)
       responders
       warden (~> 1.2.3)
+    devise-two-factor (3.0.0)
+      activesupport
+      attr_encrypted (>= 1.3, < 4, != 2)
+      devise (~> 4.0)
+      railties
+      rotp (~> 2.0)
     devise_invitable (1.7.2)
       actionmailer (>= 4.1.0)
       devise (>= 4.0.0)
@@ -78,6 +86,7 @@ GEM
     dotenv-rails (2.2.1)
       dotenv (= 2.2.1)
       railties (>= 3.2, < 5.2)
+    encryptor (3.0.0)
     erubi (1.7.0)
     execjs (2.7.0)
     factory_girl (4.8.1)
@@ -200,6 +209,7 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
+    rotp (2.1.2)
     rspec-core (3.7.0)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -299,6 +309,7 @@ DEPENDENCIES
   coinbase
   database_cleaner
   devise
+  devise-two-factor
   devise_invitable
   dotenv-rails
   factory_girl_rails
