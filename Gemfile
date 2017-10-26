@@ -18,7 +18,7 @@ gem "sidekiq"
 
 gem "devise"
 gem "devise_invitable"
-gem 'devise-two-factor'
+gem 'two_factor_authentication'
 
 gem "friendly_id", "~> 5.1.0"
 gem "interactor-rails"

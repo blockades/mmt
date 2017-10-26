@@ -8,10 +8,6 @@ h2 Log in
     = f.label :password
     br
     = f.password_field :password, autocomplete: "off"
-  .field
-    = f.label :otp_attempt
-    br
-    = f.password_field :otp_attempt, autocomplete: "off"
   .actions
     = f.submit "Log in"
 = render "devise/shared/links"

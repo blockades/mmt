@@ -2,7 +2,7 @@
 
 module TwoFactorHelper
   def provisioning_uri
-    current_member.otp_provisioning_uri(current_member.otp_provisioning_uri('MMT', issuer: "#{MMT}:#{current_member.email}"))
+    current_member.provisioning_uri("MagicMoneyTree:#{current_member.email}")
   end
 
   def google_authenticator_qrcode

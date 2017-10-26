@@ -41,8 +41,6 @@ GEM
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
     arel (8.0.0)
-    attr_encrypted (3.0.3)
-      encryptor (~> 3.0.0)
     awesome_print (1.8.0)
     bcrypt (3.1.11)
     bindex (0.5.0)
@@ -71,12 +69,6 @@ GEM
       railties (>= 4.1.0, < 5.2)
       responders
       warden (~> 1.2.3)
-    devise-two-factor (3.0.0)
-      activesupport
-      attr_encrypted (>= 1.3, < 4, != 2)
-      devise (~> 4.0)
-      railties
-      rotp (~> 2.0)
     devise_invitable (1.7.2)
       actionmailer (>= 4.1.0)
       devise (>= 4.0.0)
@@ -186,6 +178,7 @@ GEM
       rake (>= 0.8.7)
       thor (>= 0.18.1, < 2.0)
     rake (12.1.0)
+    randexp (0.1.7)
     rb-fsevent (0.10.2)
     rb-inotify (0.9.10)
       ffi (>= 0.5.0, < 2)
@@ -209,7 +202,7 @@ GEM
     responders (2.4.0)
       actionpack (>= 4.2.0, < 5.3)
       railties (>= 4.2.0, < 5.3)
-    rotp (2.1.2)
+    rotp (3.3.0)
     rspec-core (3.7.0)
       rspec-support (~> 3.7.0)
     rspec-expectations (3.7.0)
@@ -278,6 +271,12 @@ GEM
     turbolinks (5.0.1)
       turbolinks-source (~> 5)
     turbolinks-source (5.0.3)
+    two_factor_authentication (2.0.1)
+      devise
+      encryptor
+      rails (>= 3.1.1)
+      randexp
+      rotp (>= 3.2.0)
     tzinfo (1.2.3)
       thread_safe (~> 0.1)
     uglifier (3.2.0)
@@ -309,7 +308,6 @@ DEPENDENCIES
   coinbase
   database_cleaner
   devise
-  devise-two-factor
   devise_invitable
   dotenv-rails
   factory_girl_rails
@@ -336,6 +334,7 @@ DEPENDENCIES
   spring-watcher-listen (~> 2.0.0)
   timecop
   turbolinks (~> 5)
+  two_factor_authentication
   tzinfo-data
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)

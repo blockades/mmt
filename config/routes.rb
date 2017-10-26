@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :members, only: [:sessions, :passwords], path: :auth, path_names: { sign_in: 'login', sign_out: 'logout' }
+  devise_for :members, only: [:sessions, :passwords, :two_factor_authentications], path: :auth, path_names: { sign_in: 'login', sign_out: 'logout' }
   devise_for :members, only: :invitations, controllers: { invitations: 'admins/invitations' }
 
   scope module: :members do

@@ -1,6 +1,4 @@
-- if !current_member.otp_setup_initiated?
+- unless current_member.otp_setup_finalised?
   = link_to 'Two Factor Settings', setup_two_factor_members_path, class: 'button button-primary'
-- elsif current_member.otp_setup_incomplete
-  = link_to 'Two Factor Settings', complete_two_factor_members_path, class: 'button button-primary'
-- elsif current_member.otp_setup_complete
+- else current_member.otp_setup_complete
   = link_to 'Two Factor Settings', disable_two_factor_members_path, class: 'button button-primary'

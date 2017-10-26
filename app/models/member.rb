@@ -2,12 +2,14 @@
 
 class Member < ApplicationRecord
   devise :two_factor_authenticatable,
+         :database_authenticatable,
          :invitable,
          :recoverable,
          :trackable,
          :validatable,
-         authentication_keys: [:login],
-         otp_secret_encryption_key: ENV['OTP_SECRET_ENCRYPTION_KEY']
+         authentication_keys: [:login]
+
+  has_one_time_password(encrypted: true)
 
   extend FriendlyId
   friendly_id :username, use: :slugged
@@ -39,11 +41,11 @@ class Member < ApplicationRecord
   end
 
   def otp_setup_complete
-    otp_setup_initiated && otp_required_for_login
+    otp_setup_finalised.present? && otp_secret_key.present?
   end
 
   def otp_setup_incomplete
-    otp_setup_initiated && !otp_required_for_login
+    otp_setup_finalised.blank? && otp_secret_key.present?
   end
 
   private

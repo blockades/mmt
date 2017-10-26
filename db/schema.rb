@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171026090830) do
+ActiveRecord::Schema.define(version: 20171026134442) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -85,14 +85,7 @@ ActiveRecord::Schema.define(version: 20171026090830) do
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.datetime "totp_timestamp"
-    t.boolean "two_factor_enabled", default: false
-    t.boolean "unconfirmed_two_factor", default: false
-    t.string "encrypted_otp_secret"
-    t.string "encrypted_otp_secret_iv"
-    t.string "encrypted_otp_secret_salt"
-    t.integer "consumed_timestep"
-    t.boolean "otp_required_for_login"
-    t.boolean "otp_setup_initiated"
+    t.boolean "otp_setup_finalised"
     t.string "country_code"
     t.string "phone_number"
     t.index ["email"], name: "index_members_on_email", unique: true

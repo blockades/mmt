@@ -41,7 +41,7 @@ class ApplicationController < ActionController::Base
   end
 
   def otp_setup_not_complete
-    current_member && current_member.otp_setup_incomplete && params[:controller] != 'members/two_factor'
+    current_member && current_member.otp_setup_incomplete && current_member.otp_secret_key.present?
   end
 
   def notify_otp_setup_incomplete
