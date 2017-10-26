@@ -18,4 +18,18 @@ module MagicMoneyTree
       end
     end
   end
+
+  module MobileCountryCodes
+    class << self
+      def all
+        @all ||= YAML.load_file('config/mobile_codes.yml').compact
+      end
+
+      def for_select
+        @for_select ||= all.inject([]) do |collection, line|
+          collection << ["#{line[:country]} (+#{line[:code]})", "+#{line[:code]}"]
+        end
+      end
+    end
+  end
 end
