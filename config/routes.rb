@@ -6,8 +6,16 @@ Rails.application.routes.draw do
 
   scope module: :members do
     root to: "dashboard#index"
-    resources :members, only: [:show, :update]
     resources :portfolios, only: [:show]
+
+    resources :members, only: [:show, :update] do
+      collection do
+        get 'otp_auth/setup' => 'two_factor#setup', as: :setup_two_factor
+        patch 'otp_auth/update' => 'two_factor#update', as: :update_two_factor
+        get 'otp_auth/code' => 'two_factor#code', as: :two_factor_code
+        patch 'otp_auth/confirm' => 'two_factor#confirm', as: :confirm_two_factor
+      end
+    end
   end
 
   namespace :admins do
