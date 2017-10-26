@@ -1,8 +1,7 @@
 = google_authenticator_qrcode(current_member)
 h2 Scan QR code and enter result code below to confirm your two factor auth!
 
-= form_for :member, url: confirm_two_factor_update_path, method: :put do |f|
-  = devise_error_messages!
+= form_for :member, url: confirm_two_factor_authentication_path, method: :patch do |f|
   = f.text_field :code
   = f.submit "Confirm"
 

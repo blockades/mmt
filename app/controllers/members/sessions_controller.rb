@@ -8,9 +8,9 @@ class Members::SessionsController < Devise::SessionsController
 
   # POST /resource/sign_in
   def create
-    super do
-      resource.update(encrypted_otp_secret_key: resource.generate_totp_secret)
-    end
+    # super do
+    #   resource.update(encrypted_otp_secret_key: resource.generate_totp_secret)
+    # end
   end
 
   # DELETE /resource/sign_out

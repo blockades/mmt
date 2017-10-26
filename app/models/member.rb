@@ -4,7 +4,6 @@ class Member < ApplicationRecord
   devise :two_factor_authenticatable,
          :database_authenticatable,
          :invitable,
-         :registerable,
          :recoverable,
          :trackable,
          :validatable,
@@ -46,7 +45,7 @@ class Member < ApplicationRecord
     TwilioClient.connection.messages.create(
       from: ENV['TWILIO_PHONE_NUMBER'],
       to: phone_number,
-      body: ""
+      body: "Your code is #{}"
     )
   end
 

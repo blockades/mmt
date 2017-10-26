@@ -1,5 +1,6 @@
 module Members
   class TwoFactorAuthenticationController < ApplicationController
+    include TwoFactorAuthenticationHelper
 
     def setup
     end
@@ -24,11 +25,11 @@ module Members
     end
 
     def confirm
-      if current_member.confirm_two_factor!(code_params)
+      if current_member.confirm_two_factor!(code_params[:code])
         redirect_to member_path(current_member), notice: "Two factor confirmed"
       else
         flash[:alert] = 'Code is invalid!'
-        render 'edit'
+        render 'setup'
       end
     end
 
