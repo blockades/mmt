@@ -16,15 +16,19 @@ Rails.application.routes.draw do
     resources :portfolios, only: [:show]
 
     resources :members, only: [:show, :update] do
+      member do
+        patch 'members/:id/update_password' => 'members#update_password', as: :update_password
+      end
+
       collection do
-        get 'otp_auth/setup' => 'two_factor#GET_setup', as: :setup_two_factor, via: :get
-        patch 'otp_auth/setup' => 'two_factor#PATCH_setup', as: :update_setup_two_factor, via: :patch
+        get 'otp_auth/setup' => 'two_factor#GET_setup', as: :setup_two_factor
+        patch 'otp_auth/setup' => 'two_factor#PATCH_setup', as: :update_setup_two_factor
 
-        get 'otp_auth/confirm' => 'two_factor#GET_confirm', as: :confirm_two_factor, via: :get
-        patch 'otp_auth/confirm' => 'two_factor#PATCH_confirm', as: :update_confirm_two_factor, via: :get
+        get 'otp_auth/confirm' => 'two_factor#GET_confirm', as: :confirm_two_factor
+        patch 'otp_auth/confirm' => 'two_factor#PATCH_confirm', as: :update_confirm_two_factor
 
-        get 'otp_auth/disable' => 'two_factor#GET_disable', as: :disable_two_factor, via: :get
-        patch 'otp_auth/disable' => 'two_factor#PATCH_disable', as: :update_disable_two_factor, via: :patch
+        get 'otp_auth/disable' => 'two_factor#GET_disable', as: :disable_two_factor
+        patch 'otp_auth/disable' => 'two_factor#PATCH_disable', as: :update_disable_two_factor
       end
     end
   end
