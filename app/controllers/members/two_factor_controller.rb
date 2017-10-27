@@ -16,7 +16,7 @@ module Members
     end
 
     def PATCH_setup
-      if current_member.update(two_factor_params.merge(otp_secret_key: current_member.generate_totp_secret))
+      if current_member.update(setup_params)
         redirect_to confirm_two_factor_members_path
       else
         redirect_back fallback_location: member_path(current_member), error: "Failed to setup two factor authentication"
@@ -57,6 +57,10 @@ module Members
 
     def two_factor_params
       params.require(:two_factor).permit(:phone_number, :country_code)
+    end
+
+    def setup_params
+      two_factor_params.merge(otp_secret_key: current_member.generate_totp_secret, otp_recovery_codes: current_member.generate_otp_recovery_codes)
     end
 
     def code_confirmation_params

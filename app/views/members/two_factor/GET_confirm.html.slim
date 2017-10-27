@@ -8,3 +8,20 @@ br
 = form_for :two_factor, url: confirm_two_factor_members_path, method: :patch do |f|
   = f.text_field :code
   = f.submit "Confirm"
+
+p Take note of the following recovery codes, you can use these one time passwords
+  to gain access to your account if you lose your phone
+p Store these safely as we will not show them to you again
+
+table
+  thead
+    tr
+      th
+      th Recovery Codes
+      th
+  tbody
+    - current_member.otp_recovery_codes.each_slice(3) do |row|
+      tr
+        td= row[0]
+        td= row[1]
+        td= row[2]

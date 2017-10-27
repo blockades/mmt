@@ -1,8 +1,15 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
-  devise_for :members, only: [:sessions, :passwords, :two_factor_authentications, :two_factor_recoveries], path: :auth, path_names: { sign_in: 'login', sign_out: 'logout' }
+
   devise_for :members, only: :invitations, controllers: { invitations: 'admins/invitations' }
+  devise_for :members, only: [:sessions, :passwords, :two_factor_authentications, :two_factor_recoveries], path: :auth, path_names: {
+    sign_in: 'login',
+    sign_out: 'logout',
+    two_factor_authentication: 'two_factor',
+    two_factor_recovery: 'two_factor/recovery'
+  }
+
 
   scope module: :members do
     root to: "dashboard#index"
