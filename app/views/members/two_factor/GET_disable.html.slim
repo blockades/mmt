@@ -1,1 +1,4 @@
-= link_to 'Disable two factor', update_disable_two_factor_members_path, method: :patch, class: 'button button-primary', style: 'background-color: red'
+= form_for :member, url: update_disable_two_factor_members_path, method: :patch do |f|
+  = f.label :password
+  = f.password_field :password, autofocus: true
+  = f.submit 'Disable two factor', class: 'button button-primary'

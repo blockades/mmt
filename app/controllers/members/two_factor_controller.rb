@@ -49,8 +49,12 @@ module Members
     end
 
     def PATCH_disable
-      current_member.update(otp_secret_key: nil, otp_setup_finalised: false)
-      redirect_to setup_two_factor_members_path
+      if current_member.valid_password?(password_params[:password])
+        current_member.update(otp_secret_key: nil, otp_setup_finalised: false)
+        redirect_to setup_two_factor_members_path, notice: "Two factor successfully disabled"
+      else
+        redirect_to disable_two_factor_members_path, alert: "Incorrect password, please try again"
+      end
     end
 
     private
@@ -65,6 +69,10 @@ module Members
 
     def code_confirmation_params
       params.require(:two_factor).permit(:code)
+    end
+
+    def password_params
+      params.require(:member).permit(:password)
     end
 
     def return_to_setup
