@@ -1,0 +1,8 @@
+h2 Enter your recovery code
+= form_tag([resource_name, :two_factor_recovery], method: :put) do
+  = text_field_tag :recovery_code
+  = submit_tag "Verify", class: 'button button-primary'
+
+p You can enter one of your recovery codes in case you lost access to your mobile device.
+= link_to "Cancel", send("destroy_#{resource_name}_session_path"), method: :delete, class: 'button'
+

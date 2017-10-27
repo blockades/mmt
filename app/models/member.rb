@@ -2,6 +2,7 @@
 
 class Member < ApplicationRecord
   devise :two_factor_authenticatable,
+         :two_factor_recoverable,
          :database_authenticatable,
          :invitable,
          :recoverable,
@@ -10,6 +11,7 @@ class Member < ApplicationRecord
          authentication_keys: [:login]
 
   has_one_time_password(encrypted: true)
+  has_one_time_recovery_codes
 
   extend FriendlyId
   friendly_id :username, use: :slugged
