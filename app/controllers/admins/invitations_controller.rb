@@ -7,6 +7,7 @@ module Admins
 
     def create
       member = Member.invite! invitation_params
+
       redirect_to new_member_invitation_path, notice: "Invitation sent to #{member.email}"
     end
 

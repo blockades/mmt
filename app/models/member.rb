@@ -1,8 +1,16 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
-  devise :invitable, :database_authenticatable, :recoverable,
-    :trackable, :validatable, authentication_keys: [:login]
+  devise :two_factor_authenticatable,
+         :database_authenticatable,
+         :invitable,
+         :recoverable,
+         :trackable,
+         :validatable,
+         authentication_keys: [:login],
+         otp_secret_encryption_key: ENV['OTP_SECRET_ENCRYPTION_KEY']
+
+  has_one_time_password(encrypted: true)
 
   extend FriendlyId
   friendly_id :username, use: :slugged
@@ -20,7 +28,26 @@ class Member < ApplicationRecord
 
   before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
 
+  before_save :valid_two_factor_confirmation
+
   attr_accessor :login
+
+  def need_two_factor_authentication?(request)
+    two_factor_enabled? && !unconfirmed_two_factor?
+  end
+
+  def confirm_two_factor!(code)
+    update!(unconfirmed_two_factor: false) if authenticate_otp(code)
+  end
+
+  def send_two_factor_authentication_code
+    return unless phone_number.present?
+    TwilioClient.connection.messages.create(
+      from: ENV['TWILIO_PHONE_NUMBER'],
+      to: phone_number,
+      body: "Your code is #{}"
+    )
+  end
 
   class << self
     def find_for_database_authentication(warden_conditions)
@@ -41,6 +68,19 @@ class Member < ApplicationRecord
 
   def username_against_inaccessible_words
     errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
+  end
+
+  def valid_two_factor_confirmation
+    return true unless two_factor_just_set || phone_number_changed_with_two_factor
+    self.unconfirmed_two_factor = true
+  end
+
+  def two_factor_just_set
+    two_factor_enabled? && two_factor_enabled_changed?
+  end
+
+  def phone_number_changed_with_two_factor
+    two_factor_enabled? && phone_number_changed?
   end
 
   def adjust_slug

@@ -8,19 +8,24 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_member!
+  before_action :notify_unconfirmed_two_factor, if: proc { current_member && current_member.unconfirmed_two_factor? }
 
   protected
 
   def configure_permitted_parameters
     devise_parameter_sanitizer.permit :accept_invitation, keys: [:username, :email, :password, :password_confirmation]
-    devise_parameter_sanitizer.permit :sign_up, keys: [:username, :email, :password, :password_confirmation]
     devise_parameter_sanitizer.permit :account_update, keys: [:username, :email, :password, :password_confirmation]
+    devise_parameter_sanitizer.permit :sign_in, keys: [:otp_attempt]
   end
 
   private
 
   def verify_admin
     forbidden unless current_member&.admin?
+  end
+
+  def notify_unconfirmed_two_factor
+    # flash[:alert] = "Please confirm two factor authentication #{link_to 'here', confirm_two_factor_url}"
   end
 
   def forbidden
