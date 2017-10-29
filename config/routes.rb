@@ -10,33 +10,26 @@ Rails.application.routes.draw do
     two_factor_recovery: 'two_factor/recovery'
   }
 
-
-  scope module: :members do
-    root to: "dashboard#index"
-    resources :portfolios, only: [:show]
-
-    resources :members, only: [:show, :update] do
-      member do
-        patch 'members/:id/update_password' => 'members#update_password', as: :update_password
-      end
-
-      collection do
-        get 'otp_auth/setup' => 'two_factor#GET_setup', as: :setup_two_factor
-        patch 'otp_auth/setup' => 'two_factor#PATCH_setup', as: :update_setup_two_factor
-
-        get 'otp_auth/confirm' => 'two_factor#GET_confirm', as: :confirm_two_factor
-        patch 'otp_auth/confirm' => 'two_factor#PATCH_confirm', as: :update_confirm_two_factor
-
-        get 'otp_auth/disable' => 'two_factor#GET_disable', as: :disable_two_factor
-        patch 'otp_auth/disable' => 'two_factor#PATCH_disable', as: :update_disable_two_factor
-      end
-    end
-  end
-
   namespace :admins do
     root to: 'dashboard#index'
     resources :portfolios, only: [:index, :new, :create, :show]
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
+  end
+
+  scope module: :members do
+    root to: "dashboard#index"
+    resources :portfolios, only: [:show]
+    resource :password, only: [:new, :update]
+    resource :two_factor, only: [] do
+      get 'setup' => 'two_factor#GET_setup', as: :setup
+      patch'setup' => 'two_factor#PATCH_setup', as: :update_setup
+      get 'confirm' => 'two_factor#GET_confirm', as: :confirm
+      patch 'confirm' => 'two_factor#PATCH_confirm', as: :update_confirm
+      get 'disable' => 'two_factor#GET_disable', as: :disable
+      patch 'disable' => 'two_factor#PATCH_disable', as: :update_disable
+      patch 'cancel' => 'two_factor#cancel', as: :cancel
+    end
+    resources :members, path: '/', only: [:show, :update]
   end
 end

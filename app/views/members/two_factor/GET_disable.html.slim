@@ -1,4 +1,3 @@
-= form_for :member, url: update_disable_two_factor_members_path, method: :patch do |f|
-  = f.label :password
-  = f.password_field :password, autofocus: true
+= form_for :member, url: update_disable_two_factor_path, method: :patch do |f|
+  = render partial: 'members/passwords/single', locals: { f: f }
   = f.submit 'Disable two factor', class: 'button button-primary'

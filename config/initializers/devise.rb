@@ -3,29 +3,6 @@
 # Use this hook to configure devise mailer, warden hooks and so forth.
 # Many of these configuration options can be set straight in your model.
 Devise.setup do |config|
-
-  # ==> Two Factor Authentication Configuration
-  # Maximum second factor attempts count.
-  config.max_login_attempts = 3
-  # Allowed TOTP time drift between client and server.
-  config.allowed_otp_drift_seconds = 30
-  # TOTP code length
-  config.otp_length = 6
-  # Time before direct OTP becomes invalid
-  config.direct_otp_valid_for = 5.minutes
-  # Direct OTP code length
-  config.direct_otp_length = 6
-  # Time before browser has to perform 2fA again. Default is 0.
-  config.remember_otp_session_for_seconds = 30.days
-  config.otp_secret_encryption_key = ENV['OTP_SECRET_ENCRYPTION_KEY']
-  # Field or method name used to set value for 2fA remember cookie
-  config.second_factor_resource_id = 'id'
-
-  # ==> Two Factor Recovery Configuration
-  config.otp_recovery_code_length = 16
-
-  config.otp_number_of_recovery_codes = 18
-
   # The secret key used by Devise. Devise uses this key to generate
   # random tokens. Changing this key will render invalid all existing
   # confirmation, reset password and unlock tokens in the database.
@@ -347,6 +324,27 @@ Devise.setup do |config|
   # When using OmniAuth, Devise cannot automatically set OmniAuth path,
   # so you need to do it manually. For the members scope, it would be:
   # config.omniauth_path_prefix = '/my_engine/members/auth'
+
+  # ==> Two Factor Authentication Configuration
+  # Maximum second factor attempts count.
+  config.max_login_attempts = 3
+  # Allowed TOTP time drift between client and server.
+  config.allowed_otp_drift_seconds = 30
+  # TOTP code length
+  config.otp_length = 6
+  # Time before direct OTP becomes invalid
+  config.direct_otp_valid_for = 5.minutes
+  # Direct OTP code length
+  config.direct_otp_length = 6
+  # Time before browser has to perform 2fA again. Default is 0.
+  config.remember_otp_session_for_seconds = 30.days
+  config.otp_secret_encryption_key = ENV['OTP_SECRET_ENCRYPTION_KEY']
+  # Field or method name used to set value for 2fA remember cookie
+  config.second_factor_resource_id = 'id'
+
+  # ==> Two Factor Recovery Configuration
+  config.otp_recovery_code_length = 16
+  config.otp_number_of_recovery_codes = 18
 end
 
 Rails.application.config.to_prepare do

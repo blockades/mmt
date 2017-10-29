@@ -1,6 +1,6 @@
 .row
   .twelve.columns
-    = form_for :two_factor, url: update_setup_two_factor_members_path , method: :patch do |f|
+    = form_for :two_factor, url: update_setup_two_factor_path , method: :patch do |f|
       p To enable two factor authentication, please provide a telephone number
       .field
         = f.label :country_code

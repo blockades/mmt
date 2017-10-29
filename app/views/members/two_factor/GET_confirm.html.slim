@@ -5,9 +5,10 @@ p You are here because you have begun the setup for two factor authentication
 p Scan the QR code and enter the code to confirm OTP authentication
 = google_authenticator_qrcode
 br
-= form_for :two_factor, url: confirm_two_factor_members_path, method: :patch do |f|
+= form_for :two_factor, url: confirm_two_factor_path, method: :patch do |f|
   = f.text_field :code
-  = f.submit "Confirm"
+  = f.submit "Confirm", class: 'button button-primary'
+= button_to 'Cancel', cancel_two_factor_path, method: :patch, class: 'button'
 
 p Take note of the following recovery codes, you can use these one time passwords
   to gain access to your account if you lose your phone
