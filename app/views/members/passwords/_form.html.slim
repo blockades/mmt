@@ -1,0 +1,7 @@
+= form_for current_member, url: new_password_path, method: :patch do |f|
+  = render partial: 'fields', locals: { f: f }
+  - if current_member.otp_setup_complete?
+    = f.label :two_factor_code
+    = f.password_field :otp_code, required: true
+  br
+  = f.submit 'Update', class: 'button button-primary'
