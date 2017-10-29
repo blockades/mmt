@@ -8,7 +8,7 @@ class TwoFactorAuthenticationAddToMembers < ActiveRecord::Migration[5.0]
     add_column :members, :direct_otp_sent_at, :datetime
     add_column :members, :totp_timestamp, :timestamp
 
-    add_column :members, :otp_setup_finalised, :boolean
+    add_column :members, :two_factor_enabled, :boolean, default: false
     add_column :members, :country_code, :string
     add_column :members, :phone_number, :string
 

@@ -42,16 +42,30 @@ class Member < ApplicationRecord
     end
   end
 
+  # ===> Two Factor Authentication
+
+  def setup_two_factor!
+    update!(otp_secret_key: self.generate_totp_secret, otp_recovery_codes: self.generate_otp_recovery_codes)
+  end
+
+  def confirm_two_factor!
+    update!(two_factor_enabled: true)
+  end
+
+  def disable_two_factor!
+    update!(otp_secret_key: nil, two_factor_enabled: false)
+  end
+
   def need_two_factor_authentication?(request)
-    otp_setup_complete
+    otp_setup_complete?
   end
 
-  def otp_setup_complete
-    otp_setup_finalised.present? && otp_secret_key.present?
+  def otp_setup_complete?
+    two_factor_enabled? && otp_secret_key.present?
   end
 
-  def otp_setup_incomplete
-    otp_setup_finalised.blank? && otp_secret_key.present?
+  def otp_setup_incomplete?
+    !two_factor_enabled? && otp_secret_key.present?
   end
 
   private

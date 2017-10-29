@@ -85,7 +85,7 @@ ActiveRecord::Schema.define(version: 20171027115710) do
     t.string "direct_otp"
     t.datetime "direct_otp_sent_at"
     t.datetime "totp_timestamp"
-    t.boolean "otp_setup_finalised"
+    t.boolean "two_factor_enabled"
     t.string "country_code"
     t.string "phone_number"
     t.integer "second_factor_recovery_count", default: 0
