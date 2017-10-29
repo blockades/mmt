@@ -2,7 +2,7 @@
 
 module Members
   class TwoFactorController < ApplicationController
-    include TwoFactorHelper
+    include QrCodesHelper
 
     before_action :return_to_setup, only: [:GET_confirm, :PATCH_confirm, :GET_disable, :PATCH_disable]
     before_action :return_to_confirm, only: [:GET_setup, :PATCH_setup, :GET_disable, :PATCH_disable]
@@ -64,6 +64,7 @@ module Members
     end
 
     def cancel
+      return if current_member.two_factor_enabled?
       current_member.disable_two_factor!
       redirect_to setup_two_factor_path, notice: "Two factor setup cancelled"
     end
