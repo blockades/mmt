@@ -1,7 +1,10 @@
 # frozen_string_literal: true
 
 require "spec_helper"
+
 ENV["RAILS_ENV"] ||= "test"
+ENV["OTP_SECRET_ENCRYPTION_KEY"] = Digest::SHA2.hexdigest 'SUPER_DUPER_SECRET_KEY'
+
 require File.expand_path("../../config/environment", __FILE__)
 
 abort("The Rails environment is running in production mode!") if Rails.env.production?
