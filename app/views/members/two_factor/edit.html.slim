@@ -8,6 +8,7 @@ p Scan the QR code and enter the code to confirm OTP authentication
 
 br
 = form_for :two_factor, url: two_factor_settings_path, method: :patch do |f|
+  = f.hidden_field :otp_delivery_method, value: 'app'
   = f.text_field :code
   = f.submit "Confirm", class: 'button button-primary'
 

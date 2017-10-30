@@ -28,10 +28,10 @@ module Members
 
     def update
       if current_member.authenticate_otp(two_factor_params[:code])
-        notice = current_member.confirm_two_factor! ? "You have enabled two factor authenitcation" : "Failed to confirm two factor authentication"
+        notice = current_member.confirm_two_factor!(two_factor_params[:otp_delivery_method]) ? "You have enabled two factor authenitcation" : "Failed to confirm two factor authentication"
         redirect_to two_factor_settings_path, notice: notice
       else
-        current_member.update(two_factor_enabled: false, otp_secret_key: nil)
+        current_member.update(two_factor_enabled: false, otp_secret_key: nil, otp_delivery_method: nil)
         redirect_back fallback_location: two_factor_settings_path, error: "Authentication code mismatch, please try again"
       end
     end
@@ -44,7 +44,7 @@ module Members
     private
 
     def two_factor_params
-      params.require(:two_factor).permit(:code)
+      params.require(:two_factor).permit(:code, :otp_delivery_method)
     end
   end
 end

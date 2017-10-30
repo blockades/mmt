@@ -22,8 +22,11 @@ class Member < ApplicationRecord
 
   scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
 
+  TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
+
   validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
   validates :slug, uniqueness: { case_sensitive: true }
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.values }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
   validate :username_against_inaccessible_words
   validate :email_against_username
 
@@ -48,12 +51,14 @@ class Member < ApplicationRecord
     update!(otp_secret_key: self.generate_totp_secret, otp_recovery_codes: self.generate_otp_recovery_codes)
   end
 
-  def confirm_two_factor!
-    update!(two_factor_enabled: true)
+  def confirm_two_factor!(method)
+    delivery_method = TWO_FACTOR_DELIVERY_METHODS[method]
+    return false unless delivery_method
+    update!(two_factor_enabled: true, otp_delivery_method: delivery_method)
   end
 
   def disable_two_factor!
-    update!(otp_secret_key: nil, two_factor_enabled: false)
+    update!(otp_secret_key: nil, two_factor_enabled: false, otp_delivery_method: nil)
   end
 
   def need_two_factor_authentication?(request)
