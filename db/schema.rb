@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171027115710) do
+ActiveRecord::Schema.define(version: 20171030104608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -90,6 +90,7 @@ ActiveRecord::Schema.define(version: 20171027115710) do
     t.string "phone_number"
     t.integer "second_factor_recovery_count", default: 0
     t.text "otp_recovery_codes", array: true
+    t.string "otp_delivery_method"
     t.index ["email"], name: "index_members_on_email", unique: true
     t.index ["encrypted_otp_secret_key"], name: "index_members_on_encrypted_otp_secret_key", unique: true
     t.index ["invitation_token"], name: "index_members_on_invitation_token", unique: true
