@@ -7,6 +7,7 @@ html
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   body
+    = flash_notices
     nav.primary
       ul.left
         li= link_to "Portfolio", portfolio_path(current_member.live_portfolio), class: "button button-primary"
@@ -15,6 +16,5 @@ html
         - if current_member&.admin?
           li= link_to 'Admin Dashboard', admins_root_path, class: "button button-primary"
         li= link_to 'Log out', destroy_member_session_path, method: :delete, authenticity_token: true, class: "button button-primary"
-    = flash_notices
     .container
       = yield

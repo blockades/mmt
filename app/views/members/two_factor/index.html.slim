@@ -13,33 +13,35 @@
       = link_to 'Enable two-factor', two_factor_path, method: :post, class: 'button button-primary'
 
 hr
-.row
-  .two.columns
-    strong Recovery Codes
-  .eight.columns
-    p Recovery codes can be used to access your account in the event you lose access to your device and cannot receive two-factor authentication codes. 
-    p MMT cannot restore access to accounts with two-factor authentication enabled for security reasons, saving your recovery codes in a safe place can help keep you from being locked out of your account.
-  .two.columns
-    = link_to 'View', two_factor_recovery_codes_path, class: 'button'
+- if current_member.two_factor_enabled?
+  .row
+    .two.columns
+      strong Recovery Codes
+    .eight.columns
+      p Recovery codes can be used to access your account in the event you lose access to your device and cannot receive two-factor authentication codes. 
+      p MMT cannot restore access to accounts with two-factor authentication enabled for security reasons, saving your recovery codes in a safe place can help keep you from being locked out of your account.
+    .two.columns
+      = link_to 'View', two_factor_recovery_codes_path, class: 'button'
 
-hr
-.row
-  .two.columns
-    strong Fallback SMS
-  .eight.columns
-    p Providing a fallback SMS number will allow MMT to send your two-factor authentication codes to an alternate device if you lose your primary device.
-    p For security reasons, MMT cannot restore access to accounts with two-factor authentication enabled. If you lose access to both your primary device and your recovery keys, a backup SMS number can get you back in to your account.
-  .two.columns
-    = link_to 'Add SMS number', two_factor_fallback_sms_path, class: 'button'
+  hr
+  .row
+    .two.columns
+      strong Fallback SMS
+    .eight.columns
+      p Providing a fallback SMS number will allow MMT to send your two-factor authentication codes to an alternate device if you lose your primary device.
+      p For security reasons, MMT cannot restore access to accounts with two-factor authentication enabled. If you lose access to both your primary device and your recovery keys, a backup SMS number can get you back in to your account.
+    .two.columns
+      = link_to 'Add SMS number', two_factor_fallback_sms_path, class: 'button'
 
-hr
-.row
-  .two.columns
-    strong Delivery Options
-  .eight.columns
-    p
-      | Your primary delivery method is: 
-      strong #{current_member.otp_delivery_method}
-  .two.columns
-    br
-
+  hr
+  .row
+    .two.columns
+      strong Delivery Options
+    .eight.columns
+      p
+        | Your primary delivery method is: 
+        strong #{current_member.otp_delivery_method}
+    .two.columns
+      br
+- else
+  p Setup two factor on your account for secure two-setup authentication

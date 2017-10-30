@@ -5,7 +5,7 @@
     = form_for :two_factor, url: two_factor_path, method: :patch do |f|
       = f.hidden_field :otp_delivery_method, value: 'app'
       = f.label 'Input your authenticator code here'
-      = f.text_field :code
+      = f.text_field :code, required: true
       = f.submit "Confirm", class: 'button button-primary'
 
 hr
