@@ -8,7 +8,7 @@ class ApplicationController < ActionController::Base
 
   before_action :configure_permitted_parameters, if: :devise_controller?
   before_action :authenticate_member!
-  before_action :notify_otp_setup_incomplete?, if: proc { current_member && current_member.otp_setup_incomplete? && current_member.otp_secret_key.present? }
+  before_action :store_return_paths
 
   protected
 
@@ -22,6 +22,21 @@ class ApplicationController < ActionController::Base
 
   def verify_admin
     forbidden unless current_member&.admin?
+  end
+
+  def reauthenticate_member!
+    unless session[:reauthenticated_at] && session[:reauthenticated_at] > 30.minutes.ago
+      redirect_to new_reauthentication_path, notice: "Enter password to proceed"
+    end
+  end
+
+  def store_return_paths
+    session[:return_paths] ||= []
+    if session[:return_paths].count < 5 && request.get? && !devise_controller?
+      session[:return_paths] << request.fullpath
+    else
+      session[:return_paths].shift
+    end
   end
 
   def forbidden
@@ -38,9 +53,5 @@ class ApplicationController < ActionController::Base
 
   def rescue_403
     render file: 'public/403', status: 403, layout: false
-  end
-
-  def notify_otp_setup_incomplete?
-    flash[:alert] = "Two Factor authentcation setup is incomplete. #{view_context.link_to('Click here to complete setup', confirm_two_factor_path)}.".html_safe
   end
 end
