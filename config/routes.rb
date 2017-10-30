@@ -26,9 +26,8 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :portfolios, only: [:show]
 
-    resources :members, path: '/', only: [:show, :update]
-
-    resource :members, path: '/settings', as: :settings, only: [:index] do
+    scope :settings do
+      get '/' => 'settings#index', as: :settings
       resource :password, only: [:new, :update]
 
       # ==> Two Factor Authentication
@@ -39,5 +38,7 @@ Rails.application.routes.draw do
       resource :two_factor_authentication, only: [:create, :edit, :update],
         as: :two_factor, controller: :two_factor, path_names: { edit: 'confirm' }
     end
+
+    resources :members, path: '/', only: [:show, :update]
   end
 end

@@ -1,16 +1,21 @@
-h2 Confirm
+.row
+  .eight.columns
+    p Scan the QR code and enter the code to confirm two factor authentication
+  .four.columns
+    = form_for :two_factor, url: two_factor_path, method: :patch do |f|
+      = f.hidden_field :otp_delivery_method, value: 'app'
+      = f.label 'Input your authenticator code here'
+      = f.text_field :code
+      = f.submit "Confirm", class: 'button button-primary'
 
-p You are here because you have begun the setup for two factor authentication
-
-p Scan the QR code and enter the code to confirm OTP authentication
-
-= render partial: 'qr_codes/new', locals: { qr: qr_code_as_html(provisioning_uri) }
-
-br
-= form_for :two_factor, url: two_factor_settings_path, method: :patch do |f|
-  = f.hidden_field :otp_delivery_method, value: 'app'
-  = f.text_field :code
-  = f.submit "Confirm", class: 'button button-primary'
-
-= render partial: 'members/recovery_codes/index'
+hr
+.row
+  .four.columns
+    = render partial: 'qr_codes/new', locals: { qr: @qr_code }
+  .two.columns
+    br
+  .six.columns
+    p
+      strong Recovery Codes
+    = render partial: 'members/recovery_codes/index'
 

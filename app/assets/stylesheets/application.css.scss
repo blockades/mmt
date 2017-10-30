@@ -1,3 +1,4 @@
+
 /*
  * This is a manifest file that'll be compiled into application.css, which will include all the files
  * listed below.
@@ -12,12 +13,19 @@
  *
  *= require skeleton
  *= require select2
- *= require qr_code
+ *= require qrcode
+ *= require twofactor
  *= require_self
  */
 
+@import 'colours';
+
 .inline-block {
   display: inline-block;
+}
+
+.center {
+  text-align: center;
 }
 
 .right {
@@ -53,6 +61,7 @@ section.title {
   margin: 1em;
   padding: 1em;
 }
+
 .hidden {
   display: none;
 }
@@ -60,4 +69,3 @@ section.title {
 .button {
   margin: 5px;
 }
-

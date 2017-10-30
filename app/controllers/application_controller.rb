@@ -32,7 +32,7 @@ class ApplicationController < ActionController::Base
 
   def store_return_paths
     session[:return_paths] ||= []
-    if session[:return_paths].count < 5 && request.get? && !devise_controller?
+    if session[:return_paths].count < 5 && request.get? && !devise_controller? && (request.fullpath != session[:return_paths].last)
       session[:return_paths] << request.fullpath
     else
       session[:return_paths].shift

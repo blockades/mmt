@@ -1,0 +1,9 @@
+= form_for current_member do |f|
+  = f.label :username
+  = f.text_field :username
+  = f.submit :submit
+
+p Security
+= link_to 'Two Factor Authentication', two_factor_path
+
+

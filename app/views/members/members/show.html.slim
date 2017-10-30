@@ -1,10 +1,4 @@
 h1= @member.username
 
-= link_to 'Two factor settings', two_factor_settings_path
 - if my_profile?
-  = form_for @member do |f|
-    = f.label :username
-    = f.text_field :username
-    = f.submit :submit
-
-
+  = link_to 'Settings', settings_path
