@@ -1,0 +1,15 @@
+h2 Confirm
+
+p You are here because you have begun the setup for two factor authentication
+
+p Scan the QR code and enter the code to confirm OTP authentication
+
+= render partial: 'qr_codes/new', locals: { qr: qr_code_as_html(provisioning_uri) }
+
+br
+= form_for :two_factor, url: two_factor_settings_path, method: :patch do |f|
+  = f.text_field :code
+  = f.submit "Confirm", class: 'button button-primary'
+
+= render partial: 'members/recovery_codes/index'
+
