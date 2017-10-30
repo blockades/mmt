@@ -10,6 +10,11 @@ Rails.application.routes.draw do
     two_factor_recovery: 'two_factor/recovery'
   }
 
+  devise_scope :members do
+    get 'auth/sudo' => 'reauthentication#new', as: :new_reauthentication
+    post 'auth/sudo' => 'reauthentication#create', as: :reauthentication
+  end
+
   namespace :admins do
     root to: 'dashboard#index'
     resources :portfolios, only: [:index, :new, :create, :show]
@@ -20,16 +25,19 @@ Rails.application.routes.draw do
   scope module: :members do
     root to: "dashboard#index"
     resources :portfolios, only: [:show]
-    resource :password, only: [:new, :update]
-    resource :two_factor, only: [] do
-      get 'setup' => 'two_factor#GET_setup', as: :setup
-      patch'setup' => 'two_factor#PATCH_setup', as: :update_setup
-      get 'confirm' => 'two_factor#GET_confirm', as: :confirm
-      patch 'confirm' => 'two_factor#PATCH_confirm', as: :update_confirm
-      get 'disable' => 'two_factor#GET_disable', as: :disable
-      patch 'disable' => 'two_factor#PATCH_disable', as: :update_disable
-      patch 'cancel' => 'two_factor#cancel', as: :cancel
-    end
+
     resources :members, path: '/', only: [:show, :update]
+
+    resource :members, path: '/settings', as: :settings, only: [:index] do
+      resource :password, only: [:new, :update]
+
+      # ==> Two Factor Authentication
+      get 'two_factor_authentication' => 'two_factor#index', as: :two_factor
+      get 'two_factor_authentication/recovery_codes' => 'recovery_codes#index', as: :two_factor_recovery_codes
+      get 'two_factor_authentication/fallback_sms' => 'fallback_sms#index', as: :two_factor_fallback_sms
+      post 'two_factor_authentication/disable' => 'two_factor#destroy', as: :disable_two_factor
+      resource :two_factor_authentication, only: [:create, :edit, :update],
+        as: :two_factor, controller: :two_factor, path_names: { edit: 'confirm' }
+    end
   end
 end
