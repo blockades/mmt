@@ -26,7 +26,11 @@ class Member < ApplicationRecord
 
   validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
   validates :slug, uniqueness: { case_sensitive: true }
+
   validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.values }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+  validates :phone_number, presence: true, format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ }, if: proc { country_code.present? }
+  validates :country_code, presence: true, inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only }, if: proc { phone_number.present? }
+
   validate :username_against_inaccessible_words
   validate :email_against_username
 
@@ -34,18 +38,19 @@ class Member < ApplicationRecord
 
   attr_accessor :login
 
-  class << self
-    def find_for_database_authentication(warden_conditions)
-      conditions = warden_conditions.dup
-      if login = conditions.delete(:login)
-        where(conditions.to_h).where(["LOWER(username) = :value OR LOWER(email) = :value", { value: login.downcase }]).first
-      elsif conditions.has_key?(:username) || conditions.has_key?(:email)
-        where(conditions.to_h).first
-      end
-    end
+  # ===> Two Factor Authentication
+
+  def full_phone_number
+    "+#{country_code}#{phone_number}"
   end
 
-  # ===> Two Factor Authentication
+  def authenticated_by_app?
+    otp_delivery_method == 'sms'
+  end
+
+  def authenticated_by_phone?
+    otp_delivery_method == 'app'
+  end
 
   def setup_two_factor!
     update!(otp_secret_key: self.generate_totp_secret, otp_recovery_codes: self.generate_otp_recovery_codes)
@@ -71,6 +76,17 @@ class Member < ApplicationRecord
 
   def otp_setup_incomplete?
     !two_factor_enabled? && otp_secret_key.present?
+  end
+
+  class << self
+    def find_for_database_authentication(warden_conditions)
+      conditions = warden_conditions.dup
+      if login = conditions.delete(:login)
+        where(conditions.to_h).where(["LOWER(username) = :value OR LOWER(email) = :value", { value: login.downcase }]).first
+      elsif conditions.has_key?(:username) || conditions.has_key?(:email)
+        where(conditions.to_h).first
+      end
+    end
   end
 
   private

@@ -10,7 +10,7 @@
     - if current_member.two_factor_enabled?
       = link_to 'Disable two-factor', disable_two_factor_path, method: :post, class: 'button button-primary'
     - else
-      = link_to 'Enable two-factor', two_factor_path, method: :post, class: 'button button-primary'
+      = link_to 'Setup two-factor', new_two_factor_path, class: 'button button-primary'
 
 hr
 - if current_member.two_factor_enabled?

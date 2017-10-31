@@ -13,14 +13,16 @@ module Members
     end
 
     def create
-      if current_member.update(two_factor_setup_params)
-        if current_member.setup_two_factor!
-          redirect_to edit_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
+      ActiveRecord::Base.transaction do
+        if current_member.update(two_factor_setup_params)
+          if current_member.setup_two_factor!
+            redirect_to edit_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
+          else
+            redirect_back fallback_location: two_factor_path, error: "Failed to setup two factor authentication. Please try again"
+          end
         else
-          redirect_back fallback_location: two_factor_path, error: "Failed to setup two factor authentication. Please try again"
+          redirect_back fallback_location: two_factor_path, error: "Failed to assign a delivery method. Please try again"
         end
-      else
-        redirect_back fallback_location: two_factor_path, error: "Failed to assign a delivery method. Please try again"
       end
     end
 
