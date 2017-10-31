@@ -59,8 +59,7 @@ class Member < ApplicationRecord
       if authenticated_by_phone?
         self.phone_number = attributes[:phone_number] unless attributes[:phone_number].blank?
         self.country_code = attributes[:country_code] unless attributes[:country_code].blank?
-        create_direct_otp
-        send_direct_otp_sms!
+        send_new_direct_otp_code_sms!
       elsif authenticated_by_app?
         self.otp_secret_key = generate_totp_secret
       else
@@ -92,6 +91,11 @@ class Member < ApplicationRecord
     !two_factor_enabled? && otp_secret_key.present?
   end
 
+  def send_new_direct_otp_code_sms!
+    create_direct_otp
+    Workers::SmsAuthentication.perform_async(full_phone_number, "Your authentication code is #{direct_otp}")
+  end
+
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
@@ -104,10 +108,6 @@ class Member < ApplicationRecord
   end
 
   private
-
-  def send_direct_otp_sms!
-    Workers::SmsAuthentication.perform_async(full_phone_number, "Your authentication code is #{direct_otp}")
-  end
 
   def email_against_username
     errors.add(:username, :invalid) if Member.where(email: username).exists?

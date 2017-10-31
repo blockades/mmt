@@ -1,7 +1,9 @@
-= form_for current_member, url: new_password_path, method: :patch do |f|
+= form_for current_member, url: member_settings_password_path, method: :patch do |f|
   = render partial: 'fields', locals: { f: f }
   - if current_member.otp_setup_complete?
+    p You have two factor authentication enabled. To change your password you please enter an authentication code.
     = f.label :two_factor_code
-    = f.password_field :otp_code, required: true
+    = text_field_tag 'two_factor[otp_code]', nil, required: true
+    = link_to 'Send code', member_settings_resend_two_factor_code_path, remote: true, class: 'button'
   br
   = f.submit 'Update', class: 'button button-primary'

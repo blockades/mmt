@@ -12,6 +12,8 @@
     = f.submit :submit
 
 p Security
-= link_to 'Two Factor Authentication', member_settings_two_factor_path(current_member)
+ul
+  li= link_to 'Two Factor Authentication', member_settings_two_factor_path(current_member)
+  li= link_to 'Change Password', new_member_settings_password_path(current_member)
 
 

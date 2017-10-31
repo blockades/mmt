@@ -4,7 +4,7 @@ module Members
   class TwoFactorController < ApplicationController
     include QrCodesHelper
 
-    before_action :reauthenticate_member!
+    before_action :reauthenticate_member!, except: [:resend_code]
     before_action :return_to_index, only: :new, if: proc { current_member.two_factor_enabled? }
     before_action :return_to_index, only: :edit, if: proc { current_member.otp_secret_key.blank? || current_member.two_factor_enabled? }
 
@@ -39,6 +39,14 @@ module Members
     def destroy
       notice = current_member.disable_two_factor! ? "Two factor authentication disabled" : "Failed to disable two factor authentication"
       redirect_to member_settings_two_factor_path, notice: notice
+    end
+
+    def resend_code
+      current_member.send_new_direct_otp_code_sms!
+
+      respond_to do |format|
+        format.json { render json: { success: true, message: "Two factor code sent" } }
+      end
     end
 
     private
