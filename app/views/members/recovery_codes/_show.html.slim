@@ -7,7 +7,7 @@ table style="width: 100%;"
       th
       th
   tbody
-    - current_member.otp_recovery_codes.each_slice(3) do |row|
+    - @member.otp_recovery_codes.each_slice(3) do |row|
       tr
         td.center= row[0]
         td.center= row[1]

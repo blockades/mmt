@@ -1,19 +1,19 @@
-= form_for current_member do |f|
+= form_for @member do |f|
   .field
     = f.label :username
     = f.text_field :username
   .field.inline-block
     = f.label :country_code
-    = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, selected: MagicMoneyTree::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
+    = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, selected: MagicMoneyTree::MobileCountryCodes.with_code_only.detect { |code| code == @member.country_code }), include_blank: true
   .field.inline-block
     = f.label :phone_number
-    = f.text_field :phone_number, value: current_member.phone_number, autofocus: true
+    = f.text_field :phone_number, value: @member.phone_number, autofocus: true
   .field
     = f.submit :submit
 
 p Security
 ul
-  li= link_to 'Two Factor Authentication', member_settings_two_factor_path(current_member)
-  li= link_to 'Change Password', new_member_settings_password_path(current_member)
+  li= link_to 'Two Factor Authentication', member_settings_two_factor_path(@member)
+  li= link_to 'Change Password', new_member_settings_password_path(@member)
 
 

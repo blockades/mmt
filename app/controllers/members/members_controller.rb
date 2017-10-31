@@ -22,7 +22,7 @@ module Members
     private
 
     def find_member
-      @member = params[:id] ? Member.friendly.find(params[:id]) : current_member
+      @member = Member.friendly.find(params[:id]).decorate
     end
 
     def member_params

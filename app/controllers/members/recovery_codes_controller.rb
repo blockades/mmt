@@ -3,9 +3,15 @@
 module Members
   class RecoveryCodesController < ApplicationController
     before_action :reauthenticate_member!
+    before_action :decorate_member
 
-    def index
-      @recovery_codes = current_member.otp_recovery_codes
+    def show
+    end
+
+    private
+
+    def decorate_member
+      @member = current_member.decorate
     end
 
   end

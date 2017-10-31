@@ -34,7 +34,7 @@ Rails.application.routes.draw do
         # ==> Two Factor Authentication
         get 'two_factor_authentication' => 'two_factor#index', as: :two_factor
         get 'two_factor_authentication/resend_code' => 'two_factor#resend_code', as: :resend_two_factor_code
-        get 'two_factor_authentication/recovery_codes' => 'recovery_codes#index', as: :two_factor_recovery_codes
+        get 'two_factor_authentication/recovery_codes' => 'recovery_codes#show', as: :two_factor_recovery_codes
         get 'two_factor_authentication/fallback_sms' => 'fallback_sms#new', as: :new_two_factor_fallback_sms
         post 'two_factor_authentication/fallback_sms' => 'fallback_sms#create', as: :two_factor_fallback_sms
         post 'two_factor_authentication/disable' => 'two_factor#destroy', as: :disable_two_factor
