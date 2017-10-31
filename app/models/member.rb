@@ -27,7 +27,7 @@ class Member < ApplicationRecord
   validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
   validates :slug, uniqueness: { case_sensitive: true }
 
-  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.values }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
   validates :phone_number, presence: true, format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ }, if: proc { country_code.present? }
   validates :country_code, presence: true, inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only }, if: proc { phone_number.present? }
 
@@ -45,21 +45,34 @@ class Member < ApplicationRecord
   end
 
   def authenticated_by_app?
-    otp_delivery_method == 'sms'
-  end
-
-  def authenticated_by_phone?
     otp_delivery_method == 'app'
   end
 
-  def setup_two_factor!
-    update!(otp_secret_key: self.generate_totp_secret, otp_recovery_codes: self.generate_otp_recovery_codes)
+  def authenticated_by_phone?
+    otp_delivery_method == 'sms'
   end
 
-  def confirm_two_factor!(method)
-    delivery_method = TWO_FACTOR_DELIVERY_METHODS[method]
-    return false unless delivery_method
-    update!(two_factor_enabled: true, otp_delivery_method: delivery_method)
+  def setup_two_factor!(attributes)
+    ActiveRecord::Base.transaction do
+      self.otp_delivery_method = attributes[:otp_delivery_method]
+      if authenticated_by_phone?
+        self.phone_number = attributes[:phone_number] unless attributes[:phone_number].blank?
+        self.country_code = attributes[:country_code] unless attributes[:country_code].blank?
+        create_direct_otp
+        send_direct_otp_sms!
+      elsif authenticated_by_app?
+        self.otp_secret_key = generate_totp_secret
+      else
+        raise ActiveRecord::Rollback
+      end
+      self.otp_recovery_codes = generate_otp_recovery_codes
+      save!
+    end
+  end
+
+  def confirm_two_factor!(code)
+    return false unless authenticate_otp(code)
+    update!(two_factor_enabled: true)
   end
 
   def disable_two_factor!
@@ -90,6 +103,10 @@ class Member < ApplicationRecord
   end
 
   private
+
+  def send_direct_otp_sms!
+    Workers::SmsAuthentication.perform_async(full_phone_number, "Your authentication code is #{direct_otp}")
+  end
 
   def email_against_username
     errors.add(:username, :invalid) if Member.where(email: username).exists?
