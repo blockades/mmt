@@ -17,9 +17,9 @@ module Members
     def create
       return unless setup_params[:otp_delivery_method]
       if current_member.setup_two_factor!(setup_params)
-        redirect_to edit_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
+        redirect_to edit_member_settings_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
       else
-        redirect_back fallback_location: two_factor_path, error: "Failed to setup two factor authentication. Please try again"
+        redirect_back fallback_location: member_settings_two_factor_path, error: "Failed to setup two factor authentication. Please try again"
       end
     end
 
@@ -29,22 +29,22 @@ module Members
     def update
       return unless confirmation_params[:code]
       if current_member.confirm_two_factor!(confirmation_params[:code])
-        redirect_to two_factor_path, notice: "You have enabled two factor authenitcation"
+        redirect_to member_settings_two_factor_path, notice: "You have enabled two factor authenitcation"
       else
         current_member.update(two_factor_enabled: false, otp_secret_key: nil, otp_delivery_method: nil)
-        redirect_to new_two_factor_path, error: "Authentication code mismatch, please try again"
+        redirect_to new_member_settings_two_factor_path, error: "Authentication code mismatch, please try again"
       end
     end
 
     def destroy
       notice = current_member.disable_two_factor! ? "Two factor authentication disabled" : "Failed to disable two factor authentication"
-      redirect_to two_factor_path, notice: notice
+      redirect_to member_settings_two_factor_path, notice: notice
     end
 
     private
 
     def return_to_index
-      redirect_to two_factor_path, notice: "You must disable two factor authentication before setting up again"
+      redirect_to member_settings_two_factor_path, notice: "You must disable two factor authentication before setting up again"
     end
 
     def phone_details_present?

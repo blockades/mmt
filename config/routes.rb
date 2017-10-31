@@ -26,19 +26,21 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :portfolios, only: [:show]
 
-    scope :settings do
-      get '/' => 'settings#index', as: :settings
-      resource :password, only: [:new, :update]
+    resources :members, path: '/', only: [:show, :update] do
+      namespace :settings do
+        get '/' => 'settings#index'
+        resource :password, only: [:new, :update], shallow: true
 
-      # ==> Two Factor Authentication
-      get 'two_factor_authentication' => 'two_factor#index', as: :two_factor
-      get 'two_factor_authentication/recovery_codes' => 'recovery_codes#index', as: :two_factor_recovery_codes
-      get 'two_factor_authentication/fallback_sms' => 'fallback_sms#index', as: :two_factor_fallback_sms
-      post 'two_factor_authentication/disable' => 'two_factor#destroy', as: :disable_two_factor
-      resource :two_factor_authentication, only: [:new, :create, :edit, :update],
-        as: :two_factor, controller: :two_factor, path_names: { edit: 'confirm' }
+        # ==> Two Factor Authentication
+        get 'two_factor_authentication' => 'two_factor#index', as: :two_factor
+        get 'two_factor_authentication/recovery_codes' => 'recovery_codes#index', as: :two_factor_recovery_codes
+        get 'two_factor_authentication/fallback_sms' => 'fallback_sms#new', as: :new_two_factor_fallback_sms
+        post 'two_factor_authentication/fallback_sms' => 'fallback_sms#create', as: :two_factor_fallback_sms
+        post 'two_factor_authentication/disable' => 'two_factor#destroy', as: :disable_two_factor
+        resource :two_factor_authentication, only: [:new, :create, :edit, :update],
+          as: :two_factor, controller: :two_factor, path_names: { edit: 'confirm' }
+      end
     end
 
-    resources :members, path: '/', only: [:show, :update]
   end
 end

@@ -26,7 +26,7 @@ module Members
     end
 
     def member_params
-      params.require(:member).permit(:username)
+      params.require(:member).permit(:username, :country_code, :phone_number)
     end
 
   end

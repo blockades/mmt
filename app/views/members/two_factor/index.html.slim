@@ -8,9 +8,9 @@
         .white DISABLED
   .offset-by-eight.two.columns
     - if current_member.two_factor_enabled?
-      = link_to 'Disable two-factor', disable_two_factor_path, method: :post, class: 'button button-primary'
+      = link_to 'Disable two-factor', member_settings_disable_two_factor_path, method: :post, class: 'button button-primary'
     - else
-      = link_to 'Setup two-factor', new_two_factor_path, class: 'button button-primary'
+      = link_to 'Setup two-factor', new_member_settings_two_factor_path, class: 'button button-primary'
 
 hr
 - if current_member.two_factor_enabled?
@@ -21,7 +21,7 @@ hr
       p Recovery codes can be used to access your account in the event you lose access to your device and cannot receive two-factor authentication codes. 
       p MMT cannot restore access to accounts with two-factor authentication enabled for security reasons, saving your recovery codes in a safe place can help keep you from being locked out of your account.
     .two.columns
-      = link_to 'View', two_factor_recovery_codes_path, class: 'button'
+      = link_to 'View', member_settings_two_factor_recovery_codes_path, class: 'button'
 
   hr
   .row
@@ -30,8 +30,15 @@ hr
     .eight.columns
       p Providing a fallback SMS number will allow MMT to send your two-factor authentication codes to an alternate device if you lose your primary device.
       p For security reasons, MMT cannot restore access to accounts with two-factor authentication enabled. If you lose access to both your primary device and your recovery keys, a backup SMS number can get you back in to your account.
+      - if current_member.phone_number?
+        p
+          | Your fallback phone number is: 
+          strong= current_member.full_phone_number
     .two.columns
-      = link_to 'Add SMS number', two_factor_fallback_sms_path, class: 'button'
+      - if current_member.phone_number?
+        = link_to 'Change phone number', member_settings_path(current_member), class: 'button'
+      - else
+        = link_to 'Add SMS number', new_member_settings_two_factor_fallback_sms_path, class: 'button'
 
   hr
   .row
@@ -40,7 +47,7 @@ hr
     .eight.columns
       p
         | Your primary delivery method is: 
-        strong #{current_member.otp_delivery_method}
+        strong #{Member::TWO_FACTOR_DELIVERY_METHODS[current_member.otp_delivery_method]}
     .two.columns
       br
 - else

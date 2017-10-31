@@ -3,8 +3,8 @@ require 'twilio-ruby'
 module TwilioClient
 
   mattr_reader :account_sid, :auth_token
-  @@account_sid = ENV.fetch('TWILIO_ACCOUNT_SID')
-  @@auth_token = ENV.fetch('TWILIO_AUTH_TOKEN')
+  @@account_sid = ENV['TWILIO_ACCOUNT_SID']
+  @@auth_token = ENV['TWILIO_AUTH_TOKEN']
 
   class << self
     def connection
