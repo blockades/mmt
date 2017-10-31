@@ -9,11 +9,18 @@ module Members
     def index
     end
 
+    def new
+    end
+
     def create
-      if current_member.setup_two_factor!
-        redirect_to edit_two_factor_path
+      if current_member.update(two_factor_setup_params)
+        if current_member.setup_two_factor!
+          redirect_to edit_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
+        else
+          redirect_back fallback_location: two_factor_path, error: "Failed to setup two factor authentication. Please try again"
+        end
       else
-        redirect_back fallback_location: two_factor_path
+        redirect_back fallback_location: two_factor_path, error: "Failed to assign a delivery method. Please try again"
       end
     end
 
@@ -25,7 +32,7 @@ module Members
     end
 
     def update
-      return unless two_factor_params[:code]
+      return unless two_factor_confirm_params[:code]
       if current_member.authenticate_otp(two_factor_params[:code])
         notice = current_member.confirm_two_factor!(two_factor_params[:otp_delivery_method]) ? "You have enabled two factor authenitcation" : "Failed to confirm two factor authentication"
         redirect_to two_factor_path, notice: notice
@@ -42,8 +49,16 @@ module Members
 
     private
 
-    def two_factor_params
-      params.require(:two_factor).permit(:code, :otp_delivery_method)
+    def phone_details_present?
+     two_factor_setup_params.has_key?(:phone_number) || two_factor_setup_params.has_key?(:country_code)
+    end
+
+    def two_factor_confirm_params
+      params.require(:two_factor).permit(:code)
+    end
+
+    def two_factor_setup_params
+      params.require(:two_factor).permit(:phone_number, :country_code, :otp_delivery_method)
     end
   end
 end

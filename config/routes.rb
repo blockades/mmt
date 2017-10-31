@@ -35,7 +35,7 @@ Rails.application.routes.draw do
       get 'two_factor_authentication/recovery_codes' => 'recovery_codes#index', as: :two_factor_recovery_codes
       get 'two_factor_authentication/fallback_sms' => 'fallback_sms#index', as: :two_factor_fallback_sms
       post 'two_factor_authentication/disable' => 'two_factor#destroy', as: :disable_two_factor
-      resource :two_factor_authentication, only: [:create, :edit, :update],
+      resource :two_factor_authentication, only: [:new, :create, :edit, :update],
         as: :two_factor, controller: :two_factor, path_names: { edit: 'confirm' }
     end
 
