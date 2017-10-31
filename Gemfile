@@ -21,6 +21,7 @@ gem "devise_invitable"
 gem 'two_factor_authentication'
 gem 'two_factor_recovery', git: "https://github.com/KGibb8/two_factor_recoverable"
 gem 'rqrcode-with-patches', '~> 0.5.4'
+gem 'twilio-ruby', '~> 5.4.3'
 
 gem "friendly_id", "~> 5.1.0"
 gem "interactor-rails"
