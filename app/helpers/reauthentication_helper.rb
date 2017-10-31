@@ -14,6 +14,8 @@ module ReauthenticationHelper
   end
 
   def after_reauthenticate_path
-    session[:return_paths].pop(2).first || request.referer || root_path
+    session[:return_paths].reject do |path|
+      path == request.fullpath
+    end.pop(2).first || root_path
   end
 end
