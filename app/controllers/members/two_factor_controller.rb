@@ -5,6 +5,8 @@ module Members
     include QrCodesHelper
 
     before_action :reauthenticate_member!
+    before_action :return_to_index, only: :new, if: proc { current_member.two_factor_enabled? }
+    before_action :return_to_index, only: :edit, if: proc { current_member.otp_secret_key.blank? || current_member.two_factor_enabled? }
 
     def index
     end
@@ -13,34 +15,24 @@ module Members
     end
 
     def create
-      ActiveRecord::Base.transaction do
-        if current_member.update(two_factor_setup_params)
-          if current_member.setup_two_factor!
-            redirect_to edit_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
-          else
-            redirect_back fallback_location: two_factor_path, error: "Failed to setup two factor authentication. Please try again"
-          end
-        else
-          redirect_back fallback_location: two_factor_path, error: "Failed to assign a delivery method. Please try again"
-        end
+      return unless setup_params[:otp_delivery_method]
+      if current_member.setup_two_factor!(setup_params)
+        redirect_to edit_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
+      else
+        redirect_back fallback_location: two_factor_path, error: "Failed to setup two factor authentication. Please try again"
       end
     end
 
     def edit
-      redirect_to two_factor_path unless current_member.otp_secret_key.present?
-      # %%TODO%% Do we want to save this?
-      # Also render the QRcode as a PNG on the fly using Dragonfly?
-      @qr_code = qr_code_as_html(provisioning_uri)
     end
 
     def update
-      return unless two_factor_confirm_params[:code]
-      if current_member.authenticate_otp(two_factor_params[:code])
-        notice = current_member.confirm_two_factor!(two_factor_params[:otp_delivery_method]) ? "You have enabled two factor authenitcation" : "Failed to confirm two factor authentication"
-        redirect_to two_factor_path, notice: notice
+      return unless confirmation_params[:code]
+      if current_member.confirm_two_factor!(confirmation_params[:code])
+        redirect_to two_factor_path, notice: "You have enabled two factor authenitcation"
       else
         current_member.update(two_factor_enabled: false, otp_secret_key: nil, otp_delivery_method: nil)
-        redirect_to two_factor_path, error: "Authentication code mismatch, please try again"
+        redirect_to new_two_factor_path, error: "Authentication code mismatch, please try again"
       end
     end
 
@@ -51,15 +43,19 @@ module Members
 
     private
 
-    def phone_details_present?
-     two_factor_setup_params.has_key?(:phone_number) || two_factor_setup_params.has_key?(:country_code)
+    def return_to_index
+      redirect_to two_factor_path, notice: "You must disable two factor authentication before setting up again"
     end
 
-    def two_factor_confirm_params
+    def phone_details_present?
+      setup_params.has_key?(:phone_number) || setup_params.has_key?(:country_code)
+    end
+
+    def confirmation_params
       params.require(:two_factor).permit(:code)
     end
 
-    def two_factor_setup_params
+    def setup_params
       params.require(:two_factor).permit(:phone_number, :country_code, :otp_delivery_method)
     end
   end
