@@ -7,7 +7,6 @@ module TwilioClient
   @@auth_token = ENV.fetch('TWILIO_AUTH_TOKEN')
 
   class << self
-
     def connection
       @connection ||= Twilio::REST::Client.new account_sid, auth_token
     end
@@ -19,6 +18,5 @@ module TwilioClient
         body: body
       )
     end
-
   end
 end

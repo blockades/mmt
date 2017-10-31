@@ -28,7 +28,7 @@ module MagicMoneyTree
       end
 
       def with_code_only
-        all.map { |country| country[:code] }
+        all.map { |country| country[:code] }.compact
       end
 
       def for_select

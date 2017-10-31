@@ -325,8 +325,6 @@
   :code: '48'
 - :country: Portugal
   :code: '351'
-- :country: Puerto Rico
-  :code: 
 - :country: Qatar
   :code: '974'
 - :country: Reunion
@@ -371,8 +369,6 @@
   :code: '252'
 - :country: South Africa
   :code: '27'
-- :country: South Sudan (Republic of)
-  :code: 
 - :country: Spain
   :code: '34'
 - :country: Sri Lanka
@@ -415,10 +411,6 @@
   :code: '90'
 - :country: Turkmenistan
   :code: '993'
-- :country: Turks and Caicos Islands
-  :code: 
-- :country: Tuvalu
-  :code: 
 - :country: Uganda
   :code: '256'
 - :country: Ukraine
