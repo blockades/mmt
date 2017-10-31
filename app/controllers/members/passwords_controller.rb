@@ -1,8 +1,8 @@
 module Members
   class PasswordsController < ApplicationController
-    before_action :find_member, only: [:update]
 
     def new
+      @member = current_member.decorate
     end
 
     def update
@@ -35,10 +35,6 @@ module Members
 
     def two_factor_params
       params.require(:two_factor).permit(:otp_code)
-    end
-
-    def find_member
-      @member = Member.friendly.find_by(params[:id])
     end
 
   end
