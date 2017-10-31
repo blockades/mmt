@@ -4,15 +4,13 @@
       = f.label 'Choose your delivery method'
       = f.select :otp_delivery_method, Member::TWO_FACTOR_DELIVERY_METHODS.map { |value, message| [message, value] }, { include_blank: '-- Select --' }, required: true, id: 'deliverySelect'
       .phonedetails.hidden
-        p Please enter a phone number
-        .field
+        p Please enter a phone number for authentication
+        .field.inline-block
           = f.label :country_code
-          br/
-          = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, MagicMoneyTree::MobileCountryCodes.all.detect { |h| h[:code] == current_member.country_code }), include_blank: true
-        .field
+          = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, selected: MagicMoneyTree::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
+        .field.inline-block
           = f.label :phone_number
-          br/
-          = f.text_field :phone_number, autofocus: true
+          = f.text_field :phone_number, value: current_member.phone_number, autofocus: true
       .actions
       = f.submit "Setup", class: 'button button-primary'
 

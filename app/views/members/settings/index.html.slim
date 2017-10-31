@@ -1,7 +1,15 @@
 = form_for current_member do |f|
-  = f.label :username
-  = f.text_field :username
-  = f.submit :submit
+  .field
+    = f.label :username
+    = f.text_field :username
+  .field.inline-block
+    = f.label :country_code
+    = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, selected: MagicMoneyTree::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
+  .field.inline-block
+    = f.label :phone_number
+    = f.text_field :phone_number, value: current_member.phone_number, autofocus: true
+  .field
+    = f.submit :submit
 
 p Security
 = link_to 'Two Factor Authentication', two_factor_path
