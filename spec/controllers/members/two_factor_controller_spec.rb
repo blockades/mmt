@@ -4,63 +4,97 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
   let(:portfolio) { create :portfolio }
   let(:member) { portfolio.member }
 
-  before { sign_in member }
+  before do
+    sign_in member
+    @request.session[:reauthenticated_at] = Time.now
+  end
 
-  describe 'setup' do
-    describe '#GET_setup' do
-      let(:get_setup) { get :GET_setup }
+  describe '#index' do
+    let(:get_index) { get :index }
+
+    it "returns a 200" do
+      get_index
+      expect(response.status).to eq 200
+    end
+
+    it 'assigns @member' do
+      expect{ get_index }.to change{ assigns :member }
+    end
+
+    it 'renders the setup template' do
+      expect(get_index).to render_template :index
+    end
+  end
+
+  describe '#new' do
+    let(:get_new) { get :new }
+
+    context "after ConfirmedTwoFactorAuthentication" do
+      before do
+        allow(member).to receive(:two_factor_enabled?).and_return(true)
+      end
+
+      it "redirects to index" do
+        expect(get_new).to redirect_to member_settings_two_factor_path
+      end
+    end
+
+    context "two factor not enabled" do
+      it "returns a 200" do
+        get_new
+        expect(response.status).to eq 200
+      end
+
+      it 'assigns @member' do
+        expect{ get_new }.to change{ assigns :member }
+      end
 
       it 'renders the setup template' do
-        expect(get_setup).to render_template :GET_setup
+        expect(get_new).to render_template :new
       end
-    end
-
-    describe '#PATCH_setup' do
-      let(:patch_setup) { patch :PATCH_setup }
-
     end
   end
 
-  describe 'confirm' do
-    before do
-      member.setup_two_factor!
-    end
+  describe '#edit' do
+    let(:get_edit) { get :edit }
 
-    describe '#GET_confirm' do
-      let(:get_confirm) { get :GET_confirm }
+    context 'after SetupTwoFactorAuthentication' do
+      it "returns a 200" do
+        get_edit
+        expect(response.status).to eq 200
+      end
 
-      it 'renders the confirm template' do
-        expect(get_confirm).to render_template :GET_confirm
+      it 'assigns @member' do
+        expect{ get_edit }.to change{ assigns :member }
+      end
+
+      it 'renders the setup template' do
+        expect(get_edit).to render_template :edit
       end
     end
 
-    describe '#PATCH_confirm' do
-      let(:patch_confirm) { patch :PATCH_confirm }
-
-    end
-
-  end
-
-  describe 'disable' do
-    before do
-      member.setup_two_factor!
-      member.confirm_two_factor!
-    end
-
-    describe '#GET_disable' do
-
-      let(:get_disable) { get :GET_disable }
-
-      it 'renders the disable template' do
-        expect(get_disable).to render_template :GET_disable
+    context "before SetupTwoFactorAuthentication" do
+      before do
+        allow(member).to receive(:otp_secret_key).and_return(nil)
       end
 
+      it "redirects to index" do
+        expect(get_edit).to redirect_to member_settings_two_factor_path
+      end
     end
 
-    describe '#PATCH_disable' do
-      let(:patch_disable) { patch :PATCH_disable }
+    context "after ConfirmedTwoFactorAuthentication" do
+      before do
+        allow(member).to receive(:two_factor_enabled?).and_return(true)
+      end
 
+      it "redirects to index" do
+        expect(get_edit).to redirect_to member_settings_two_factor_path
+      end
     end
   end
 
+  describe '#create' do
+
+  end
 end

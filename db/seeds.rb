@@ -7,8 +7,5 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 Member.destroy_all
 
-Member.create username: 'admin1', email: 'admin@mmt.blockades.org', password: 'admin123', admin: true
-Member.create username: 'bob', email: 'bob.j.bobess@farcical.net', password: '123456'
-Member.create username: 'funky', email: 'j.a.funky@hotmail.net', password: '123456'
-Member.create username: 'danny', email: 'danny@jman.net', password: '123456'
-
+Member.create username: 'develop', email: 'developer@blockades.dev', password: 'Gandalf01', admin: true
+Member.create username: 'dummy', email: 'dummy@blockades.dev', password: 'Gandalf01'
