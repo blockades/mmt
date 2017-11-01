@@ -4,38 +4,55 @@ class SetupTwoFactorAuthentication
   include Interactor
 
   def call
-    store_delivery_method!
-    member.authenticated_by_phone? ? setup_two_factor_by_phone! : setup_two_factor_by_app!
-    generate_recovery_codes!
-    if member.save!
-      context.message = "Setup authentication by #{otp_delivery_method}. Please continue to confirm two factor authentication"
-    else
-      context.fail!(message: "Failed to setup two factor authentication. Please try again")
+    ActiveRecord::Base.transaction do
+      member.update otp_delivery_method: otp_delivery_method
+
+      unless setup_by_method.nil?
+        setup_by_method.call
+        context.message = success_message
+      else
+        context.fail!(message: 'Invalid delivery method')
+        raise ActiveRecord::Rollback
+      end
     end
   end
 
   private
 
-  def store_delivery_method!
-    member.otp_delivery_method = otp_delivery_method
+  def setup_by_method
+    {
+      app: Proc.new { setup_by_app },
+      sms: Proc.new { setup_by_phone }
+    }.with_indifferent_access[member.otp_delivery_method]
   end
 
-  def setup_two_factor_by_phone!
-    member.phone_number = phone_number unless phone_number.blank?
-    member.country_code = country_code unless country_code.blank?
-    member.send_new_direct_otp_code_sms! unless member.phone_number.blank?
+  def setup_by_app
+    context.fail!(message: "Failed to setup two factor authentication. Please try again") unless member.update! app_params
   end
 
-  def setup_two_factor_by_app!
-    member.otp_secret_key = member.generate_totp_secret
+  def setup_by_phone
+    if member.update! phone_params
+      member.create_direct_otp
+      member.send_authentication_code_by_sms!
+    else
+      context.fail!(message: "Failed to setup two factor authentication. Please try again")
+    end
   end
 
-  def generate_recovery_codes!
-    member.otp_recovery_codes = member.generate_otp_recovery_codes
+  def success_message
+    "Setup authentication by #{Member::TWO_FACTOR_DELIVERY_METHODS[member.otp_delivery_method]}. Please continue to confirm two factor authentication"
   end
 
   def setup_params
     context.setup_params
+  end
+
+  def app_params
+    { otp_secret_key: member.generate_totp_secret, otp_recovery_codes: member.generate_otp_recovery_codes }
+  end
+
+  def phone_params
+    { phone_number: phone_number, country_code: country_code, otp_recovery_codes: member.generate_otp_recovery_codes }
   end
 
   def member

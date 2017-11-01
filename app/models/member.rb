@@ -65,8 +65,7 @@ class Member < ApplicationRecord
     !two_factor_enabled? && otp_secret_key.present?
   end
 
-  def send_new_direct_otp_code_sms!
-    create_direct_otp
+  def send_authentication_code_by_sms!
     Workers::SmsAuthentication.perform_async(full_phone_number, "Your authentication code is #{direct_otp}")
   end
 

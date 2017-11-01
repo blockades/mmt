@@ -38,7 +38,7 @@ hr
       - if @member.phone_number?
         = link_to 'Change phone number', member_settings_path(@member), class: 'button'
       - else
-        = link_to 'Add SMS number', new_member_settings_two_factor_fallback_sms_path, class: 'button'
+        = link_to 'Add SMS number', member_settings_new_two_factor_fallback_sms_path, class: 'button'
 
   hr
   .row

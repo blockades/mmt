@@ -44,8 +44,8 @@ module Members
     end
 
     def resend_code
-      # %%TODO%% Restrict abuse of this using a nonce
-      current_member.send_new_direct_otp_code_sms!
+      current_member.create_direct_otp
+      current_member.send_authentication_code_by_sms!
 
       respond_to do |format|
         format.json { render json: { success: true, message: "Two factor code sent" } }
