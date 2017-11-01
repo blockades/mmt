@@ -53,7 +53,7 @@ end
 group :test do
   gem "capybara"
   gem "database_cleaner"
-  gem "factory_girl_rails"
+  gem "factory_bot_rails"
   gem "faker"
   gem "rails-controller-testing"
   gem "rspec-rails"
