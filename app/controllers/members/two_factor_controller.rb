@@ -17,10 +17,11 @@ module Members
 
     def create
       return unless setup_params[:otp_delivery_method]
-      if current_member.setup_two_factor!(setup_params)
-        redirect_to edit_member_settings_two_factor_path, notice: "Delivery method assigned. Please continue to confirm two factor authentication"
+      result = SetupTwoFactorAuthentication.call(member: current_member, setup_params: setup_params)
+      if result.success?
+        redirect_to edit_member_settings_two_factor_path, notice: result.message
       else
-        redirect_back fallback_location: member_settings_two_factor_path, error: "Failed to setup two factor authentication. Please try again"
+        redirect_back fallback_location: member_settings_two_factor_path, error: result.message
       end
     end
 
@@ -29,20 +30,21 @@ module Members
 
     def update
       return unless confirmation_params[:code]
-      if current_member.confirm_two_factor!(confirmation_params[:code])
-        redirect_to member_settings_two_factor_path, notice: "You have enabled two factor authenitcation"
+      result = ConfirmTwoFactorAuthentication.call(member: current_member, authentication_code: confirmation_params[:code])
+      if result.success?
+        redirect_to member_settings_two_factor_path, notice: result.message
       else
-        current_member.update(two_factor_enabled: false, otp_secret_key: nil, otp_delivery_method: nil)
-        redirect_to new_member_settings_two_factor_path, error: "Authentication code mismatch, please try again"
+        redirect_to new_member_settings_two_factor_path, error: result.message
       end
     end
 
     def destroy
-      notice = current_member.disable_two_factor! ? "Two factor authentication disabled" : "Failed to disable two factor authentication"
-      redirect_to member_settings_two_factor_path, notice: notice
+      result = DisableTwoFactorAuthentication.call(member: current_member)
+      redirect_to member_settings_two_factor_path, notice: result.message
     end
 
     def resend_code
+      # %%TODO%% Restrict abuse of this using a nonce
       current_member.send_new_direct_otp_code_sms!
 
       respond_to do |format|

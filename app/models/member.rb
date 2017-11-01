@@ -53,32 +53,6 @@ class Member < ApplicationRecord
     otp_delivery_method == 'sms'
   end
 
-  def setup_two_factor!(attributes)
-    ActiveRecord::Base.transaction do
-      self.otp_delivery_method = attributes[:otp_delivery_method]
-      if authenticated_by_phone?
-        self.phone_number = attributes[:phone_number] unless attributes[:phone_number].blank?
-        self.country_code = attributes[:country_code] unless attributes[:country_code].blank?
-        send_new_direct_otp_code_sms!
-      elsif authenticated_by_app?
-        self.otp_secret_key = generate_totp_secret
-      else
-        raise ActiveRecord::Rollback
-      end
-      self.otp_recovery_codes = generate_otp_recovery_codes
-      save!
-    end
-  end
-
-  def confirm_two_factor!(code)
-    return false unless authenticate_otp(code)
-    update!(two_factor_enabled: true)
-  end
-
-  def disable_two_factor!
-    update!(otp_secret_key: nil, two_factor_enabled: false, otp_delivery_method: nil)
-  end
-
   def need_two_factor_authentication?(request)
     otp_setup_complete?
   end
