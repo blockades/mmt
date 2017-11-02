@@ -140,10 +140,25 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
   end
 
   describe 'GET resend_code' do
-    let(:get_resend_code) { get :resend_code }
+    let(:get_resend_code) { get :resend_code, xhr: true }
+    let(:json_response) { JSON.parse(response.body) }
 
-    it "" do
+    context "outside nonce timestamp" do
+      it "renders a JSON response" do
+        get_resend_code
+        expect(json_response).to eq ({ "success" => true, "message" => "Two factor code sent" })
+      end
+    end
 
+    context "within nonce timestamp" do
+      before do
+        @request.session[:resend_two_factor_code] = nonce(Time.now)
+      end
+
+      it "renders a JSON response" do
+        get_resend_code
+        expect(json_response).to eq ({ "success" => false, "message" => "Wait 5 minutes before requesting another code" })
+      end
     end
   end
 end

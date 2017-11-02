@@ -9,8 +9,6 @@ module Members
     before_action :return_to_index, only: :edit, if: proc { current_member.otp_secret_key.blank? || current_member.two_factor_enabled? }
     before_action :decorate_member, only: [:index, :new, :edit]
 
-    NONCE_SECRET = ENV['TWO_FACTOR_NONCE_SECRET']
-
     def index
     end
 
@@ -47,10 +45,10 @@ module Members
 
     def resend_code
       respond_to do |format|
-        if session[:resend_two_factor_code] && validate_nonce(NONCE_SECRET, session[:resend_two_factor_code], 320.seconds)
-          format.json { render json: { success: false, message: "Wait 5 minutes before requesting another authentication code" } }
+        if session[:resend_two_factor_code] && validate_nonce(session[:resend_two_factor_code], 320.seconds)
+          format.json { render json: { success: false, message: "Wait 5 minutes before requesting another code" } }
         else
-          session[:resend_two_factor_code] = nonce(NONCE_SECRET, Time.now)
+          session[:resend_two_factor_code] = nonce(Time.now)
           current_member.create_direct_otp
           current_member.send_authentication_code_by_sms!
           format.json { render json: { success: true, message: "Two factor code sent" } }

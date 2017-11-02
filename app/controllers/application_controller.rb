@@ -54,13 +54,12 @@ class ApplicationController < ActionController::Base
     render file: 'public/403', status: 403, layout: false
   end
 
-  helper_method :nonce, :validate_nonce
-  def nonce(secret, time)
-    ActionController::HttpAuthentication::Digest.nonce(secret, time)
+  def nonce(time)
+    ActionController::HttpAuthentication::Digest.nonce(ENV.fetch('NONCE_SECRET'), time)
   end
 
-  def validate_nonce(secret, value, seconds_to_timeout)
-    ActionController::HttpAuthentication::Digest.validate_nonce(secret, request, value, seconds_to_timeout)
+  def validate_nonce(nonce_to_validate, seconds_to_timeout)
+    ActionController::HttpAuthentication::Digest.validate_nonce(ENV.fetch('NONCE_SECRET'), request, nonce_to_validate, seconds_to_timeout)
   end
 
 end

@@ -2,11 +2,15 @@
 
 require "simplecov"
 require "webmock/rspec"
+require "securerandom"
 
 SimpleCov.start "rails" do
   add_filter "/app/channels"
   add_filter "/app/jobs"
 end
+
+ENV["OTP_SECRET_ENCRYPTION_KEY"] = Digest::SHA2.hexdigest 'SUPER_DUPER_SECRET_KEY'
+ENV["NONCE_SECRET"] = SecureRandom.hex
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -29,6 +33,10 @@ end
 module SpecHelperMethods
   def reauthenticate!
     @request.session[:reauthenticated_at] = Time.now
+  end
+
+  def nonce(time)
+    ActionController::HttpAuthentication::Digest.nonce(ENV.fetch('NONCE_SECRET'), time)
   end
 
   def json_fixture(name)
