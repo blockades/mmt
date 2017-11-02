@@ -1,5 +1,10 @@
-= form_for @member, url: member_settings_password_path, method: :patch do |f|
-  = render partial: 'fields', locals: { f: f }
+= form_for :member, url: member_settings_password_path, method: :patch do |f|
+  = f.label :current_password
+  = f.password_field :current_password, autofocus: true
+  = f.label :new_password
+  = f.password_field :password, autofocus: true
+  = f.label :confirm_new_password
+  = f.password_field :password_confirmation, autofocus: true
   - if @member.two_factor_enabled?
     p
       | You have two factor authentication enabled using 

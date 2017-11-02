@@ -5,7 +5,7 @@ class AuthenticateMember
 
   def call
     if member.valid_password?(password)
-      context.message = "Successfully reauthenticated"
+      context.message = "Successfully authenticated"
     else
       context.fail!(message: 'Incorrect password')
     end
