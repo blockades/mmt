@@ -6,10 +6,10 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
 
   before do
     sign_in member
-    @request.session[:reauthenticated_at] = Time.now
+    reauthenticate!
   end
 
-  describe '#index' do
+  describe 'GET index' do
     let(:get_index) { get :index }
 
     it "returns a 200" do
@@ -26,20 +26,10 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe '#new' do
+  describe 'GET new' do
     let(:get_new) { get :new }
 
-    context "after ConfirmedTwoFactorAuthentication" do
-      before do
-        allow(member).to receive(:two_factor_enabled?).and_return(true)
-      end
-
-      it "redirects to index" do
-        expect(get_new).to redirect_to member_settings_two_factor_path
-      end
-    end
-
-    context "two factor not enabled" do
+    context "before ConfirmTwoFactorAuthentication" do
       it "returns a 200" do
         get_new
         expect(response.status).to eq 200
@@ -55,10 +45,32 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe '#edit' do
+  describe 'POST create' do
+    context "successful SetupTwoFactorAuthentication" do
+      let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: 'app' } } }
+
+      it "redirects to the edit page" do
+        expect(post_create).to redirect_to edit_member_settings_two_factor_path
+      end
+    end
+
+    context "failed SetupTwoFactorAuthentication" do
+      let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: 'bob' } } }
+
+      it "redirects to the index page" do
+        expect(post_create).to redirect_to member_settings_two_factor_path
+      end
+    end
+  end
+
+  describe 'GET edit' do
     let(:get_edit) { get :edit }
 
     context 'after SetupTwoFactorAuthentication' do
+      before do
+        member.update otp_secret_key: member.generate_totp_secret, otp_recovery_codes: member.generate_otp_recovery_codes
+      end
+
       it "returns a 200" do
         get_edit
         expect(response.status).to eq 200
@@ -83,7 +95,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
       end
     end
 
-    context "after ConfirmedTwoFactorAuthentication" do
+    context "after ConfirmTwoFactorAuthentication" do
       before do
         allow(member).to receive(:two_factor_enabled?).and_return(true)
       end
@@ -94,7 +106,44 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe '#create' do
+  describe 'PATCH update' do
+    context "successful ConfirmTwoFactorAuthentication" do
+      let(:patch_update) { patch :update, params: { two_factor: { code: member.direct_otp } } }
 
+      before do
+        member.create_direct_otp
+        member.update otp_delivery_method: 'app'
+      end
+
+      it "redirects to the edit page" do
+        expect(patch_update).to redirect_to member_settings_two_factor_path
+      end
+    end
+
+    context "failed ConfirmTwoFactorAuthentication" do
+      let(:patch_update) { patch :update, params: { two_factor: { code: '123456' } } }
+
+      before { allow(member).to receive(:authenticate_otp).and_return(false) }
+
+      it "redirects to the index page" do
+        expect(patch_update).to redirect_to new_member_settings_two_factor_path
+      end
+    end
+  end
+
+  describe 'DELETE destroy' do
+    let(:delete_destroy) { delete :destroy }
+
+    it "redirects to the index page" do
+      expect(delete_destroy).to redirect_to member_settings_two_factor_path
+    end
+  end
+
+  describe 'GET resend_code' do
+    let(:get_resend_code) { get :resend_code }
+
+    it "" do
+
+    end
   end
 end

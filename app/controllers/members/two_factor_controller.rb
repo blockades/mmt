@@ -5,9 +5,9 @@ module Members
     include QrCodesHelper
 
     before_action :reauthenticate_member!, except: [:resend_code]
-    before_action :decorate_member, only: [:index, :new, :edit]
     before_action :return_to_index, only: :new, if: proc { current_member.two_factor_enabled? }
     before_action :return_to_index, only: :edit, if: proc { current_member.otp_secret_key.blank? || current_member.two_factor_enabled? }
+    before_action :decorate_member, only: [:index, :new, :edit]
 
     def index
     end

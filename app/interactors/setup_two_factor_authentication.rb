@@ -7,7 +7,7 @@ class SetupTwoFactorAuthentication
     ActiveRecord::Base.transaction do
       member.update otp_delivery_method: otp_delivery_method
 
-      unless setup_by_method.nil?
+      unless setup_by_method.blank?
         setup_by_method.call
         context.message = success_message
       else
@@ -17,7 +17,7 @@ class SetupTwoFactorAuthentication
     end
   end
 
-  private
+  protected
 
   def setup_by_method
     {
@@ -42,6 +42,8 @@ class SetupTwoFactorAuthentication
   def success_message
     "Setup authentication by #{Member::TWO_FACTOR_DELIVERY_METHODS[member.otp_delivery_method]}. Please continue to confirm two factor authentication"
   end
+
+  private
 
   def setup_params
     context.setup_params

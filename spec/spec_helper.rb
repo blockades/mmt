@@ -27,6 +27,10 @@ RSpec.configure do |config|
 end
 
 module SpecHelperMethods
+  def reauthenticate!
+    @request.session[:reauthenticated_at] = Time.now
+  end
+
   def json_fixture(name)
     File.read(Rails.root.join('spec/support/fixtures', name+'.json'))
   end
