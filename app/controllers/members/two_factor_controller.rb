@@ -9,6 +9,8 @@ module Members
     before_action :return_to_index, only: :edit, if: proc { current_member.otp_secret_key.blank? || current_member.two_factor_enabled? }
     before_action :decorate_member, only: [:index, :new, :edit]
 
+    NONCE_SECRET = ENV['TWO_FACTOR_NONCE_SECRET']
+
     def index
     end
 
@@ -44,11 +46,15 @@ module Members
     end
 
     def resend_code
-      current_member.create_direct_otp
-      current_member.send_authentication_code_by_sms!
-
       respond_to do |format|
-        format.json { render json: { success: true, message: "Two factor code sent" } }
+        if session[:resend_two_factor_code] && validate_nonce(NONCE_SECRET, session[:resend_two_factor_code], 320.seconds)
+          format.json { render json: { success: false, message: "Wait 5 minutes before requesting another authentication code" } }
+        else
+          session[:resend_two_factor_code] = nonce(NONCE_SECRET, Time.now)
+          current_member.create_direct_otp
+          current_member.send_authentication_code_by_sms!
+          format.json { render json: { success: true, message: "Two factor code sent" } }
+        end
       end
     end
 
@@ -60,10 +66,6 @@ module Members
 
     def return_to_index
       redirect_to member_settings_two_factor_path, notice: "You must disable two factor authentication before setting up again"
-    end
-
-    def phone_details_present?
-      setup_params.has_key?(:phone_number) || setup_params.has_key?(:country_code)
     end
 
     def confirmation_params

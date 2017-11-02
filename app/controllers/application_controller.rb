@@ -53,4 +53,14 @@ class ApplicationController < ActionController::Base
   def rescue_403
     render file: 'public/403', status: 403, layout: false
   end
+
+  helper_method :nonce, :validate_nonce
+  def nonce(secret, time)
+    ActionController::HttpAuthentication::Digest.nonce(secret, time)
+  end
+
+  def validate_nonce(secret, value, seconds_to_timeout)
+    ActionController::HttpAuthentication::Digest.validate_nonce(secret, request, value, seconds_to_timeout)
+  end
+
 end
