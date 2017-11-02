@@ -10,6 +10,18 @@ describe Member, type: :model do
   include_examples 'devise authenticatable with username or email', Member
 
   describe 'two factor authentication' do
+    describe '#otp_delivery_method' do
+      it '#authenticated_by_app?' do
+        member.otp_delivery_method = 'app'
+        expect(member.authenticated_by_app?).to be_truthy
+      end
+
+      it '#authenticated_by_phone?' do
+        member.otp_delivery_method = 'sms'
+        expect(member.authenticated_by_phone?).to be_truthy
+      end
+    end
+
     describe '#otp_setup_complete' do
       it 'is complete when enabled and key present' do
         expect(member.otp_setup_complete?).to be_falsey

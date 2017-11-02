@@ -2,15 +2,20 @@
 
 class ReauthenticationController < ApplicationController
   include ReauthenticationHelper
+  layout 'devise'
 
   def new
     render 'devise/sessions/reauthenticate'
   end
 
   def create
-    return unless current_member.valid_password?(permitted_params[:password])
-    session[:reauthenticated_at] = Time.now
-    redirect_to after_reauthenticate_path
+    result = AuthenticateMember.call(member: current_member, password: permitted_params[:password])
+    if result.success?
+      session[:reauthenticated_at] = Time.now
+      redirect_to after_reauthenticate_path, notice: result.message
+    else
+      redirect_to new_reauthentication_path, notice: result.message
+    end
   end
 
   private
