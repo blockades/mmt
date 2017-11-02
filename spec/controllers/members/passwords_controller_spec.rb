@@ -31,7 +31,7 @@ describe Members::PasswordsController, type: :controller, two_factor: true do
     let(:random_password) { SecureRandom.hex }
 
     context "successful UpdatePassword" do
-      let(:patch_update) { patch :update, params: { member: { password: random_password, password_confirmation: random_password } } }
+      let(:patch_update) { patch :update, params: { member: { current_password: 'password', password: random_password, password_confirmation: random_password } } }
 
       it "redirects to the edit page" do
         expect(patch_update).to redirect_to member_path(member)
