@@ -13,6 +13,5 @@ module Members
     def decorate_member
       @member = current_member.decorate
     end
-
   end
 end
