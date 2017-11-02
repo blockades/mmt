@@ -11,4 +11,3 @@ Member.create username: 'admin1', email: 'admin@mmt.blockades.org', password: 'a
 Member.create username: 'bob', email: 'bob.j.bobess@farcical.net', password: '123456'
 Member.create username: 'funky', email: 'j.a.funky@hotmail.net', password: '123456'
 Member.create username: 'danny', email: 'danny@jman.net', password: '123456'
-

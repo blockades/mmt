@@ -1,0 +1,7 @@
+= form_for(resource, as: resource_name, url: reauthentication_path(resource_name)) do |f|
+  .field
+    = f.label :password
+    br
+    = f.password_field :password, autocomplete: "off"
+  .actions
+    = f.submit "Continue", class: 'button button-primary'

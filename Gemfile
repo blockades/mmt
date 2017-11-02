@@ -12,12 +12,18 @@ gem "puma", "~> 3.0"
 gem "rails", "~> 5.1.0"
 gem "sass-rails", "~> 5.0"
 gem "uglifier", ">= 1.3.0"
+gem 'draper'
 
 gem "redis-rails"
 gem "sidekiq"
 
 gem "devise"
 gem "devise_invitable"
+gem 'two_factor_authentication'
+gem 'two_factor_recovery', git: "https://github.com/KGibb8/two_factor_recoverable"
+gem 'rqrcode-with-patches', '~> 0.5.4'
+gem 'twilio-ruby', '~> 5.4.3'
+
 gem "friendly_id", "~> 5.1.0"
 gem "interactor-rails"
 gem "jbuilder", "~> 2.5"
@@ -47,10 +53,11 @@ end
 group :test do
   gem "capybara"
   gem "database_cleaner"
-  gem "factory_girl_rails"
+  gem "factory_bot_rails"
   gem "faker"
   gem "rails-controller-testing"
   gem "rspec-rails"
+  gem 'rspec-sidekiq'
   gem "simplecov"
   gem "timecop"
   gem "webmock"

@@ -9,7 +9,6 @@ module Members
 
     def update
       respond_to do |format|
-        # %%TODO%% Event store - are we going to allow members to do an update action on their profile like this?
         if @member.update member_params
           format.html { redirect_to member_path(@member), notice: "Successfully updated" }
           format.json { render json: { success: true, member: @member } }
@@ -23,11 +22,12 @@ module Members
     private
 
     def find_member
-      @member = params[:id] ? Member.friendly.find(params[:id]) : current_member
+      @member = Member.friendly.find(params[:id]).decorate
     end
 
     def member_params
-      params.require(:member).permit(:username)
+      params.require(:member).permit(:username, :country_code, :phone_number)
     end
+
   end
 end

@@ -1,0 +1,11 @@
+= link_to 'Back to two factor settings', member_settings_two_factor_path
+
+= form_for current_member, method: :post do |f|
+  .field.inline-block
+    = f.label :country_code
+    = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, selected: MagicMoneyTree::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
+  .field.inline-block
+    = f.label :phone_number
+    = f.text_field :phone_number, value: current_member.phone_number, autofocus: true
+  .field
+    = f.submit :submit, class: 'button'

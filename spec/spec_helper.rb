@@ -2,11 +2,15 @@
 
 require "simplecov"
 require "webmock/rspec"
+require "securerandom"
 
 SimpleCov.start "rails" do
   add_filter "/app/channels"
   add_filter "/app/jobs"
 end
+
+ENV["OTP_SECRET_ENCRYPTION_KEY"] = Digest::SHA2.hexdigest 'SUPER_DUPER_SECRET_KEY'
+ENV["NONCE_SECRET"] = SecureRandom.hex
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|
@@ -26,8 +30,3 @@ RSpec.configure do |config|
   Kernel.srand config.seed
 end
 
-module SpecHelperMethods
-  def json_fixture(name)
-    File.read(Rails.root.join('spec/support/fixtures', name+'.json'))
-  end
-end

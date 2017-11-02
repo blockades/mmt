@@ -1,0 +1,14 @@
+p Take note of the following recovery codes, you can use these one time passwords to gain access to your account if you lose your phone
+
+table style="width: 100%;"
+  thead
+    tr
+      th
+      th
+      th
+  tbody
+    - @member.otp_recovery_codes.each_slice(3) do |row|
+      tr
+        td.center= row[0]
+        td.center= row[1]
+        td.center= row[2]

@@ -1,0 +1,22 @@
+.row
+  .eight.columns
+    - if @member.authenticated_by_app?
+      p Scan the QR code and enter the code to confirm two factor authentication
+  .four.columns
+    = form_for :two_factor, url: member_settings_two_factor_path, method: :patch do |f|
+      = f.label 'Input your authenticator code here'
+      = f.text_field :code, required: true
+      = f.submit "Confirm", class: 'button button-primary'
+
+hr
+.row
+  .four.columns
+    - if @member.authenticated_by_app?
+      = render partial: 'qr_codes/new', locals: { qr: qr_code_as_html(provisioning_uri) }
+  .two.columns
+    br
+  .six.columns
+    p
+      strong Recovery Codes
+    = render partial: 'members/recovery_codes/show'
+
