@@ -15,6 +15,6 @@
           | #{link_to 'Send code by SMS', member_settings_resend_two_factor_code_path, remote: true}
 
     = f.label :two_factor_code
-    = text_field_tag 'two_factor[otp_code]', nil, required: true
+    = text_field_tag 'member[authentication_code]', nil, required: true
   br
   = f.submit 'Update', class: 'button button-primary'
