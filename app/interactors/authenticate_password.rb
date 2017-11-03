@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class AuthenticateMember
+class AuthenticatePassword
   include Interactor
 
   def call

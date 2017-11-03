@@ -9,7 +9,7 @@ class ReauthenticationController < ApplicationController
   end
 
   def create
-    result = AuthenticateMember.call(member: current_member, password: permitted_params[:password])
+    result = AuthenticatePassword.call(member: current_member, password: permitted_params[:password])
     if result.success?
       session[:reauthenticated_at] = Time.now
       redirect_to after_reauthenticate_path, notice: result.message
