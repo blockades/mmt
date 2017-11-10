@@ -16,26 +16,29 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
-  has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"
-  has_many :portfolios
-  has_many :holdings, through: :live_portfolio
-
-  scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
-
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 
-  validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
+  validates :username, uniqueness: { case_sensitive: true },
+                       format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
+                       exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
+                       presence: true
+
   validates :slug, uniqueness: { case_sensitive: true }
 
-  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys },
+                                  if: proc { two_factor_enabled? && two_factor_enabled_changed? }
 
-  validates :phone_number, presence: true, format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ }, if: proc { country_code.present? }
-  validates :country_code, presence: true, inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only }, if: proc { phone_number.present? }
+  validates :phone_number, presence: true,
+                           format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ },
+                           if: :country_code?
 
-  validate :username_against_inaccessible_words
+  validates :country_code, presence: true,
+                           inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only },
+                           if: :phone_number?
+
   validate :email_against_username
 
-  before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
+  before_validation :adjust_slug, on: :update, if: :username_changed?
 
   attr_accessor :login
 
@@ -106,10 +109,6 @@ class Member < ApplicationRecord
 
   def email_against_username
     errors.add(:username, :invalid) if Member.where(email: username).exists?
-  end
-
-  def username_against_inaccessible_words
-    errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
   end
 
   def adjust_slug

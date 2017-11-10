@@ -4,21 +4,18 @@ class Coin < ApplicationRecord
   extend FriendlyId
   friendly_id :code, use: :slugged
 
-  has_many :holdings
-  has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
-  has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
-
   scope :ordered, -> { order(:code) }
 
   attr_readonly :code
 
-  validates :code, uniqueness: { case_sensitive: true }, format: { with: /\A[a-zA-Z0-9_\.]*\z/ }
-  validate :code_against_inaccessible_words
+  validates :code, uniqueness: { case_sensitive: true },
+                   format: { with: /\A[a-zA-Z0-9_\.]*\Z/ },
+                   exclusion: { in: MagicMoneyTree::InaccessibleWords.all }
+
+  validates :slug, uniqueness: { case_sensitive: true }
+
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
-  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
-
-  before_validation :adjust_slug, on: :update, if: proc { |c| c.code_changed? }
 
   def stream
     "Domain::Coin$#{id}"
@@ -41,23 +38,6 @@ class Coin < ApplicationRecord
   # @return The amount of this currency that buys one BTC
   def btc_rate
     crypto_currency ? crypto_btc_rate : fiat_btc_rate
-  end
-
-  def central_reserve
-    BigDecimal.new(central_reserve_in_sub_units) / 10**subdivision
-  end
-
-  # @return <Integer> The value of the live holdings
-  def live_holdings_quantity
-    live_holdings.sum(:quantity) || 0
-  end
-
-  def live_holdings_quantity_display
-    live_holdings_quantity / 10**subdivision
-  end
-
-  def max_buyable_quantity
-    central_reserve_in_sub_units - live_holdings_quantity
   end
 
   private
@@ -99,13 +79,5 @@ class Coin < ApplicationRecord
     return unless subdivision
     return unless (subdivision % 10).zero?
     errors.add :subdivision, "must be a multiple of 10"
-  end
-
-  def code_against_inaccessible_words
-    errors.add(:code, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? code.downcase
-  end
-
-  def adjust_slug
-    self.slug = code
   end
 end
