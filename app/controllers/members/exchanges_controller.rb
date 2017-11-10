@@ -12,7 +12,7 @@ module Members
 
     def create
       unless (required_params - permitted_params.to_h.symbolize_keys.keys).empty?
-        redirect_back fallback_location: new_exchange_path, notice: 'Missing fields'
+        redirect_back fallback_location: new_exchange_path, notice: 'Missing fields' and return
       end
       command = Command::Transaction::Exchange.new(exchange_params)
       execute command

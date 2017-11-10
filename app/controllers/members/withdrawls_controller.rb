@@ -12,7 +12,7 @@ module Members
 
     def create
       unless permitted_params[:source_quantity].present?
-        redirect_back fallback_location: new_withdrawl_path, notice: 'Specify an amount to withdraw'
+        redirect_back fallback_location: new_withdrawl_path, notice: 'Specify an amount to withdraw' and return
       end
       command = Command::Transaction::Withdraw.new(withdrawl_params)
       execute command

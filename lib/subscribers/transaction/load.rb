@@ -6,14 +6,16 @@ module Subscribers
 
       # On a load event, we increase both available funds and overall funds
       def call(event)
-        coin = ::Coin.find event.data.fetch(:destination_coin_id)
+        ActiveRecord::Base.transaction do
+          coin = ::Coin.find event.data.fetch(:destination_coin_id)
 
-        coin.publish!(Events::Coin::State, {
-          holdings: coin.holdings + event.data.fetch(:destination_quantity),
-          reserves: coin.reserves + event.data.fetch(:destination_quantity),
-          rate: event.data.fetch(:destination_rate),
-          transaction_id: event.event_id
-        })
+          coin.publish!(Events::Coin::State, {
+            holdings: coin.holdings + event.data.fetch(:destination_quantity),
+            reserves: coin.reserves + event.data.fetch(:destination_quantity),
+            rate: event.data.fetch(:destination_rate),
+            transaction_id: event.event_id
+          })
+        end
       end
 
     end
