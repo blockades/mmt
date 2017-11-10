@@ -20,8 +20,15 @@ Rails.application.routes.draw do
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
 
-    get '/load/:coin_id/new' => 'load#new', as: :new_coin_load
-    post '/load/:coin_id/' => 'load#create', as: :coin_load
+    scope path: :load do
+      get '/:coin_id/new' => 'load#new', as: :new_coin_load
+      post '/:coin_id/' => 'load#create', as: :coin_load
+    end
+
+    scope path: :allocation do
+      get '/:coin_id/new' => 'allocations#new', as: :new_coin_allocation
+      post '/:coin_id/' => 'allocations#create', as: :coin_allocation
+    end
   end
 
   namespace :settings, module: :members, as: :member_settings do
@@ -43,6 +50,22 @@ Rails.application.routes.draw do
 
   scope module: :members do
     root to: "dashboard#index"
+
+    resources :coins, only: [:index]
+    resources :coins, only: [:show], format: :js
+
+    scope path: :exchanges do
+      root to: 'exchanges#index', as: :exchanges
+      get '/:coin_id/new' => 'exchanges#new', as: :new_exchange
+      post '/:coin_id' => 'exchanges#create', as: :exchange
+    end
+
+    scope path: :withdraw do
+      root to: 'withdrawls#index', as: :withdrawls
+      get '/:coin_id' => 'withdrawls#new', as: :new_withdrawl
+      post '/:coin_id' => 'withdrawls#create', as: :withdrawl
+    end
+
     resources :members, path: '/', only: [:show, :update]
   end
 
