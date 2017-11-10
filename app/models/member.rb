@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
+  include AggregateRoot
+
   devise :two_factor_authenticatable,
          :two_factor_recoverable,
          :database_authenticatable,
@@ -42,26 +44,27 @@ class Member < ApplicationRecord
 
   attr_accessor :login
 
-  # ===> Events
+  # ===> Publishing Events
 
-  def stream
-    "Domain::Member$#{member_id}"
+  def coin_stream(coin_id)
+    "Domain::Member$#{id}:#{coin_id}"
   end
 
   def publish!(event_class, attributes = {})
-    Rails.application.config.event_store.publish_event(
-      event_class.new(data: attributes), stream_name: stream
-    )
+    self.load(coin_stream(attributes.fetch(:coin_id)))
+    apply event_class.new(data: attributes)
+    self.store
   end
 
   # ===> Balance
 
-  def history
-    Rails.application.config.event_store.read_stream_events_backward(stream)
+  def history(coin_id)
+    Rails.application.config.event_store.read_stream_events_backward(coin_stream(coin_id))
   end
 
-  def coin_holdings(coin_id)
-    history.any? ? history.first[:holdings] : 0
+  def holdings(coin_id)
+    coin_history = history(coin_id)
+    coin_history.any? ? coin_history.first.data.fetch(:holdings) : 0
   end
 
   # ===> Two Factor Authentication
@@ -106,6 +109,11 @@ class Member < ApplicationRecord
   end
 
   private
+
+  # Handler methods
+  def apply_balance(event)
+    Rails.logger.info("\n\n#{event.inspect}\n\n")
+  end
 
   def email_against_username
     errors.add(:username, :invalid) if Member.where(email: username).exists?
