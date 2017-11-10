@@ -1,0 +1,22 @@
+.row
+  .offset-by-four.four.columns
+    h2 Trade
+  .four.columns
+.row
+  .twelve.columns
+    table width="100%"
+      thead
+        tr
+          th Name
+          th Code
+          th
+            span.right Actions
+      tbody
+        - Coin.all.each do |coin|
+          tr
+            td= coin.name
+            td= coin.code
+            td
+              .icons
+                = link_to new_exchange_path(coin), class: 'icon' do
+                  i.fa.fa-shopping-cart.fa-lg
