@@ -20,6 +20,9 @@ Rails.application.routes.draw do
     resources :portfolios, only: [:index, :new, :create, :show]
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
+
+    get '/load/:coin_id/new' => 'load#new', as: :new_coin_load
+    post '/load/:coin_id/' => 'load#create', as: :coin_load
   end
 
   namespace :settings, module: :members, as: :member_settings do
