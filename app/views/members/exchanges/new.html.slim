@@ -1,0 +1,28 @@
+| Your current balance in #{@coin.name} is #{@coin.member_balance}
+
+= form_for :exchange, url: exchange_path(@coin), method: :post do |f|
+  .row
+    = f.label :current_market_rate
+    span#destination_rate= @coin.btc_rate
+    = f.hidden_field :destination_rate, value: @coin.btc_rate
+  br
+  .row
+    = f.label :quantity
+    = f.number_field :destination_quantity, step: :any, id: 'destination_quantity'
+  br
+  .row
+    = f.label :exchange_with
+    = f.select :source_coin_id, Coin.not_self(@coin.id).all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'source_coin_select'
+  br
+  .row
+    label Purchase rate (to BTC)
+    span#source_rate_display
+    = f.hidden_field :source_rate, id: 'source_rate'
+  .row
+    = f.label :cost
+    span#source_quantity_display
+    = f.hidden_field :source_quantity, id: 'source_quantity'
+  br
+  .row
+    = f.submit :exchange, class: 'button button-primary'
+  br
