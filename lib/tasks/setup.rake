@@ -16,28 +16,24 @@ namespace :setup do
       code: "NEO"
     ).update!(
       name: "AntShares",
-      central_reserve_in_sub_units: 1_000_000_000
     )
 
     Coin.find_or_initialize_by(
       code: "BTC"
     ).update!(
       name: "Bitcoin",
-      central_reserve_in_sub_units: 1_000_000_000
     )
 
     Coin.find_or_initialize_by(
       code: "ETH"
     ).update!(
       name: "Ethereum",
-      central_reserve_in_sub_units: 1_000_000_000
     )
 
     Coin.find_or_initialize_by(
       code: "GBP"
     ).update!(
       name: "Sterling",
-      central_reserve_in_sub_units: 1_000,
       crypto_currency: false,
       subdivision: 2
     )
@@ -46,7 +42,6 @@ namespace :setup do
       code: "USD"
     ).update!(
       name: "United States Dollar",
-      central_reserve_in_sub_units: 1_000,
       crypto_currency: false,
       subdivision: 2
     )
