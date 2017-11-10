@@ -20,6 +20,20 @@ class Coin < ApplicationRecord
 
   before_validation :adjust_slug, on: :update, if: proc { |c| c.code_changed? }
 
+  def stream
+    "Domain::Coin$#{id}"
+  end
+
+  def reserves
+    Rails.application.read_events_backward(stream)
+  end
+
+  def publish!(event_class, attributes = {})
+    Rails.application.config.event_store.publish_event(
+      event_class.new(data: attributes), stream_name: stream
+    )
+  end
+
   def value(iso_currency)
     btc_rate * 1.0 / fiat_btc_rate(iso_currency)
   end

@@ -39,6 +39,28 @@ class Member < ApplicationRecord
 
   attr_accessor :login
 
+  # ===> Events
+
+  def stream
+    "Domain::Member$#{member_id}"
+  end
+
+  def publish!(event_class, attributes = {})
+    Rails.application.config.event_store.publish_event(
+      event_class.new(data: attributes), stream_name: stream
+    )
+  end
+
+  # ===> Balance
+
+  def history
+    Rails.application.config.event_store.read_stream_events_backward(stream)
+  end
+
+  def coin_holdings(coin_id)
+    history.any? ? history.first[:holdings] : 0
+  end
+
   # ===> Two Factor Authentication
 
   def full_phone_number
