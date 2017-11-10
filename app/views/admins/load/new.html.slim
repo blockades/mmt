@@ -1,0 +1,13 @@
+h2 Load #{@coin.code}
+
+= form_for :load, url: admins_coin_load_path(@coin), method: :post do |f|
+  .row
+    = f.label :quantity
+    = f.number_field :destination_quantity, value: number_with_precision(0, precision: @coin.subdivision), step: :any, required: true
+  br
+  .row
+    label BTC Rate
+    = f.number_field :destination_rate, value: number_with_precision(@coin.btc_rate, precision: @coin.subdivision), step: :any, required: true
+  br
+  .row
+    = f.submit :load, class: 'button button-primary'
