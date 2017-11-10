@@ -25,6 +25,14 @@ module MMT
     config.autoload_paths += Dir["#{config.root}/app/**/"]
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
 
+    config.event_store = RailsEventStore::Client.new(
+      event_broker: RailsEventStore::EventBroker.new(
+        dispatcher: RailsEventStore::ActiveJobDispatcher.new(
+          proxy_strategy: RailsEventStore::AsyncProxyStrategy::AfterCommit.new
+        )
+      )
+    )
+
     config.before_initialize do
       require config.root.join 'config', 'initializers', 'magic_money_tree'
     end

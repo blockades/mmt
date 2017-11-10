@@ -17,7 +17,6 @@ Rails.application.routes.draw do
 
   namespace :admins do
     root to: 'dashboard#index'
-    resources :portfolios, only: [:index, :new, :create, :show]
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
 
@@ -44,7 +43,6 @@ Rails.application.routes.draw do
 
   scope module: :members do
     root to: "dashboard#index"
-    resources :portfolios, only: [:show]
     resources :members, path: '/', only: [:show, :update]
   end
 
