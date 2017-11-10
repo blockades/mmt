@@ -6,7 +6,6 @@ module Command
     include ActiveModel::Validations
     include ActiveModel::Conversion
 
-    ValidationError = Class.new(StandardError)
 
     attr_reader :attributes
 

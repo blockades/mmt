@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Command
-  class Execute
+  module Execute
 
     def execute(command)
       command.validate!
