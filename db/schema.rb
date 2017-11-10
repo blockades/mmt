@@ -22,7 +22,6 @@ ActiveRecord::Schema.define(version: 20171030104608) do
     t.string "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "central_reserve_in_sub_units", default: 0, null: false
     t.boolean "crypto_currency", default: true, null: false
     t.integer "subdivision", default: 8, null: false
     t.string "slug"
@@ -52,19 +51,6 @@ ActiveRecord::Schema.define(version: 20171030104608) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
-  end
-
-  create_table "holdings", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
-    t.uuid "coin_id", null: false
-    t.decimal "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.boolean "deposit", default: false, null: false
-    t.boolean "withdrawal", default: false, null: false
-    t.uuid "portfolio_id", null: false
-    t.integer "quantity", null: false
-    t.index ["coin_id", "portfolio_id"], name: "index_holdings_on_coin_id_and_portfolio_id", unique: true
-    t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id"
   end
 
   create_table "members", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -114,17 +100,4 @@ ActiveRecord::Schema.define(version: 20171030104608) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
-  create_table "portfolios", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
-    t.uuid "member_id", null: false
-    t.uuid "next_portfolio_id"
-    t.datetime "next_portfolio_at"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["member_id"], name: "index_portfolios_on_member_id", unique: true, where: "(next_portfolio_at IS NULL)"
-    t.index ["next_portfolio_id"], name: "index_portfolios_on_next_portfolio_id", unique: true
-  end
-
-  add_foreign_key "holdings", "portfolios"
-  add_foreign_key "portfolios", "members"
-  add_foreign_key "portfolios", "portfolios", column: "next_portfolio_id"
 end
