@@ -10,8 +10,6 @@ class ApplicationController < ActionController::Base
   before_action :authenticate_member!
   before_action :store_return_paths
 
-  include Command::Execute
-
   protected
 
   def configure_permitted_parameters

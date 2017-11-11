@@ -14,10 +14,13 @@ module Members
       unless permitted_params[:source_quantity].present?
         redirect_back fallback_location: new_withdrawl_path, notice: 'Specify an amount to withdraw' and return
       end
-      command = Command::Transaction::Withdraw.new(withdrawl_params)
-      execute command
+      Domain::Transaction.new(withdrawl_params).append_to_stream!
       redirect_to coins_path, notice: "Success"
-    rescue Command::ValidationError => error
+    rescue ArgumentError => error
+      Rails.logger.error(error)
+      redirect_to new_withdrawl_path, error: error
+    rescue Domain::Transaction::ValidationError => error
+      Rails.logger.error(error)
       redirect_to new_withdrawl_path, error: error
     end
 

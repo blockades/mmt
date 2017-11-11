@@ -14,10 +14,12 @@ module Members
       unless (required_params - permitted_params.to_h.symbolize_keys.keys).empty?
         redirect_back fallback_location: new_exchange_path, notice: 'Missing fields' and return
       end
-      command = Command::Transaction::Exchange.new(exchange_params)
-      execute command
+      Domain::Transaction.new(exchange_params).append_to_stream!
       redirect_to coins_path, notice: "Success"
-    rescue Command::ValidationError => error
+    rescue ArgumentError => error
+      Rails.logger.error(error)
+      redirect_to new_exchange_path, error: error
+    rescue Domain::Transaction::ValidationError => error
       redirect_to new_exchange_path, error: error
     end
 

@@ -13,10 +13,15 @@ module Admins
     end
 
     def create
-      command = Command::Transaction::Allocate.new(allocation_params)
-      execute command
-      redirect_to admins_coins_path, notice: "Successfully allocated #{quantity_as_integer}"
-    rescue Command::ValidationError => error
+      unless permitted_params[:destination_quantity].present?
+        redirect_back fallback_location: admins_new_coin_allocation_path(@coin), alert: 'Quantity required' and return
+      end
+      Domain::Transaction.new(exchange_params).append_to_stream!
+    rescue ArgumentError => error
+      Rails.logger.error(error)
+      redirect_to admins_new_coin_allocation_path(@coin.id), error: error.inspect
+    rescue Domain::Transaction::ValidationError => error
+      Rails.logger.error(error)
       redirect_to admins_new_coin_allocation_path(@coin.id), error: error.inspect
     end
 

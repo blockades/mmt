@@ -11,12 +11,14 @@ module Admins
       unless permitted_params[:destination_quantity].present?
         redirect_back fallback_location: admins_new_coin_load_path(@coin), alert: 'Quantity required' and return
       end
-      command = Command::Transaction::Load.new(load_params)
-      execute command
+      Domain::Transaction.new(load_params).append_to_stream!
       redirect_to admins_coins_path(@coin), notice: 'Success'
-    rescue Command::ValidationError => error
+    rescue ArgumentError => error
       Rails.logger.error(error)
-      redirect_to admins_new_coin_load_path(@coin), alert: 'Fail'
+      redirect_to admins_new_coin_load_path(@coin), error: 'Argument Error'
+    rescue Domain::Transaction::ValidationError => error
+      Rails.logger.error(error)
+      redirect_to admins_new_coin_load_path(@coin), error: 'Validation Error'
     end
 
     private
