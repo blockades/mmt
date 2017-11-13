@@ -41,11 +41,11 @@ module Domain
       @admin_id = admin_id
     end
 
-    # Command::Transaction::Deposit
-    # Handlers::Transaction::Deposit
-    def deposit!
+    # Command::Transaction::SystemDeposit
+    # Handlers::Transaction::SystemDeposit
+    def system_deposit!
       ActiveRecord::Base.transaction do
-        apply Events::Transaction::Deposit.new(data: {
+        apply Events::Transaction::SystemDeposit.new(data: {
           destination_coin_id: destination_coin_id,
           destination_rate: destination_rate,
           destination_quantity: destination_quantity,
@@ -98,7 +98,7 @@ module Domain
 
     private
 
-    def apply_deposit(event)
+    def apply_system_deposit(event)
     end
 
     def apply_allocate(event)

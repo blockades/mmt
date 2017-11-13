@@ -11,7 +11,7 @@ module Admins
       unless permitted_params[:destination_quantity].present?
         redirect_back fallback_location: admins_new_coin_deposit_path(@coin), alert: 'Quantity required' and return
       end
-      command = Command::Transaction::Deposit.new(deposit_params)
+      command = Command::Transaction::SystemDeposit.new(deposit_params)
       execute command
       redirect_to admins_coins_path(@coin), notice: 'Success'
     rescue Command::ValidationError => error

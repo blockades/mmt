@@ -2,7 +2,7 @@
 
 module Subscribers
   module Transaction
-    class Deposit < Subscribers::Base
+    class SystemDeposit < Subscribers::Base
 
       # On a load event, we increase both available funds and overall funds
       def call(event)
