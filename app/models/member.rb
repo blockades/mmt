@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
+  include AggregateRoot
+
   devise :two_factor_authenticatable,
          :two_factor_recoverable,
          :database_authenticatable,
@@ -16,28 +18,54 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
-  has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"
-  has_many :portfolios
-  has_many :holdings, through: :live_portfolio
-
-  scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
-
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 
-  validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
+  validates :username, uniqueness: { case_sensitive: true },
+                       format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
+                       exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
+                       presence: true
+
   validates :slug, uniqueness: { case_sensitive: true }
 
-  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys },
+                                  if: proc { two_factor_enabled? && two_factor_enabled_changed? }
 
-  validates :phone_number, presence: true, format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ }, if: proc { country_code.present? }
-  validates :country_code, presence: true, inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only }, if: proc { phone_number.present? }
+  validates :phone_number, presence: true,
+                           format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ },
+                           if: :country_code?
 
-  validate :username_against_inaccessible_words
+  validates :country_code, presence: true,
+                           inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only },
+                           if: :phone_number?
+
   validate :email_against_username
 
-  before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
+  before_validation :adjust_slug, on: :update, if: :username_changed?
 
   attr_accessor :login
+
+  # ===> Publishing Events
+
+  def coin_stream(coin_id)
+    "Domain::Member$#{id}:#{coin_id}"
+  end
+
+  def publish!(event_class, attributes = {})
+    self.load(coin_stream(attributes.fetch(:coin_id)))
+    apply event_class.new(data: attributes)
+    self.store
+  end
+
+  # ===> Balance
+
+  def history(coin_id)
+    Rails.application.config.event_store.read_stream_events_backward(coin_stream(coin_id))
+  end
+
+  def holdings(coin_id)
+    coin_history = history(coin_id)
+    coin_history.any? ? coin_history.first.data.fetch(:holdings) : 0
+  end
 
   # ===> Two Factor Authentication
 
@@ -82,12 +110,13 @@ class Member < ApplicationRecord
 
   private
 
-  def email_against_username
-    errors.add(:username, :invalid) if Member.where(email: username).exists?
+  # Handler methods
+  def apply_balance(event)
+    Rails.logger.info("\n\n#{event.inspect}\n\n")
   end
 
-  def username_against_inaccessible_words
-    errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
+  def email_against_username
+    errors.add(:username, :invalid) if Member.where(email: username).exists?
   end
 
   def adjust_slug

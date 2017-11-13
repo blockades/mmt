@@ -12,6 +12,7 @@
  * It is generally better to create a new file per style scope.
  *
  *= require skeleton
+ *= require font-awesome
  *= require select2
  *= require qrcode
  *= require twofactor
@@ -90,4 +91,13 @@ section.title {
 
 .button {
   margin: 5px;
+}
+
+.icons {
+  display: flex;
+  float: right;
+}
+
+.icon {
+  padding-left: 10px;
 }

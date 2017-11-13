@@ -56,6 +56,8 @@ GEM
       tzinfo (~> 1.1)
     addressable (2.5.2)
       public_suffix (>= 2.0.2, < 4.0)
+    aggregate_root (0.18.2)
+      activesupport (>= 3.0)
     arel (8.0.0)
     awesome_print (1.8.0)
     bcrypt (3.1.11)
@@ -114,6 +116,8 @@ GEM
     faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
+    font-awesome-rails (4.7.0.2)
+      railties (>= 3.2, < 5.2)
     friendly_id (5.1.0)
       activerecord (>= 4.0.0)
     globalid (0.4.1)
@@ -199,6 +203,17 @@ GEM
       nokogiri (>= 1.6)
     rails-html-sanitizer (1.0.3)
       loofah (~> 2.0)
+    rails_event_store (0.18.2)
+      activejob (>= 3.0)
+      activemodel (>= 3.0)
+      activesupport (>= 3.0)
+      aggregate_root (= 0.18.2)
+      rails_event_store_active_record (= 0.18.2)
+      ruby_event_store (= 0.18.2)
+    rails_event_store_active_record (0.18.2)
+      activemodel (>= 3.0)
+      activesupport (>= 3.0)
+      ruby_event_store (= 0.18.2)
     railties (5.1.4)
       actionpack (= 5.1.4)
       activesupport (= 5.1.4)
@@ -254,6 +269,7 @@ GEM
       rspec-core (~> 3.0, >= 3.0.0)
       sidekiq (>= 2.4.0)
     rspec-support (3.7.0)
+    ruby_event_store (0.18.2)
     safe_yaml (1.0.4)
     sass (3.5.3)
       sass-listen (~> 4.0.0)
@@ -351,6 +367,7 @@ DEPENDENCIES
   draper
   factory_bot_rails
   faker
+  font-awesome-rails
   friendly_id (~> 5.1.0)
   interactor-rails
   jbuilder (~> 2.5)
@@ -362,6 +379,7 @@ DEPENDENCIES
   puma (~> 3.0)
   rails (~> 5.1.0)
   rails-controller-testing
+  rails_event_store
   redis-rails
   rqrcode-with-patches (~> 0.5.4)
   rspec-rails

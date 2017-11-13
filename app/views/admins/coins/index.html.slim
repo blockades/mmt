@@ -2,16 +2,21 @@ table
   thead
     th Name
     th Code
-    th Central Reserve
-    th In members holdings
+    th Reserve
+    th Available
     th BTC rate (bittrex)
-    th
+    th Actions
   tbody
     - @coins.each do |coin|
       tr
         td= coin.name
         td= coin.code
         td= coin.central_reserve
-        td= coin.live_holdings_quantity_display
+        td= coin.reserves_available
         td= coin.btc_rate
-        td= link_to "Edit", edit_admins_coin_path(coin), class: "button"
+        td
+          .icons
+            = link_to admins_new_coin_deposit_path(coin), class: "icon", title: "Load" do
+              i.fa.fa-level-up.fa-lg
+            = link_to admins_new_coin_allocation_path(coin), class: "icon", title: "Allocate to Member" do
+              i.fa.fa-user-plus.fa-lg

@@ -13,6 +13,7 @@ require "action_view/railtie"
 require "action_cable/engine"
 require "sprockets/railtie"
 require 'rqrcode'
+require 'aggregate_root'
 # require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -22,21 +23,22 @@ Bundler.require(*Rails.groups)
 module MMT
   class Application < Rails::Application
     config.autoload_paths += Dir["#{config.root}/app/**/"]
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
 
-    config.generators do |g|
-      g.orm :active_record, primary_key_type: :uuid
-    end
+    config.event_store = RailsEventStore::Client.new(
+      event_broker: RailsEventStore::EventBroker.new(
+        dispatcher: RailsEventStore::ActiveJobDispatcher.new(
+          proxy_strategy: RailsEventStore::AsyncProxyStrategy::AfterCommit.new
+        )
+      )
+    )
 
     config.before_initialize do
-      require Rails.root.join 'config', 'initializers', 'magic_money_tree'
+      require config.root.join 'config', 'initializers', 'magic_money_tree'
     end
+  end
 
-    config.cache_store = :redis_store, {
-      host: ENV.fetch('REDIS_HOST') { 'localhost' },
-      port: 6379,
-      db: 0,
-      # namespace: ENV.fetch('REDIS_NAMESPACE') { Rails.env }
-    }
-
+  AggregateRoot.configure do |config|
+    config.default_event_store = Rails.application.config.event_store
   end
 end
