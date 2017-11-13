@@ -2,7 +2,7 @@
 
 module Command
   module Transaction
-    class Deposit < Command::Base
+    class SystemDeposit < Command::Base
       attr_accessor :destination_coin_id,
                     :destination_rate,
                     :destination_quantity,
