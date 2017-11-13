@@ -41,8 +41,8 @@ module Domain
 
     # Perform relevant action based on information which has been passed
     def append_to_stream!
-      if load_event?
-        self.load!
+      if deposit_event?
+        self.deposit!
       elsif exchange_event?
         self.exchange!
       elsif allocate_event?
@@ -55,13 +55,13 @@ module Domain
     end
 
     # ====> Admin 'loads' funds into the system
-    def load!
+    def deposit!
       raise ValidationError unless destination_coin
       raise ValidationError unless numerical(destination_rate) && destination_quantity.kind_of?(Integer)
       raise ValidationError unless positive(destination_rate) && positive(destination_quantity)
 
       self.load(stream)
-      apply Events::Transaction::Load.new(data: {
+      apply Events::Transaction::Deposit.new(data: {
         destination_coin_id: destination_coin_id,
         destination_rate: destination_rate,
         destination_quantity: destination_quantity,
@@ -148,7 +148,7 @@ module Domain
 
     # ===> Event trigger logic
 
-    def load_event?
+    def deposit_event?
       destination_coin_id.present? && destination_rate.present? &&
         destination_quantity.present? && source_coin_id.blank? &&
         source_rate.blank? && source_quantity.blank? &&
@@ -200,6 +200,9 @@ module Domain
     end
 
     def values_square
+      # This fails when coin subdivisions do not match
+      # e.g. when buying Sterling with Bitcoin
+      # Need to multiply both by the HIGHEST subdivision to standardise value comparison
       source_value = (source_quantity * source_rate.to_d).round(0).to_i
       destination_value = (destination_quantity * destination_rate.to_d).round(0).to_i
       (source_value - destination_value).zero?
@@ -215,11 +218,12 @@ module Domain
     end
 
     def numerical(value)
-      (value.to_f.to_s == value)
+      # This fails when a number is a whole integer
+      (value.to_d.to_s == value)
     end
 
     def positive(value)
-      value.to_f > 0
+      value.to_d > 0
     end
   end
 end
