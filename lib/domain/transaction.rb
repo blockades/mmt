@@ -41,8 +41,8 @@ module Domain
 
     # Perform relevant action based on information which has been passed
     def append_to_stream!
-      if deposit_event?
-        self.deposit!
+      if system_deposit_event?
+        self.system_deposit!
       elsif exchange_event?
         self.exchange!
       elsif allocate_event?
@@ -55,13 +55,13 @@ module Domain
     end
 
     # ====> Admin 'loads' funds into the system
-    def deposit!
+    def system_deposit!
       raise ValidationError unless destination_coin
       raise ValidationError unless numerical(destination_rate) && destination_quantity.kind_of?(Integer)
       raise ValidationError unless positive(destination_rate) && positive(destination_quantity)
 
       self.load(stream)
-      apply Events::Transaction::Deposit.new(data: {
+      apply Events::Transaction::SystemDeposit.new(data: {
         destination_coin_id: destination_coin_id,
         destination_rate: destination_rate,
         destination_quantity: destination_quantity,
@@ -134,7 +134,7 @@ module Domain
 
     # ===> Aggregate methods to do something before event commited...
 
-    def apply_load(event)
+    def apply_system_deposit(event)
     end
 
     def apply_allocate(event)
@@ -148,7 +148,7 @@ module Domain
 
     # ===> Event trigger logic
 
-    def deposit_event?
+    def system_deposit_event?
       destination_coin_id.present? && destination_rate.present? &&
         destination_quantity.present? && source_coin_id.blank? &&
         source_rate.blank? && source_quantity.blank? &&

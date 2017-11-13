@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admins
-  class LoadController < AdminsController
+  class DepositsController < AdminsController
     before_action :find_coin
 
     def new
@@ -9,16 +9,16 @@ module Admins
 
     def create
       unless permitted_params[:destination_quantity].present?
-        redirect_back fallback_location: admins_new_coin_load_path(@coin), alert: 'Quantity required' and return
+        redirect_back fallback_location: admins_new_coin_deposit_path(@coin), alert: 'Quantity required' and return
       end
-      Domain::Transaction.new(load_params).append_to_stream!
+      Domain::Transaction.new(deposit_params).append_to_stream!
       redirect_to admins_coins_path(@coin), notice: 'Success'
     rescue ArgumentError => error
       Rails.logger.error(error)
-      redirect_to admins_new_coin_load_path(@coin), error: 'Argument Error'
+      redirect_to admins_new_coin_deposit_path(@coin), error: 'Argument Error'
     rescue Domain::Transaction::ValidationError => error
       Rails.logger.error(error)
-      redirect_to admins_new_coin_load_path(@coin), error: 'Validation Error'
+      redirect_to admins_new_coin_deposit_path(@coin), error: 'Validation Error'
     end
 
     private
@@ -28,10 +28,10 @@ module Admins
     end
 
     def permitted_params
-      params.require(:load).permit(:destination_quantity, :destination_rate)
+      params.require(:deposit).permit(:destination_quantity, :destination_rate)
     end
 
-    def load_params
+    def deposit_params
       permitted_params.merge!(
         destination_quantity: quantity_as_integer,
         destination_coin_id: @coin.id,

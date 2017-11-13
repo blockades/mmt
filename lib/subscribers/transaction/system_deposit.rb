@@ -2,9 +2,9 @@
 
 module Subscribers
   module Transaction
-    class Deposit < Subscribers::Base
+    class SystemDeposit < Subscribers::Base
 
-      # On a load event, we increase both available funds and overall funds
+      # On a system deposit event, we increase both available funds and overall funds
       def call(event)
         ActiveRecord::Base.transaction do
           coin = ::Coin.find event.data.fetch(:destination_coin_id)
