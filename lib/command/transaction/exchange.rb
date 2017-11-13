@@ -5,9 +5,11 @@ module Command
     class Exchange < Command::Base
       attr_accessor :destination_coin_id,
                     :destination_rate,
+                    :destination_quantity_for_comparison,
                     :destination_quantity,
                     :source_coin_id,
                     :source_rate,
+                    :source_quantity_for_comparison,
                     :source_quantity,
                     :member_id
 
@@ -60,11 +62,11 @@ module Command
       end
 
       def values_square
-        source_value = (source_quantity * source_rate.to_d).round(0).to_i
-        destination_value = (destination_quantity * destination_rate.to_d).round(0).to_i
+        source_value = (source_quantity_for_comparison * source_rate.to_d).to_i
+        destination_value = (destination_quantity_for_comparison * destination_rate.to_d).to_i
 
         # %% QUESTION %%
-        # Sometimes this is out by a miniscule fraction (hence the .round(0))
+        # Sometimes this is out by a miniscule fraction
         # Should we be allowing this through at all if its out by a fraction?
         # Should we have some wiggle room to allow transactions that are out
         # by a miniscule margin and allow liquidity in the system to compensate?
