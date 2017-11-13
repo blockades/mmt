@@ -20,12 +20,12 @@ Rails.application.routes.draw do
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
 
-    scope path: :load do
-      get '/:coin_id/new' => 'load#new', as: :new_coin_load
-      post '/:coin_id/' => 'load#create', as: :coin_load
+    scope path: :deposit do
+      get '/:coin_id/new' => 'deposits#new', as: :new_coin_deposit
+      post '/:coin_id/' => 'deposits#create', as: :coin_deposit
     end
 
-    scope path: :allocation do
+    scope path: :allocate do
       get '/:coin_id/new' => 'allocations#new', as: :new_coin_allocation
       post '/:coin_id/' => 'allocations#create', as: :coin_allocation
     end
