@@ -1,24 +1,54 @@
 # frozen_string_literal: true
 
 class Coin < ApplicationRecord
+  include AggregateRoot
+
   extend FriendlyId
   friendly_id :code, use: :slugged
 
-  has_many :holdings
-  has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
-  has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
-
   scope :ordered, -> { order(:code) }
+  scope :crypto, -> { where(crypto_currency: true) }
+  scope :fiat, -> { where.not(crypto_currency: true) }
+  scope :not_self, ->(coin_id) { where.not(id: coin_id) }
 
   attr_readonly :code
 
-  validates :code, uniqueness: { case_sensitive: true }, format: { with: /\A[a-zA-Z0-9_\.]*\z/ }
-  validate :code_against_inaccessible_words
+  validates :code, uniqueness: { case_sensitive: true },
+                   format: { with: /\A[a-zA-Z0-9_\.]*\Z/ },
+                   exclusion: { in: MagicMoneyTree::InaccessibleWords.all }
+
+  validates :slug, uniqueness: { case_sensitive: true }
+
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
-  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
 
-  before_validation :adjust_slug, on: :update, if: proc { |c| c.code_changed? }
+  # ===> Publishing Events
+
+  def stream
+    "Domain::Coin$#{id}"
+  end
+
+  def transaction_history
+    Rails.application.config.event_store.read_events_forward(stream)
+  end
+
+  def publish!(event_class, attributes = {})
+    self.load(stream)
+    apply event_class.new(data: attributes)
+    self.store
+  end
+
+  # ===> Central Reserve and Live Holdings
+
+  def holdings
+    transaction_history.any? ? transaction_history.last.data.fetch(:holdings) : 0
+  end
+
+  def reserves
+    transaction_history.any? ? transaction_history.last.data.fetch(:reserves) : 0
+  end
+
+  # ===> Live value and rate
 
   def value(iso_currency)
     btc_rate * 1.0 / fiat_btc_rate(iso_currency)
@@ -29,24 +59,22 @@ class Coin < ApplicationRecord
     crypto_currency ? crypto_btc_rate : fiat_btc_rate
   end
 
-  def central_reserve
-    BigDecimal.new(central_reserve_in_sub_units) / 10**subdivision
-  end
+  class << self
+    def crypto_with_balance(member)
+      crypto.select { |coin| !member.holdings(coin.id).zero? }
+    end
 
-  # @return <Integer> The value of the live holdings
-  def live_holdings_quantity
-    live_holdings.sum(:quantity) || 0
-  end
-
-  def live_holdings_quantity_display
-    live_holdings_quantity / 10**subdivision
-  end
-
-  def max_buyable_quantity
-    central_reserve_in_sub_units - live_holdings_quantity
+    def fiat_with_balance(member)
+      fiat.select { |coin| !member.holdings(coin.id).zero? }
+    end
   end
 
   private
+
+  # Handler methods
+  def apply_state(event)
+    Rails.logger.info("\n\n#{event.inspect}\n\n")
+  end
 
   def fiat_btc_rate(iso_currency = nil)
     1.0 / BigDecimal.new(
@@ -85,13 +113,5 @@ class Coin < ApplicationRecord
     return unless subdivision
     return unless (subdivision % 10).zero?
     errors.add :subdivision, "must be a multiple of 10"
-  end
-
-  def code_against_inaccessible_words
-    errors.add(:code, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? code.downcase
-  end
-
-  def adjust_slug
-    self.slug = code
   end
 end
