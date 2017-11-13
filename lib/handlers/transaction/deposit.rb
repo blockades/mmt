@@ -2,11 +2,11 @@
 
 module Handlers
   module Transaction
-    class Load < Handlers::Base
+    class Deposit < Handlers::Base
 
       def call(command)
         with_aggregate(Domain::Transaction, nil, command.attributes) do |transaction|
-          transaction.load!
+          transaction.deposit!
         end
       end
 
