@@ -1,11 +1,9 @@
 # frozen_string_literal: true
 
 module Members
-  class WithdrawlsController < ApplicationController
-    before_action :find_coin, except: [:index]
-
-    def index
-    end
+  class WithdrawlRequestsController < ApplicationController
+    before_action :find_coin, only: [:new, :create]
+    before_action :find_withdrawl_request, only: [:cancel]
 
     def new
     end
@@ -21,7 +19,19 @@ module Members
       redirect_to new_withdrawl_path, error: error
     end
 
+    def cancel
+      if @withdrawl_request.cancel!(current_member.id)
+        redirect_back fallback_location: withdrawls_path, notice: "Success"
+      else
+        redirect_back fallback_location: withdrawls_path, notice: "Fail"
+      end
+    end
+
     private
+
+    def find_withdrawl_request
+      @withdrawl_request = WithdrawlRequest.find(params[:id])
+    end
 
     def find_coin
       @coin = Coin.friendly.find(params[:coin_id]).decorate

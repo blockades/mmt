@@ -1,110 +1,94 @@
 class WithdrawlRequest < ApplicationRecord
-  include AggregateRoot
 
   belongs_to :member
   belongs_to :coin
+
   belongs_to :last_changed_by, class_name: 'Member', foreign_key: :last_changed_by_id
+  belongs_to :progressed_by, class_name: 'Member', foreign_key: :in_progress_by_id
+  belongs_to :confirmed_by, class_name: 'Member', foreign_key: :confirmed_by_id
+  belongs_to :cancelled_by, class_name: 'Member', foreign_key: :cancelled_by_id
+  belongs_to :completed_by, class_name: 'Member', foreign_key: :cancelled_by_id
+
+  validates :quantity, presence: true,
+                       numericality: { greater_than: 0 }
+
+  scope :pending, -> { where state: :pending }
+  scope :in_progress, -> { where state: :in_progress }
+  scope :confirmed, -> { where state: :confirmed }
+  scope :completed, -> { where state: :completed }
+  scope :cancelled, -> { where state: :cancelled }
+  scope :outstanding, -> { where.not state: [:completed, :cancelled] }
 
   STATES = [:pending, :in_progress, :confirmed, :completed, :cancelled].freeze
 
-  after_commit :pending!, on: :create
+  state_machine :state, initial: :pending do
+    event(:progress) { transition pending: :in_progress }
+    event(:cancel)      { transition pending: :cancelled }
+    event(:confirm)     { transition [:pending, :in_progress] => :confirmed } # same as complete?
+    event(:complete)    { transition confirmed: :completed }
 
-  def stream
-    "Domain::WithdrawlRequest$#{id}"
-  end
+    after_transition on: :confirm, do: :withdraw!
 
-  def history
-    Rails.application.config.event_store.read_stream_events_backward(stream)
-  end
-
-  def state
-    history.any? ? history.first.data[:state] : nil
-  end
-
-  def in_progress_by
-    RailsEventStore::Projection.from_stream(stream).init( -> { { admin_id: "" }} )
-      .when(Events::Withdrawl::InProgress, ->(state, event) { state[:admin_id] = event.data.fetch(:admin_id) })
-  end
-
-  def in_progress!(in_progress_by_id)
-    raise ArgumentError.new("in_progress_by_id must be a UUID") unless in_progress_by_id =~ uuid_regex
-    return false if [:completed, :confirmed, :cancelled].include? state
-    return true if [:in_progress].include? state
-    append_to_stream do
-      apply Events::Withdrawl::InProgress.new(data: {
-        member_id: member_id,
-        withdrawl_request_id: id,
-        state: :in_progress,
-      })
+    def initialize
+      super
     end
-    update! last_changed_by_id: in_progress_by_id
+  end
+
+  def progress!(in_progress_by_id)
+    raise ArgumentError.new("Must be a UUID") unless in_progress_by_id =~ uuid_regex
+    ActiveRecord::Base.transaction do
+      update! last_changed_by_id: in_progress_by_id,
+              in_progress_by_id: in_progress_by_id
+      self.progress
+    end
   end
 
   def confirm!(confirmed_by_id)
-    raise ArgumentError.new("admin_id must be a UUID") unless confirmed_by_id =~ uuid_regex
-    return false if [:cancelled, :completed].include? state
-    return true if [:confirmed].include? state
-    append_to_stream do
-      apply Events::Withdrawl::Confirmed.new(data: {
-        admin_id: confirmed_by,
-        member_id: member_id,
-        withdrawl_request_id: id,
-        state: :confirmed,
-      })
+    raise ArgumentError.new("Must be a UUID") unless confirmed_by_id =~ uuid_regex
+    ActiveRecord::Base.transaction do
+      update! last_changed_by_id: confirmed_by_id,
+              confirmed_by_id: confirmed_by_id
+      self.confirm
     end
-    update! last_changed_by_id: confirmed_by_id
   end
 
   def complete!(completed_by_id)
-    raise ArgumentError.new("admin_id must be a UUID") unless completed_by_id =~ uuid_regex
-    return true if [:completed].include? state
-    return false unless [:confirmed].include? state
-    append_to_stream do
-      apply Events::Withdrawl::Completed.new(data: {
-        admin_id: admin_id,
-        member_id: member_id,
-        withdrawl_request_id: id,
-        state: :completed,
-      })
+    raise ArgumentError.new("Must be a UUID") unless completed_by_id =~ uuid_regex
+    ActiveRecord::Base.transaction do
+      update! last_changed_by_id: completed_by_id,
+              completed_by_id: completed_by_id
+      self.complete
     end
-    update! last_changed_by_id: completed_by_id
   end
 
   def cancel!(cancelled_by_id)
-    raise ArgumentError.new("cancelled_by_id must be a UUID") unless cancelled_by_id =~ uuid_regex
-    return false if [:in_progress, :completed, :confirmed].include? state
-    return true if [:cancelled].include? state
-    append_to_stream do
-      apply Events::Withdrawl::Cancelled.new(data: {
-        member_id: member_id,
-        withdrawl_request_id: id,
-        state: :cancelled,
-      })
+    raise ArgumentError.new("Must be a UUID") unless cancelled_by_id =~ uuid_regex
+    ActiveRecord::Base.transaction do
+      update! last_changed_by_id: cancelled_by_id,
+              cancelled_by_id: cancelled_by_id
+      self.cancel
     end
-    update! last_changed_by_id: cancelled_by_id
   end
 
   private
 
-  # ===> Aggregate Root and Events
-
-  def pending!
-    append_to_stream do
-      apply Events::Withdrawl::Pending.new(data: {
-        member_id: member_id,
-        withdrawl_request_id: id,
-        state: :pending,
+  def withdraw!
+    ActiveRecord::Base.transaction do
+      # We decrease overall funds in the system
+      adjustment = coin.reserves - quantity
+      coin.publish!(Events::Coin::State, {
+        holdings: coin.holdings,
+        reserves: adjustment,
+        transaction_id: transaction_id
       })
+      # We decrease members holdings
+      adjustment = member.holdings(coin.id) - quantity
+      member.publish!(Events::Member::Balance, {
+        coin_id: coin.id,
+        holdings: adjustment,
+        transaction_id: transaction_id
+      })
+      complete!(confirmed_by_id)
     end
-  end
-
-  def apply_strategy
-    DefaultApplyStrategy.new(strict: false)
-  end
-
-  def append_to_stream
-    self.load(stream)
-    yield
-    self.store
   end
 end

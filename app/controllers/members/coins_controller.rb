@@ -8,6 +8,7 @@ module Members
       @member = current_member.decorate
       @crypto = Coin.crypto_with_balance(current_member)
       @fiat = Coin.fiat_with_balance(current_member)
+      @withdrawls = current_member.outstanding_withdrawl_requests
     end
 
     def show

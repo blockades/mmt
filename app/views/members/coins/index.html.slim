@@ -18,7 +18,7 @@
             tr
               td= coin.name
               td= coin.code
-              td= number_to_currency(@member.coin_balance(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.available_balance(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
@@ -46,10 +46,37 @@
             tr
               td= coin.name
               td= coin.code
-              td= number_to_currency(@member.coin_balance(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.available_balance(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
                     i.fa.fa-shopping-cart.fa-lg
                   = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
                     i.fa.fa-level-down.fa-lg
+
+- if @withdrawls.any?
+  .row
+    .offset-by-four.four.columns
+      h2 Withdrawl Requests
+    .four.columns
+  .row
+    .twelve.columns
+      table width="100%"
+        thead
+          tr
+            th Quantity
+            th Coin
+            th State
+            th
+              span.right Actions
+        tbody
+          - @withdrawls.each do |withdrawl|
+            tr
+              td= number_to_currency(withdrawl.quantity.to_d / 10**withdrawl.coin.subdivision, precision: withdrawl.coin.subdivision, unit: '')
+              td= withdrawl.coin.code
+              td= withdrawl.state.humanize
+              td
+                .icons
+                  - if withdrawl.can_cancel?
+                    = link_to cancel_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Cancel" do
+                      i.fa.fa-times.fa-lg.red

@@ -44,70 +44,55 @@ module Domain
     # Command::Transaction::SystemDeposit
     # Handlers::Transaction::SystemDeposit
     def system_deposit!
-      ActiveRecord::Base.transaction do
-        apply Events::Transaction::SystemDeposit.new(data: {
-          destination_coin_id: destination_coin_id,
-          destination_rate: destination_rate,
-          destination_quantity: destination_quantity,
-          admin_id: admin_id
-        })
-      end
+      apply Events::Transaction::SystemDeposit.new(data: {
+        destination_coin_id: destination_coin_id,
+        destination_rate: destination_rate,
+        destination_quantity: destination_quantity,
+        admin_id: admin_id
+      })
     end
 
     # Command::Transaction::Exchange
     # Handlers::Transaction::Exchange
     def exchange!
-      ActiveRecord::Base.transaction do
-        apply Events::Transaction::Exchange.new(data: {
-          destination_coin_id: destination_coin_id,
-          destination_rate: destination_rate,
-          destination_quantity: destination_quantity,
-          source_coin_id: source_coin_id,
-          source_quantity: source_quantity,
-          source_rate: destination_rate,
-          member_id: member_id
-        })
-      end
+      apply Events::Transaction::Exchange.new(data: {
+        destination_coin_id: destination_coin_id,
+        destination_rate: destination_rate,
+        destination_quantity: destination_quantity,
+        source_coin_id: source_coin_id,
+        source_quantity: source_quantity,
+        source_rate: destination_rate,
+        member_id: member_id
+      })
     end
 
     # Command::Transaction::Allocate
     # Handlers::Transaction::Allocate
     def allocate!
-      ActiveRecord::Base.transaction do
-        apply Events::Transaction::Allocate.new(data: {
-          destination_coin_id: destination_coin_id,
-          destination_rate: destination_rate,
-          destination_quantity: destination_quantity,
-          member_id: member_id,
-          admin_id: admin_id
-        })
-      end
+      apply Events::Transaction::Allocate.new(data: {
+        destination_coin_id: destination_coin_id,
+        destination_rate: destination_rate,
+        destination_quantity: destination_quantity,
+        member_id: member_id,
+        admin_id: admin_id
+      })
     end
 
     # Command::Transaction::Withdraw
     # Handlers::Transaction::Withdraw
     def withdraw!
-      ActiveRecord::Base.transaction do
-        apply Events::Transaction::Withdraw.new(data: {
-          source_coin_id: source_coin_id,
-          source_quantity: source_quantity,
-          member_id: member_id
-        })
-      end
+      apply Events::Transaction::Withdraw.new(data: {
+        source_coin_id: source_coin_id,
+        source_quantity: source_quantity,
+        member_id: member_id
+      })
     end
 
     private
 
-    def apply_system_deposit(event)
-    end
-
-    def apply_allocate(event)
-    end
-
-    def apply_exchange(event)
-    end
-
-    def apply_withdraw(event)
+    # This prevents the apply_... method callback
+    def apply_strategy
+      DefaultApplyStrategy.new(strict: false)
     end
   end
 end

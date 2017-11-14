@@ -14,6 +14,7 @@ gem "rails_event_store"
 gem "sass-rails", "~> 5.0"
 gem "uglifier", ">= 1.3.0"
 gem 'draper'
+gem 'state_machine'
 
 gem "redis-rails"
 gem "sidekiq"

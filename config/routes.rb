@@ -29,6 +29,13 @@ Rails.application.routes.draw do
       get '/:coin_id/new' => 'allocations#new', as: :new_coin_allocation
       post '/:coin_id/' => 'allocations#create', as: :coin_allocation
     end
+
+    resources :withdrawl_requests, only: [:index], path: :withdrawls
+    scope path: :withdrawls do
+      patch '/:id/progress' => 'withdrawl_requests#progress', as: :progress_withdrawl
+      patch '/:id/confirm' => 'withdrawl_requests#confirm', as: :confirm_withdrawl
+      patch '/:id/cancel' => 'withdrawl_requests#cancel', as: :cancel_withdrawl
+    end
   end
 
   namespace :settings, module: :members, as: :member_settings do
@@ -61,9 +68,10 @@ Rails.application.routes.draw do
     end
 
     scope path: :withdraw do
-      root to: 'withdrawls#index', as: :withdrawls
-      get '/:coin_id' => 'withdrawls#new', as: :new_withdrawl
-      post '/:coin_id' => 'withdrawls#create', as: :withdrawl
+      root to: 'withdrawl_requests#index', as: :withdrawls
+      get '/:coin_id' => 'withdrawl_requests#new', as: :new_withdrawl
+      post '/:coin_id' => 'withdrawl_requests#create', as: :withdrawl
+      patch '/:id/cancel' => 'withdrawl_requests#cancel', as: :cancel_withdrawl
     end
 
     resources :members, path: '/', only: [:show, :update]

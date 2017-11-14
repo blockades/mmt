@@ -112,14 +112,23 @@ ActiveRecord::Schema.define(version: 20171114100551) do
   end
 
   create_table "withdrawl_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "state", default: "pending"
     t.uuid "member_id"
     t.uuid "coin_id"
-    t.uuid "last_changed_by_id"
     t.integer "quantity"
     t.uuid "transaction_id"
+    t.uuid "last_changed_by_id"
+    t.uuid "in_progress_by_id"
+    t.uuid "confirmed_by_id"
+    t.uuid "completed_by_id"
+    t.uuid "cancelled_by_id"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["cancelled_by_id"], name: "index_withdrawl_requests_on_cancelled_by_id"
     t.index ["coin_id"], name: "index_withdrawl_requests_on_coin_id"
+    t.index ["completed_by_id"], name: "index_withdrawl_requests_on_completed_by_id"
+    t.index ["confirmed_by_id"], name: "index_withdrawl_requests_on_confirmed_by_id"
+    t.index ["in_progress_by_id"], name: "index_withdrawl_requests_on_in_progress_by_id"
     t.index ["last_changed_by_id"], name: "index_withdrawl_requests_on_last_changed_by_id"
     t.index ["member_id"], name: "index_withdrawl_requests_on_member_id"
   end

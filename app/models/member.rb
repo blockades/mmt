@@ -20,6 +20,7 @@ class Member < ApplicationRecord
 
   has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient
   has_many :withdrawl_requests
+  has_many :outstanding_withdrawl_requests, -> { outstanding }, class_name: 'WithdrawlRequest'
 
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 
@@ -68,6 +69,12 @@ class Member < ApplicationRecord
   def holdings(coin_id)
     coin_history = history(coin_id)
     coin_history.any? ? coin_history.first.data.fetch(:holdings) : 0
+  end
+
+  def available_holdings(coin_id)
+    unconcluded_withdrawl_requests = withdrawl_requests.where(coin_id: coin_id)
+                                                       .where.not(state: [:completed, :confirmed, :cancelled])
+    holdings(coin_id) - unconcluded_withdrawl_requests.sum(:quantity)
   end
 
   # ===> Two Factor Authentication

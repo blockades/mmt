@@ -11,7 +11,7 @@ class CoinDecorator < Draper::Decorator
     reserves.to_d / 10**subdivision
   end
 
-  def reserves_available
+  def holdings_available
     holdings.to_d / 10**subdivision
   end
 end

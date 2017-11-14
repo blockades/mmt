@@ -1,0 +1,32 @@
+- if @withdrawl_requests.any?
+  .row
+    .offset-by-four.four.columns
+      h2 Withdrawl Requests
+    .four.columns
+  .row
+    .twelve.columns
+      table width="100%"
+        thead
+          tr
+            th Quantity
+            th Coin
+            th State
+            th
+              span.right Actions
+        tbody
+          - @withdrawl_requests.each do |withdrawl|
+            tr
+              td= number_to_currency(withdrawl.quantity.to_d / 10**withdrawl.coin.subdivision, precision: withdrawl.coin.subdivision, unit: '')
+              td= withdrawl.coin.code
+              td= withdrawl.state.humanize
+              td
+                .icons
+                  - if withdrawl.can_progress?
+                    = link_to admins_progress_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Progress" do
+                      i.fa.fa-spinner.fa-lg
+                  - if withdrawl.can_confirm?
+                    = link_to admins_confirm_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Confirm" do
+                      i.fa.fa-check-circle.fa-lg
+                  - if withdrawl.can_cancel?
+                    = link_to admins_cancel_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Cancel" do
+                      i.fa.fa-times.fa-lg.red
