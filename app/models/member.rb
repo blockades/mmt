@@ -18,6 +18,9 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
+  has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient
+  has_many :withdrawl_requests
+
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 
   validates :username, uniqueness: { case_sensitive: true },

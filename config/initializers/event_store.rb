@@ -7,6 +7,8 @@ Rails.application.configure do
     event_store.subscribe(Subscribers::Transaction::Allocate, [Events::Transaction::Allocate])
     event_store.subscribe(Subscribers::Transaction::Exchange, [Events::Transaction::Exchange])
     event_store.subscribe(Subscribers::Transaction::Withdraw, [Events::Transaction::Withdraw])
+
+    event_store.subscribe(Subscribers::Withdrawl::Confirmed, [Events::Transaction::Confirmed])
   end
 
 end
