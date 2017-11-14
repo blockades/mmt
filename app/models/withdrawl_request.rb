@@ -39,6 +39,10 @@ class WithdrawlRequest < ApplicationRecord
 
   after_commit :notify_admins_pending, on: :create
 
+  def read_quantity
+    quantity.to_d / 10**coin.subdivision
+  end
+
   def progress!(in_progress_by_id)
     raise ArgumentError.new("Must be a UUID") unless in_progress_by_id =~ uuid_regex
     ActiveRecord::Base.transaction do
@@ -100,7 +104,7 @@ class WithdrawlRequest < ApplicationRecord
   def notify_admins_pending
     notify_admins(
       title: "New withdrawl request",
-      body: "#{member.username} has requested to withdraw #{quantity} #{coin.code}",
+      body: "#{member.username} has requested to withdraw #{read_quantity} #{coin.code}",
       notification_type: self.class.name,
     )
   end
@@ -108,7 +112,7 @@ class WithdrawlRequest < ApplicationRecord
   def notify_admins_in_progress
     notify_admins(
       title: "New withdrawl request",
-      body: "#{progressed_by.username} has marked #{member.username}'s withdrawl of #{quantity} #{coin.code} as in progress",
+      body: "#{progressed_by.username} has marked #{member.username}'s withdrawl of #{read_quantity} #{coin.code} as in progress",
       notification_type: self.class.name,
     )
   end
@@ -116,7 +120,7 @@ class WithdrawlRequest < ApplicationRecord
   def notify_admins_confirmed
     notify_admins(
       title: "Withdrawl confirmed",
-      body: "#{confirmed_by.username} confirmed #{member.username}'s withdrawl of #{quantity} #{coin.code}",
+      body: "#{confirmed_by.username} confirmed #{member.username}'s withdrawl of #{read_quantity} #{coin.code}",
       notification_type: self.class.name,
     )
   end
@@ -124,7 +128,7 @@ class WithdrawlRequest < ApplicationRecord
   def notify_admins_completed
     notify_admins(
       title: "Withdrawl completed",
-      body: "#{completed_by.username} completed #{member.username}'s withdrawl of #{quantity} #{coin.code}",
+      body: "#{completed_by.username} completed #{member.username}'s withdrawl of #{read_quantity} #{coin.code}",
       notification_type: self.class.name,
     )
   end
@@ -132,7 +136,7 @@ class WithdrawlRequest < ApplicationRecord
   def notify_admins_cancelled
     notify_admins(
       title: "Withdrawl cancelled",
-      body: "#{cancelled_by.username} cancelled #{member.username}'s withdrawl of #{quantity} #{coin.code}",
+      body: "#{cancelled_by.username} cancelled #{member.username}'s withdrawl of #{read_quantity} #{coin.code}",
       notification_type: self.class.name,
     )
   end

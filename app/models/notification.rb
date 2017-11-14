@@ -8,15 +8,18 @@ class Notification < ApplicationRecord
   after_commit :broadcast, on: :create
 
   def channel
-    "notifications_#{recipient_id}",
+    "notifications_#{recipient_id}"
   end
 
   def broadcast
-    ActionCable.server.broadcast(channel,
-      title: title,
-      body: body,
-      type: notification_type,
-      count: self.recipient.notifications.unread.count
+    Workers::Broadcaster.perform_async(
+      channel: channel,
+      data: {
+        title: title,
+        body: body,
+        type: notification_type,
+        count: self.recipient.notifications.unread.count
+      }
     )
   end
 end

@@ -9,22 +9,35 @@ module Admins
     end
 
     def history
-      @withdrawl_requests = WithdrawlRequest.all
+      if @withdrawl_requests = WithdrawlRequest.all
+        head :ok
+      else
+        head 403
+      end
     end
 
     def progress
-      @withdrawl_request.progress!(current_member.id)
-      head :ok
+      if @withdrawl_request.progress!(current_member.id)
+        head :ok
+      else
+        head 403
+      end
     end
 
     def confirm
-      @withdrawl_request.confirm!(current_member.id)
-      head :ok
+      if @withdrawl_request.confirm!(current_member.id)
+        head :ok
+      else
+        head 403
+      end
     end
 
     def cancel
-      @withdrawl_request.cancel!(current_member.id)
-      head :ok
+      if @withdrawl_request.cancel!(current_member.id)
+        head :ok
+      else
+        head 403
+      end
     end
 
     private
