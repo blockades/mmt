@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171114100551) do
+ActiveRecord::Schema.define(version: 20171030104608) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -100,39 +100,4 @@ ActiveRecord::Schema.define(version: 20171114100551) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
-  create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.integer "recipient_id"
-    t.string "notification_type"
-    t.string "title"
-    t.text "body"
-    t.boolean "read", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
-  end
-
-  create_table "withdrawl_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "state", default: "pending"
-    t.uuid "member_id"
-    t.uuid "coin_id"
-    t.integer "quantity"
-    t.uuid "transaction_id"
-    t.uuid "last_changed_by_id"
-    t.uuid "in_progress_by_id"
-    t.uuid "confirmed_by_id"
-    t.uuid "completed_by_id"
-    t.uuid "cancelled_by_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cancelled_by_id"], name: "index_withdrawl_requests_on_cancelled_by_id"
-    t.index ["coin_id"], name: "index_withdrawl_requests_on_coin_id"
-    t.index ["completed_by_id"], name: "index_withdrawl_requests_on_completed_by_id"
-    t.index ["confirmed_by_id"], name: "index_withdrawl_requests_on_confirmed_by_id"
-    t.index ["in_progress_by_id"], name: "index_withdrawl_requests_on_in_progress_by_id"
-    t.index ["last_changed_by_id"], name: "index_withdrawl_requests_on_last_changed_by_id"
-    t.index ["member_id"], name: "index_withdrawl_requests_on_member_id"
-  end
-
-  add_foreign_key "withdrawl_requests", "coins"
-  add_foreign_key "withdrawl_requests", "members"
 end
