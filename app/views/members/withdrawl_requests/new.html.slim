@@ -1,4 +1,4 @@
-= form_for :withdrawl, url: withdrawl_path(@coin.id), method: :post do |f|
+= form_for :withdrawl, url: withdrawl_path(@coin.id), method: :post, remote: true do |f|
   .row
     = f.label :quantity
     = f.number_field :source_quantity, step: :any, id: 'destination_quantity'

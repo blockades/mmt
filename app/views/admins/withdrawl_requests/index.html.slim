@@ -22,11 +22,11 @@
               td
                 .icons
                   - if withdrawl.can_progress?
-                    = link_to admins_progress_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Progress" do
+                    = link_to admins_progress_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Progress", remote: true do
                       i.fa.fa-spinner.fa-lg
                   - if withdrawl.can_confirm?
-                    = link_to admins_confirm_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Confirm" do
+                    = link_to admins_confirm_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Confirm", remote: true do
                       i.fa.fa-check-circle.fa-lg
                   - if withdrawl.can_cancel?
-                    = link_to admins_cancel_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Cancel" do
+                    = link_to admins_cancel_withdrawl_path(withdrawl), method: :patch, class: 'icon', title: "Cancel", remote: true do
                       i.fa.fa-times.fa-lg.red

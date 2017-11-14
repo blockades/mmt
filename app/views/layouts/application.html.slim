@@ -4,6 +4,7 @@ html
     meta content=("text/html; charset=UTF-8") http-equiv="Content-Type" /
     title MMT
     = csrf_meta_tags
+    = action_cable_meta_tag
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
   body
@@ -19,5 +20,8 @@ html
         - if current_member&.admin?
           li= link_to 'Admin Dashboard', admins_root_path, class: "button button-primary"
         li= link_to 'Log out', destroy_member_session_path, method: :delete, authenticity_token: true, class: "button button-primary"
+      .right
+        .notifications
+          .count= current_member.notifications.count
     .container
       = yield

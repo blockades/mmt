@@ -28,6 +28,8 @@ Rails.application.configure do
     config.cache_store = :memory_store
   end
 
+  config.action_cable.url = "ws://app.#{ENV.fetch('APP_DOMAIN')}:3000/cable"
+
   config.action_mailer.raise_delivery_errors = false
 
   config.action_mailer.default_url_options = { host: "app.#{ENV['APP_DOMAIN']}", port: 5000 }

@@ -14,17 +14,14 @@ module Members
       end
       command = Command::Transaction::Withdraw.new(withdrawl_params)
       execute command
-      redirect_to coins_path, notice: "Success"
+      head :ok
     rescue Command::ValidationError => error
-      redirect_to new_withdrawl_path, error: error
+      head 403
     end
 
     def cancel
-      if @withdrawl_request.cancel!(current_member.id)
-        redirect_back fallback_location: withdrawls_path, notice: "Success"
-      else
-        redirect_back fallback_location: withdrawls_path, notice: "Fail"
-      end
+      @withdrawl_request.cancel!(current_member.id)
+      head :ok
     end
 
     private

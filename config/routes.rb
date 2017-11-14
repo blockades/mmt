@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 Rails.application.routes.draw do
+  mount ActionCable.server => '/cable'
 
   devise_for :members, only: :invitations, controllers: { invitations: 'admins/invitations' }
   devise_for :members, only: [:sessions, :passwords, :two_factor_authentications, :two_factor_recoveries], path: :auth, path_names: {
@@ -8,7 +9,7 @@ Rails.application.routes.draw do
     sign_out: 'logout',
     two_factor_authentication: 'two_factor',
     two_factor_recovery: 'two_factor/recovery'
-  }
+  }, controllers: { sessions: 'members/sessions' }
 
   devise_scope :members do
     get 'auth/sudo' => 'reauthentication#new', as: :new_reauthentication

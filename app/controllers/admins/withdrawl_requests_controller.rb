@@ -13,27 +13,18 @@ module Admins
     end
 
     def progress
-      if @withdrawl_request.progress!(current_member.id)
-        redirect_back fallback_location: admins_withdrawl_requests_path, notice: "Success"
-      else
-        redirect_back fallback_location: admins_withdrawl_requests_path, notice: "Fail"
-      end
+      @withdrawl_request.progress!(current_member.id)
+      head :ok
     end
 
     def confirm
-      if @withdrawl_request.confirm!(current_member.id)
-        redirect_back fallback_location: admins_withdrawl_requests_path, notice: "Success"
-      else
-        redirect_back fallback_location: admins_withdrawl_requests_path, notice: "Fail"
-      end
+      @withdrawl_request.confirm!(current_member.id)
+      head :ok
     end
 
     def cancel
-      if @withdrawl_request.cancel!(current_member.id)
-        redirect_back fallback_location: admins_withdrawl_requests_path, notice: "Success"
-      else
-        redirect_back fallback_location: admins_withdrawl_requests_path, notice: "Fail"
-      end
+      @withdrawl_request.cancel!(current_member.id)
+      head :ok
     end
 
     private

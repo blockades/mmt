@@ -20,6 +20,9 @@ class Member < ApplicationRecord
 
   has_many :withdrawl_requests
   has_many :outstanding_withdrawl_requests, -> { outstanding }, class_name: 'WithdrawlRequest'
+  has_many :notifications, foreign_key: :recipient_id, inverse_of: :recipient
+
+  scope :admin, -> { where admin: true }
 
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 

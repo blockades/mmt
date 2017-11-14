@@ -16,6 +16,7 @@ gem "uglifier", ">= 1.3.0"
 gem 'draper'
 gem 'state_machine'
 
+gem "redis", "~> 3.3"
 gem "redis-rails"
 gem "sidekiq"
 
