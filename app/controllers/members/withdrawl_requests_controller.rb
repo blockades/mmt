@@ -20,8 +20,11 @@ module Members
     end
 
     def cancel
-      @withdrawl_request.cancel!(current_member.id)
-      head :ok
+      if cancel_withdrawl.success?
+        head :ok
+      else
+        head 403
+      end
     end
 
     private
@@ -48,6 +51,13 @@ module Members
 
     def source_quantity_as_integer
       (permitted_params.fetch(:source_quantity).to_d * 10**@coin.subdivision).to_i
+    end
+
+    def cancel_withdrawl
+      @cancel_withdrawl ||= CancelWithdrawl.call(
+        member_id: current_member.id,
+        withdrawl_request_id: @withdrawl_request.id
+      )
     end
   end
 end

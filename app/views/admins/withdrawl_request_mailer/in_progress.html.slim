@@ -1,0 +1,4 @@
+h1= t('withdrawl_requests.admin.in_progress.title')
+
+p= t('withdrawl_requests.admin.in_progress.body', in_progress_by: @withdrawl_request.in_progress_by.username, member: @member.username, quantity: @withdrawl_request.read_quantity, coin: @coin.code)
+

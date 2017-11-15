@@ -1,0 +1,4 @@
+= t('withdrawl_requests.admin.completed.title')
+
+= t('withdrawl_requests.admin.completed.body', completed_by: @withdrawl_request.completed_by.username, member: @member.username, quantity: @withdrawl_request.read_quantity, coin: @coin.code)
+

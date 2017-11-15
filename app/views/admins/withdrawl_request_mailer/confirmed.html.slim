@@ -1,0 +1,4 @@
+h1= t('withdrawl_requests.admin.confirmed.title')
+
+p= t('withdrawl_requests.admin.confirmed.body', confirmed_by: @withdrawl_request.confirmed_by.username, member: @member.username, quantity: @withdrawl_request.read_quantity, coin: @coin.code)
+

@@ -2,10 +2,13 @@
 
 class Notification < ApplicationRecord
   belongs_to :recipient, class_name: 'Member', foreign_key: :recipient_id, inverse_of: :notifications
+  belongs_to :subject, polymorphic: true
 
   scope :unread, -> { where(read: false) }
 
   after_commit :broadcast, on: :create
+
+  private
 
   def channel
     "notifications_#{recipient_id}"
@@ -17,7 +20,7 @@ class Notification < ApplicationRecord
       data: {
         title: title,
         body: body,
-        type: notification_type,
+        type: subject_type,
         count: self.recipient.notifications.unread.count
       }
     )

@@ -17,7 +17,7 @@ module Admins
     end
 
     def progress
-      if @withdrawl_request.progress!(current_member.id)
+      if progress_withdrawl.success?
         head :ok
       else
         head 403
@@ -25,7 +25,7 @@ module Admins
     end
 
     def confirm
-      if @withdrawl_request.confirm!(current_member.id)
+      if confirm_withdrawl.success?
         head :ok
       else
         head 403
@@ -33,7 +33,7 @@ module Admins
     end
 
     def cancel
-      if @withdrawl_request.cancel!(current_member.id)
+      if cancel_withdrawl.success?
         head :ok
       else
         head 403
@@ -44,6 +44,27 @@ module Admins
 
     def find_withdrawl_request
       @withdrawl_request = WithdrawlRequest.find params[:id]
+    end
+
+    def progress_withdrawl
+      @progress_withdrawl ||= ProgressWithdrawl.call(
+        member_id: current_member.id,
+        withdrawl_request_id: @withdrawl_request.id,
+      )
+    end
+
+    def confirm_withdrawl
+      @confirm_withdrawl ||= ConfirmWithdrawl.call(
+        member_id: current_member.id,
+        withdrawl_request_id: @withdrawl_request.id
+      )
+    end
+
+    def cancel_withdrawl
+      @cancel_withdrawl ||= CancelWithdrawl.call(
+        member_id: current_member.id,
+        withdrawl_request_id: @withdrawl_request.id
+      )
     end
   end
 end

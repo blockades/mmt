@@ -1,151 +1,87 @@
 class WithdrawlRequest < ApplicationRecord
-
   belongs_to :member
   belongs_to :coin
 
   belongs_to :last_changed_by, class_name: 'Member', foreign_key: :last_changed_by_id
-  belongs_to :progressed_by, class_name: 'Member', foreign_key: :in_progress_by_id
+  belongs_to :in_progress_by, class_name: 'Member', foreign_key: :in_progress_by_id
   belongs_to :confirmed_by, class_name: 'Member', foreign_key: :confirmed_by_id
   belongs_to :completed_by, class_name: 'Member', foreign_key: :completed_by_id
   belongs_to :cancelled_by, class_name: 'Member', foreign_key: :cancelled_by_id
 
+  STATES = %w(pending in_progress confirmed completed cancelled failed).freeze
+
   validates :quantity, presence: true,
                        numericality: { greater_than: 0 }
+
+  validates :state, presence: true, inclusion: { in: STATES }
 
   scope :pending, -> { where state: :pending }
   scope :in_progress, -> { where state: :in_progress }
   scope :confirmed, -> { where state: :confirmed }
   scope :completed, -> { where state: :completed }
   scope :cancelled, -> { where state: :cancelled }
-  scope :outstanding, -> { where.not state: [:completed, :cancelled] }
+  scope :outstanding, -> { where.not state: [:confirmed, :completed, :cancelled] }
 
-  STATES = [:pending, :in_progress, :confirmed, :completed, :cancelled].freeze
+  after_commit :send_admin_notifications, on: :create
+  after_commit :send_member_notifications, on: :create
+
+  after_commit :send_admin_notifications, on: :update, if: proc { previous_changes.key?(:state) }
+  after_commit :send_member_notifications, on: :update, if: proc { previous_changes.key?(:state) && state != 'confirmed' }
 
   state_machine :state, initial: :pending do
     event(:progress) { transition pending: :in_progress }
     event(:cancel)      { transition pending: :cancelled }
-    event(:confirm)     { transition [:pending, :in_progress] => :confirmed } # same as complete?
+    event(:confirm)     { transition [:pending, :in_progress] => :confirmed }
     event(:complete)    { transition confirmed: :completed }
+    event(:crash)        { transition any: :failed }
 
-    after_transition on: :progress, do: [:notify_admins_in_progress]
-    after_transition on: :cancel, do: [:notify_admins_cancelled]
-    after_transition on: :confirm, do: [:withdraw!, :notify_admins_confirmed]
-    after_transition on: :complete, do: [:notify_admins_completed]
+    after_transition on: :confirm, do: [:complete_withdrawl!]
 
     def initialize
       super
     end
   end
 
-  after_commit :notify_admins_pending, on: :create
-
   def read_quantity
     quantity.to_d / 10**coin.subdivision
   end
 
-  def progress!(in_progress_by_id)
-    raise ArgumentError.new("Must be a UUID") unless in_progress_by_id =~ uuid_regex
-    ActiveRecord::Base.transaction do
-      update! last_changed_by_id: in_progress_by_id,
-              in_progress_by_id: in_progress_by_id
-      self.progress
-    end
-  end
-
-  def confirm!(confirmed_by_id)
-    raise ArgumentError.new("Must be a UUID") unless confirmed_by_id =~ uuid_regex
-    ActiveRecord::Base.transaction do
-      update! last_changed_by_id: confirmed_by_id,
-              confirmed_by_id: confirmed_by_id
-      self.confirm
-    end
-  end
-
-  def complete!(completed_by_id)
-    raise ArgumentError.new("Must be a UUID") unless completed_by_id =~ uuid_regex
-    ActiveRecord::Base.transaction do
-      update! last_changed_by_id: completed_by_id,
-              completed_by_id: completed_by_id
-      self.complete
-    end
-  end
-
-  def cancel!(cancelled_by_id)
-    raise ArgumentError.new("Must be a UUID") unless cancelled_by_id =~ uuid_regex
-    ActiveRecord::Base.transaction do
-      update! last_changed_by_id: cancelled_by_id,
-              cancelled_by_id: cancelled_by_id
-      self.cancel
-    end
-  end
-
   private
 
-  def withdraw!
-    ActiveRecord::Base.transaction do
-      # We decrease overall funds in the system
-      adjustment = coin.reserves - quantity
-      coin.publish!(Events::Coin::State, {
-        holdings: coin.holdings,
-        reserves: adjustment,
-        transaction_id: transaction_id
-      })
-      # We decrease members holdings
-      adjustment = member.holdings(coin.id) - quantity
-      member.publish!(Events::Member::Balance, {
-        coin_id: coin.id,
-        holdings: adjustment,
-        transaction_id: transaction_id
-      })
-      complete!(confirmed_by_id)
-    end
+  def complete_withdrawl!
+    CompleteWithdrawl.call(withdrawl_request_id: id)
   end
 
-  def notify_admins_pending
-    notify_admins(
-      title: "New withdrawl request",
-      body: "#{member.username} has requested to withdraw #{read_quantity} #{coin.code}",
-      notification_type: self.class.name,
-    )
-  end
-
-  def notify_admins_in_progress
-    notify_admins(
-      title: "New withdrawl request",
-      body: "#{progressed_by.username} has marked #{member.username}'s withdrawl of #{read_quantity} #{coin.code} as in progress",
-      notification_type: self.class.name,
-    )
-  end
-
-  def notify_admins_confirmed
-    notify_admins(
-      title: "Withdrawl confirmed",
-      body: "#{confirmed_by.username} confirmed #{member.username}'s withdrawl of #{read_quantity} #{coin.code}",
-      notification_type: self.class.name,
-    )
-  end
-
-  def notify_admins_completed
-    notify_admins(
-      title: "Withdrawl completed",
-      body: "#{completed_by.username} completed #{member.username}'s withdrawl of #{read_quantity} #{coin.code}",
-      notification_type: self.class.name,
-    )
-  end
-
-  def notify_admins_cancelled
-    notify_admins(
-      title: "Withdrawl cancelled",
-      body: "#{cancelled_by.username} cancelled #{member.username}'s withdrawl of #{read_quantity} #{coin.code}",
-      notification_type: self.class.name,
-    )
-  end
-
-  def notify_admins(notification_attributes)
+  def send_admin_notifications
+    title = I18n.t("withdrawl_request.admins.#{state}.title")
+    body = I18n.t("withdrawl_request.admins.#{state}.body", {
+      member: member.username,
+      quantity: read_quantity,
+      coin: coin.code
+    })
     Member.admin.each do |admin|
-      Notification.create!(notification_attributes.merge(
-        recipient_id: admin.id
-      ))
+      Notification.create!(
+        title: title,
+        body: body,
+        recipient_id: admin.id,
+        subject_id: id,
+      )
+      Admins::WithdrawlRequestMailer.send(state, admin_id: admin.id, request_id: id).deliver_now
     end
+  end
+
+  def send_member_notifications
+    title = I18n.t("withdrawl_request.members.#{state}.title")
+    body = I18n.t("withdrawl_request.members.#{state}.body", {
+      quantity: read_quantity,
+      coin: coin.code
+    })
+    Notification.create!(
+      title: title,
+      body: body,
+      recipient_id: member.id,
+      subject_id: id,
+    )
+    Members::WithdrawlRequestMailer.send(state, request_id: id).deliver_now
   end
 end

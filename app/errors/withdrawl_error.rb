@@ -1,0 +1,1 @@
+WithdrawlError = Class.new(StandardError)

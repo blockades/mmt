@@ -1,0 +1,4 @@
+h1= t('withdrawl_requests.admin.cancelled.title')
+
+p= t('withdrawl_requests.admin.cancelled.body', cancelled_by: @withdrawl_request.cancelled_by.username, member: @member.username, quantity: @withdrawl_request.read_quantity, coin: @coin.code)
+
