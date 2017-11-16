@@ -4,8 +4,8 @@ class MemberCoinEvent < ApplicationRecord
   belongs_to :member
 
   scope :with_coin, ->(coin_id) { where coin_id: coin_id }
-  scope :crypto, -> { joins(:coins).where(coins: { crypto_currency: true }) }
-  scope :fiat, -> { joins(:coins).where(coins: { crypto_currency: false }) }
+  scope :crypto, -> { joins(:coin).where(coins: { crypto_currency: true }) }
+  scope :fiat, -> { joins(:coin).where(coins: { crypto_currency: false }) }
 
   attr_readonly :available,
                 :coin_id,
