@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
-  include AggregateRoot
-
   devise :two_factor_authenticatable,
          :two_factor_recoverable,
          :database_authenticatable,

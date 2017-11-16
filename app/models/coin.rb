@@ -1,7 +1,6 @@
 # frozen_string_literal: true
 
 class Coin < ApplicationRecord
-  include AggregateRoot
 
   extend FriendlyId
   friendly_id :code, use: :slugged
