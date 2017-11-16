@@ -10,12 +10,23 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171116095626) do
+ActiveRecord::Schema.define(version: 20171116162843) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
+
+  create_table "coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coin_id"
+    t.uuid "transaction_id"
+    t.bigint "liability"
+    t.bigint "available"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coin_id"], name: "index_coin_events_on_coin_id"
+    t.index ["transaction_id"], name: "index_coin_events_on_transaction_id"
+  end
 
   create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
@@ -28,19 +39,6 @@ ActiveRecord::Schema.define(version: 20171116095626) do
     t.index ["code"], name: "index_coins_on_code", unique: true
   end
 
-  create_table "event_store_events", id: :serial, force: :cascade do |t|
-    t.string "stream", null: false
-    t.string "event_type", null: false
-    t.string "event_id", null: false
-    t.text "metadata"
-    t.text "data", null: false
-    t.datetime "created_at", null: false
-    t.index ["created_at"], name: "index_event_store_events_on_created_at"
-    t.index ["event_id"], name: "index_event_store_events_on_event_id", unique: true
-    t.index ["event_type"], name: "index_event_store_events_on_event_type"
-    t.index ["stream"], name: "index_event_store_events_on_stream"
-  end
-
   create_table "friendly_id_slugs", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "slug", null: false
     t.uuid "sluggable_id", null: false
@@ -51,6 +49,19 @@ ActiveRecord::Schema.define(version: 20171116095626) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
+  end
+
+  create_table "member_coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coin_id"
+    t.uuid "member_id"
+    t.uuid "transaction_id"
+    t.bigint "available"
+    t.decimal "rate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coin_id"], name: "index_member_coin_events_on_coin_id"
+    t.index ["member_id"], name: "index_member_coin_events_on_member_id"
+    t.index ["transaction_id"], name: "index_member_coin_events_on_transaction_id"
   end
 
   create_table "members", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -114,14 +125,14 @@ ActiveRecord::Schema.define(version: 20171116095626) do
 
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "type"
-    t.string "source_coin_id"
-    t.string "source_rate"
-    t.string "source_quantity"
-    t.string "source_member_id"
-    t.string "destination_coin_id"
-    t.string "destination_member_id"
-    t.string "destination_quantity"
-    t.string "destination_rate"
+    t.uuid "source_coin_id"
+    t.uuid "source_member_id"
+    t.bigint "source_quantity"
+    t.decimal "source_rate"
+    t.uuid "destination_coin_id"
+    t.uuid "destination_member_id"
+    t.bigint "destination_quantity"
+    t.decimal "destination_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
   end

@@ -2,7 +2,7 @@ h2 Allocate #{@coin.name} (#{@coin.code})
 = form_for :allocation, url: admins_coin_allocation_path(@coin) do |f|
   .row
     = f.label :member
-    = f.select :member_id, Member.all.map {|member| [ member.email, member.id ] }, { include_blank: true }, class: "select2"
+    = f.select :destination_member_id, Member.all.map {|member| [ member.email, member.id ] }, { include_blank: true }, class: "select2"
   br
   .row
     = f.label :quantity

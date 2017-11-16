@@ -2,8 +2,9 @@ table
   thead
     th Name
     th Code
-    th Reserve
+    th Liability
     th Available
+    th Total
     th BTC rate (bittrex)
     th Actions
   tbody
@@ -11,8 +12,9 @@ table
       tr
         td= coin.name
         td= coin.code
-        td= coin.central_reserve
-        td= coin.reserves_available
+        td= coin.assigned_holdings
+        td= coin.availability
+        td= coin.total_in_system
         td= coin.btc_rate
         td
           .icons

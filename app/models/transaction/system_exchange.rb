@@ -3,23 +3,33 @@
 module Transaction
   class SystemExchange < Transaction::Base
 
+    attr_accessor :higher_subdivision,
+                  :source_quantity_for_comparison,
+                  :destination_quantity_for_comparison
+
     validates :source_coin_id,
               :source_rate,
               :source_quantity,
+              :source_quantity_for_comparison,
               :destination_coin_id,
               :destination_rate,
               :destination_quantity,
               :destination_member_id,
+              :destination_quantity_for_comparison,
+              :higher_subdivision,
               presence: true
 
     validates :source_rate,
               :source_quantity,
+              :source_quantity_for_comparison,
               :destination_rate,
               :destination_quantity,
+              :destination_quantity_for_comparison,
+              :higher_subdivision,
               numericality: { greater_than: 0 }
 
-    validate :source_members_source_coin_balance,
-             :ensure_less_than_central_reserve,
+    validate :destination_members_source_coin_balance,
+             :ensure_availability,
              :values_match,
              :rates_match
 

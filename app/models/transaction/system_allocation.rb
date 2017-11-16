@@ -14,7 +14,7 @@ module Transaction
               :destination_quantity,
               numericality: { greater_than: 0 }
 
-    validate :ensure_less_than_central_reserve
+    validate :ensure_availability
 
   end
 end

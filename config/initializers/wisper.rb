@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 Wisper.subscribe(Subscribers::Transaction::SystemAllocation.new, scope: Transaction::SystemAllocation)
-Wisper.subscribe(Subscribers::Transaction::SystemWithdrawl.new, scope: Transaction::SystemAllocation)
+Wisper.subscribe(Subscribers::Transaction::SystemWithdrawl.new, scope: Transaction::SystemWithdrawl)
 Wisper.subscribe(Subscribers::Transaction::SystemDeposit.new, scope: Transaction::SystemDeposit)
 Wisper.subscribe(Subscribers::Transaction::SystemExchange.new, scope: Transaction::SystemExchange)
 
