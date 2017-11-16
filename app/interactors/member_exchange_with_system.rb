@@ -1,16 +1,16 @@
 # frozen_string_literal: true
 
-class ExchangeCoins
+class MemberExchangeWithSystem
   include Interactor
-  include Command::Execute
 
   def call
     context.fail!(message: "Missing fields") unless (required_params - permitted_params.keys).empty?
-    command = Command::Transaction::Exchange.new(exchange_params)
-    execute command
-    context.message = "Success"
-  rescue Command::ValidationError => error
-    context.fail!(message: "Fail: #{error.inspect}")
+    transaction = Transaction::SystemExchange.create(exchange_params)
+    if transaction.persisted?
+      context.message = "Success"
+    else
+      context.fail!(message: "Failed" )
+    end
   end
 
   protected
@@ -26,6 +26,7 @@ class ExchangeCoins
       destination_quantity: quantity_as_integer(:destination_quantity, destination_coin.subdivision),
       source_quantity_for_comparison: quantity_as_integer(:source_quantity, higher_subdivision),
       source_quantity: quantity_as_integer(:source_quantity, source_coin.subdivision),
+      higher_subdivision: higher_subdivision
     ).to_h.symbolize_keys
   end
 

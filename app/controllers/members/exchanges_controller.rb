@@ -29,9 +29,9 @@ module Members
     end
 
     def exchange
-      @exchange ||= ExchangeCoins.call(permitted_params: permitted_params.merge(
+      @exchange ||= MemberExchangeWithSystem.call(permitted_params: permitted_params.merge(
         destination_coin_id: params[:coin_id],
-        member_id: current_member.id
+        destination_member_id: current_member.id
       ))
     end
   end

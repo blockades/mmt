@@ -4,18 +4,15 @@ module Subscribers
   module Transaction
     class SystemDeposit < Subscribers::Base
 
-      # On a load event, we increase both available funds and overall funds
-      def call(event)
-        ActiveRecord::Base.transaction do
-          coin = ::Coin.find event.data.fetch(:destination_coin_id)
+      def call(transaction_id)
+        transaction = ::Transaction::SystemDeposit.find(transaction_id)
+        coin = transaction.destination_coin
 
-          coin.publish!(Events::Coin::State, {
-            holdings: coin.holdings + event.data.fetch(:destination_quantity),
-            reserves: coin.reserves + event.data.fetch(:destination_quantity),
-            rate: event.data.fetch(:destination_rate),
-            transaction_id: event.event_id
-          })
-        end
+        coin.publish!(
+          liability: 0,
+          available: transaction.destination_quantity,
+          transaction_id: transaction.id
+        )
       end
 
     end

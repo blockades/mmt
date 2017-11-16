@@ -5,5 +5,6 @@ module Transaction
     validates :source_member_id,
               :destination_member_id,
               :destination_quantity,
+              presence: true
   end
 end

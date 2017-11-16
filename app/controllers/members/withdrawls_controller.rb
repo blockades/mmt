@@ -14,11 +14,12 @@ module Members
       unless permitted_params[:source_quantity].present?
         redirect_back fallback_location: new_withdrawl_path, notice: 'Specify an amount to withdraw' and return
       end
-      command = Command::Transaction::Withdraw.new(withdrawl_params)
-      execute command
-      redirect_to coins_path, notice: "Success"
-    rescue Command::ValidationError => error
-      redirect_to new_withdrawl_path, error: error
+      transaction = Transaction::MemberWithdrawl.create(withdrawl_params)
+      if transaction.persisted?
+        redirect_to coins_path, notice: "Success"
+      else
+        redirect_to new_withdrawl_path, error: error
+      end
     end
 
     private
@@ -35,7 +36,7 @@ module Members
       permitted_params.merge(
         source_coin_id: @coin.id,
         source_quantity: source_quantity_as_integer,
-        member_id: current_member.id,
+        destination_member_id: current_member.id,
       ).to_h.symbolize_keys
     end
 
