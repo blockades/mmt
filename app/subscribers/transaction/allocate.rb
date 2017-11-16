@@ -2,8 +2,6 @@ module Subscribers
   module Transaction
     class Allocate
 
-      # On an allocation event, we increase member's coin holdings
-      # and reduce coin's holdings. Reserves stay the same.
       def call(event)
         ActiveRecord::Base.transaction do
           coin = ::Coin.find event.data.fetch(:destination_coin_id)
