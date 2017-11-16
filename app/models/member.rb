@@ -18,26 +18,13 @@ class Member < ApplicationRecord
 
   has_many :member_coin_events
   has_many :coins, through: :member_coin_events
+  has_many :crypto_events, -> { crypto }, class_name: 'MemberCoinEvent'
+  has_many :fiat_events, -> { fiat }, class_name: 'MemberCoinEvent'
+  has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
+  has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
-  def crypto
-    Coin.joins(:member_coin_events).where(member_coin_events: { member_id: id }, crypto_currency: true).uniq
-  end
-
-  def fiat
-    Coin.joins(:member_coin_events).where(member_coin_events: { member_id: id }, crypto_currency: false).uniq
-  end
-
-  scope :with_crypto, -> do
-    joins('INNER JOIN member_coin_events ON member_coin_events.member_id = members.id')
-    .joins('INNER JOIN coins ON member_coin_events.coin_id = coins.id')
-    .where('coins.crypto_currency = true')
-  end
-
-  scope :with_fiat, -> do
-    joins('INNER JOIN member_coin_events ON member_coin_events.member_id = members.id')
-    .joins('INNER JOIN coins ON member_coin_events.coin_id = coins.id')
-    .where('coins.crypto_currency = false')
-  end
+  scope :with_crypto, -> { joins(:member_coin_events).joins(:coins).where(coins: { crypto_currency: true }).uniq }
+  scope :with_fiat, -> { joins(:member_coin_events).joins(:coins).where(coins: { crypto_currency: false }).uniq }
 
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 
