@@ -21,13 +21,13 @@ Rails.application.routes.draw do
     resources :members, only: [:index, :new, :create, :edit]
 
     scope path: :deposit do
-      get '/:coin_id/new' => 'deposits#new', as: :new_coin_deposit
-      post '/:coin_id/' => 'deposits#create', as: :coin_deposit
+      get '/:coin_id/new' => 'system_deposits#new', as: :new_coin_deposit
+      post '/:coin_id/' => 'system_deposits#create', as: :coin_deposit
     end
 
     scope path: :allocate do
-      get '/:coin_id/new' => 'allocations#new', as: :new_coin_allocation
-      post '/:coin_id/' => 'allocations#create', as: :coin_allocation
+      get '/:coin_id/new' => 'system_allocations#new', as: :new_coin_allocation
+      post '/:coin_id/' => 'system_allocations#create', as: :coin_allocation
     end
   end
 

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admins
-  class DepositsController < AdminsController
+  class SystemDepositsController < AdminsController
     before_action :find_coin
 
     def new
@@ -11,12 +11,12 @@ module Admins
       unless permitted_params[:destination_quantity].present?
         redirect_back fallback_location: admins_new_coin_deposit_path(@coin), alert: 'Quantity required' and return
       end
-      command = Command::Transaction::SystemDeposit.new(deposit_params)
-      execute command
-      redirect_to admins_coins_path(@coin), notice: 'Success'
-    rescue Command::ValidationError => error
-      Rails.logger.error(error)
-      redirect_to admins_new_coin_deposit_path(@coin), alert: 'Fail'
+      transaction = Transaction::SystemDeposit.create(deposit_params)
+      if transaction.persisted?
+        redirect_to admins_coins_path(@coin), notice: 'Success'
+      else
+        redirect_to admins_new_coin_deposit_path(@coin), alert: 'Fail'
+      end
     end
 
     private
@@ -33,7 +33,7 @@ module Admins
       permitted_params.merge!(
         destination_quantity: quantity_as_integer,
         destination_coin_id: @coin.id,
-        admin_id: current_member.id,
+        source_member_id: current_member.id,
       ).to_h.symbolize_keys
     end
 

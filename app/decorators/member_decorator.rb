@@ -4,7 +4,7 @@ class MemberDecorator < Draper::Decorator
   delegate_all
 
   def coin_balance(coin)
-    holdings(coin.id).to_d / 10**coin.subdivision
+    balance(coin.id).to_d / 10**coin.subdivision
   end
 
   def two_factor_delivery_method

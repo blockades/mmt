@@ -16,6 +16,29 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
+  has_many :member_coin_events
+  has_many :coins, through: :member_coin_events
+
+  def crypto
+    Coin.joins(:member_coin_events).where(member_coin_events: { member_id: id }, crypto_currency: true).uniq
+  end
+
+  def fiat
+    Coin.joins(:member_coin_events).where(member_coin_events: { member_id: id }, crypto_currency: false).uniq
+  end
+
+  scope :with_crypto, -> do
+    joins('INNER JOIN member_coin_events ON member_coin_events.member_id = members.id')
+    .joins('INNER JOIN coins ON member_coin_events.coin_id = coins.id')
+    .where('coins.crypto_currency = true')
+  end
+
+  scope :with_fiat, -> do
+    joins('INNER JOIN member_coin_events ON member_coin_events.member_id = members.id')
+    .joins('INNER JOIN coins ON member_coin_events.coin_id = coins.id')
+    .where('coins.crypto_currency = false')
+  end
+
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 
   validates :username, uniqueness: { case_sensitive: true },
@@ -44,25 +67,23 @@ class Member < ApplicationRecord
 
   # ===> Publishing Events
 
-  def coin_stream(coin_id)
-    "Domain::Member$#{id}:#{coin_id}"
-  end
-
-  def publish!(event_class, attributes = {})
-    self.load(coin_stream(attributes.fetch(:coin_id)))
-    apply event_class.new(data: attributes)
-    self.store
+  def publish!(coin_id:, available:, rate:, transaction_id:)
+    member_coin_events.create!(
+      coin_id: coin_id,
+      available: available,
+      rate: rate,
+      transaction_id: transaction_id
+    )
   end
 
   # ===> Balance
 
   def history(coin_id)
-    Rails.application.config.event_store.read_stream_events_backward(coin_stream(coin_id))
+    member_coin_events.where(coin_id: coin_id)
   end
 
-  def holdings(coin_id)
-    coin_history = history(coin_id)
-    coin_history.any? ? coin_history.first.data.fetch(:holdings) : 0
+  def balance(coin_id)
+    member_coin_events.where(coin_id: coin_id).sum(:available)
   end
 
   # ===> Two Factor Authentication
@@ -107,11 +128,6 @@ class Member < ApplicationRecord
   end
 
   private
-
-  # Handler methods
-  def apply_balance(event)
-    Rails.logger.info("\n\n#{event.inspect}\n\n")
-  end
 
   def email_against_username
     errors.add(:username, :invalid) if Member.where(email: username).exists?

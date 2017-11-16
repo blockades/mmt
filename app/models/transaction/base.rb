@@ -2,15 +2,16 @@
 
 module Transaction
   class Base < ApplicationRecord
-    self.table_name = 'transactions'
+    self.table_name = :transactions
+    self.inheritance_column = :type
 
     include Wisper::Publisher
 
-    belongs_to :source_coin
-    belongs_to :destination_coin
+    belongs_to :source_coin, class_name: 'Coin', foreign_key: :source_coin_id
+    belongs_to :destination_coin, class_name: 'Coin', foreign_key: :destination_coin_id
 
-    belongs_to :source_member
-    belongs_to :destination_member
+    belongs_to :source_member, class_name: 'Member', foreign_key: :source_member_id
+    belongs_to :destination_member, class_name: 'Member', foreign_key: :destination_member_id
 
     attr_readonly :source_coin_id,
                   :source_member_id,
@@ -22,21 +23,21 @@ module Transaction
                   :destination_rate
 
     TYPES = [
-      "SystemDeposit", "SystemAllocation",
-      "SystemExchange", "SystemWithdrawl",
-      "MemberDeposit", "MemberAllocation",
-      "MemberExchange", "MemberWithdrawl"
+      "Transaction::SystemDeposit", "Transaction::SystemAllocation",
+      "Transaction::SystemExchange", "Transaction::SystemWithdrawl",
+      "Transaction::MemberDeposit", "Transaction::MemberAllocation",
+      "Transaction::MemberExchange", "Transaction::MemberWithdrawl"
     ].freeze
 
-    scope :system_deposit, -> { where type: 'SystemDeposit' }
-    scope :system_allocation, -> { where type: 'SystemAllocation' }
-    scope :system_exchange, -> { where type: 'SystemExchange' }
-    scope :system_withdrawl, -> { where type: 'SystemWithdrawl' }
+    scope :system_deposit, -> { where type: 'Transaction::SystemDeposit' }
+    scope :system_allocation, -> { where type: 'Transaction::SystemAllocation' }
+    scope :system_exchange, -> { where type: 'Transaction::SystemExchange' }
+    scope :system_withdrawl, -> { where type: 'Transaction::SystemWithdrawl' }
 
-    scope :member_deposit, -> { where type: 'MemberDeposit' }
-    scope :member_allocation, -> { where type: 'MemberAllocation' }
-    scope :member_exchange, -> { where type: 'MemberExchange' }
-    scope :member_withdrawl, -> { where type: 'MemberWithdrawl' }
+    scope :member_deposit, -> { where type: 'Transaction::MemberDeposit' }
+    scope :member_allocation, -> { where type: 'Transaction::MemberAllocation' }
+    scope :member_exchange, -> { where type: 'Transaction::MemberExchange' }
+    scope :member_withdrawl, -> { where type: 'Transaction::MemberWithdrawl' }
 
     validates :type, presence: true, inclusion: { in: TYPES }
 
@@ -45,24 +46,22 @@ module Transaction
     private
 
     def notify_subscribers
-      publish(:call, self)
+      broadcast(:call, id)
     end
 
     def ensure_less_than_destination_member_balance
-      return if destination_member && source_quantity < destination_member.holdings(coin_id)
-      errors.add :source_quantity, "Insufficient funds"
+      return true if source_quantity < destination_member.reload.balance(source_coin_id)
+      errors.add :source_quantity, "Insufficient funds to complete this transaction"
     end
 
-    def source_members_source_coin_balance
-      source_coin_balance = source_member.holdings(source_coin_id)
-      return true if source_quantity < source_coin_balance
-      self.errors.add :source_coin_quantity, "Insufficient funds to complete this purchase"
+    def source_members_destination_coin_balance
+      return true if destination_quantity < source_member.reload.balance(destination_coin_id)
+      self.errors.add :destination_quantity, "Insufficient funds to complete this transaction"
     end
 
-    def destination_members_destination_coin_balance
-      destination_coin_balance = destination_member.holdings(destination_coin_id)
-      return true if destination_quantity < destination_coin_balance
-      self.errors.add :destination_coin_quantity, "Insufficient funds to complete this purchase"
+    def destination_members_source_coin_balance
+      return true if source_quantity < destination_member.reload.balance(source_coin_id)
+      self.errors.add :source_quantity, "Insufficient funds to complete this transaction"
     end
 
     def rates_match
@@ -73,13 +72,14 @@ module Transaction
     end
 
     def values_match
-      source_value = (source_quantity_for_comparison * source_rate.to_d).to_i
-      destination_value = (destination_quantity_for_comparison * destination_rate.to_d).to_i
-      self.errors.add :values_square, "Invalid purchase"
+      source_value = (source_quantity_for_comparison * source_rate).round(higher_subdivision).to_i
+      destination_value = (destination_quantity_for_comparison * destination_rate).round(higher_subdivision).to_i
+      return true if (source_value - destination_value).zero?
+      self.errors.add :values_match, "Invalid purchase"
     end
 
-    def ensure_less_than_central_reserve
-      return true if destination_coin && destination_quantity < destination_coin.reload.holdings
+    def ensure_availability
+      return true if destination_coin && destination_quantity < destination_coin.reload.available
       self.errors.add :destination_quantity, "Invalid purchase"
     end
   end

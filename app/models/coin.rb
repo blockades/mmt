@@ -5,6 +5,10 @@ class Coin < ApplicationRecord
   extend FriendlyId
   friendly_id :code, use: :slugged
 
+  has_many :coin_events
+  has_many :member_coin_events
+  has_many :members, through: :member_coin_events
+
   scope :ordered, -> { order(:code) }
   scope :crypto, -> { where(crypto_currency: true) }
   scope :fiat, -> { where.not(crypto_currency: true) }
@@ -21,30 +25,24 @@ class Coin < ApplicationRecord
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
 
-  # ===> Publishing Events
-
-  def stream
-    "Domain::Coin$#{id}"
+  def publish!(liability:, available:, transaction_id:)
+    coin_events.create!(
+      liability: liability,
+      available: available,
+      transaction_id: transaction_id
+    )
   end
 
-  def transaction_history
-    Rails.application.config.event_store.read_events_forward(stream)
+  def total
+    liability + available
   end
 
-  def publish!(event_class, attributes = {})
-    self.load(stream)
-    apply event_class.new(data: attributes)
-    self.store
+  def liability
+    coin_events.sum(:liability)
   end
 
-  # ===> Central Reserve and Live Holdings
-
-  def holdings
-    transaction_history.any? ? transaction_history.last.data.fetch(:holdings) : 0
-  end
-
-  def reserves
-    transaction_history.any? ? transaction_history.last.data.fetch(:reserves) : 0
+  def available
+    coin_events.sum(:available)
   end
 
   # ===> Live value and rate
@@ -58,22 +56,7 @@ class Coin < ApplicationRecord
     crypto_currency ? crypto_btc_rate : fiat_btc_rate
   end
 
-  class << self
-    def crypto_with_balance(member)
-      crypto.select { |coin| !member.holdings(coin.id).zero? }
-    end
-
-    def fiat_with_balance(member)
-      fiat.select { |coin| !member.holdings(coin.id).zero? }
-    end
-  end
-
   private
-
-  # Handler methods
-  def apply_state(event)
-    Rails.logger.info("\n\n#{event.inspect}\n\n")
-  end
 
   def fiat_btc_rate(iso_currency = nil)
     1.0 / BigDecimal.new(
