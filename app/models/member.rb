@@ -1,8 +1,17 @@
 # frozen_string_literal: true
 
 class Member < ApplicationRecord
-  devise :invitable, :database_authenticatable, :recoverable,
-    :trackable, :validatable, authentication_keys: [:login]
+  devise :two_factor_authenticatable,
+         :two_factor_recoverable,
+         :database_authenticatable,
+         :invitable,
+         :recoverable,
+         :trackable,
+         :validatable,
+         authentication_keys: [:login]
+
+  has_one_time_password(encrypted: true)
+  has_one_time_recovery_codes
 
   extend FriendlyId
   friendly_id :username, use: :slugged
@@ -13,14 +22,52 @@ class Member < ApplicationRecord
 
   scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
 
+  TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
+
   validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
   validates :slug, uniqueness: { case_sensitive: true }
+
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+
+  validates :phone_number, presence: true, format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ }, if: proc { country_code.present? }
+  validates :country_code, presence: true, inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only }, if: proc { phone_number.present? }
+
   validate :username_against_inaccessible_words
   validate :email_against_username
 
   before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
 
   attr_accessor :login
+
+  # ===> Two Factor Authentication
+
+  def full_phone_number
+    "+#{country_code}#{phone_number}"
+  end
+
+  def authenticated_by_app?
+    otp_delivery_method == 'app'
+  end
+
+  def authenticated_by_phone?
+    otp_delivery_method == 'sms'
+  end
+
+  def need_two_factor_authentication?(request)
+    otp_setup_complete?
+  end
+
+  def otp_setup_complete?
+    two_factor_enabled? && otp_secret_key.present?
+  end
+
+  def otp_setup_incomplete?
+    !two_factor_enabled? && otp_secret_key.present?
+  end
+
+  def send_authentication_code_by_sms!
+    Workers::SmsAuthentication.perform_async(full_phone_number, "Your authentication code is #{direct_otp}")
+  end
 
   class << self
     def find_for_database_authentication(warden_conditions)

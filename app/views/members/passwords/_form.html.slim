@@ -1,0 +1,25 @@
+= form_for :member, url: member_settings_password_path, method: :patch do |f|
+  = f.label :current_password
+  = f.password_field :current_password, autofocus: true
+  = f.label :new_password
+  = f.password_field :password, autofocus: true
+  = f.label :confirm_new_password
+  = f.password_field :password_confirmation, autofocus: true
+  - if @member.two_factor_enabled?
+    p
+      | You have two factor authentication enabled using 
+      strong= @member.two_factor_delivery_method
+    p
+      | To change your password please enter an authentication code. 
+      - if @member.authenticated_by_phone?
+        | #{link_to 'Send code to mobile', member_settings_resend_two_factor_code_path, remote: true, class: 'button'}
+      - else
+        - unless @member.phone_number?
+          | You can register for codes to be sent via SMS by entering your phone number on #{link_to 'your profile', member_path(@member)}
+        - else
+          | #{link_to 'Send code by SMS', member_settings_resend_two_factor_code_path, remote: true}
+
+    = f.label :two_factor_code
+    = text_field_tag 'member[authentication_code]', nil, required: true
+  br
+  = f.submit 'Update', class: 'button button-primary'

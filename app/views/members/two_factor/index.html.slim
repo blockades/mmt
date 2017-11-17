@@ -1,0 +1,54 @@
+.row
+  .two.columns
+    - if @member.two_factor_enabled?
+      .two-factor-state.bg-green
+        .white ENABLED
+    - else
+      .two-factor-state.bg-red
+        .white DISABLED
+  .offset-by-eight.two.columns
+    - if @member.two_factor_enabled?
+      = link_to 'Disable two-factor', member_settings_disable_two_factor_path, method: :post, class: 'button button-primary'
+    - else
+      = link_to 'Setup two-factor', new_member_settings_two_factor_path, class: 'button button-primary'
+
+hr
+- if @member.two_factor_enabled?
+  .row
+    .two.columns
+      strong Recovery Codes
+    .eight.columns
+      p Recovery codes can be used to access your account in the event you lose access to your device and cannot receive two-factor authentication codes. 
+      p MMT cannot restore access to accounts with two-factor authentication enabled for security reasons, saving your recovery codes in a safe place can help keep you from being locked out of your account.
+    .two.columns
+      = link_to 'View', member_settings_two_factor_recovery_codes_path, class: 'button'
+
+  hr
+  .row
+    .two.columns
+      strong Fallback SMS
+    .eight.columns
+      p Providing a fallback SMS number will allow MMT to send your two-factor authentication codes to an alternate device if you lose your primary device.
+      p For security reasons, MMT cannot restore access to accounts with two-factor authentication enabled. If you lose access to both your primary device and your recovery keys, a backup SMS number can get you back in to your account.
+      - if @member.phone_number?
+        p
+          | Your fallback phone number is: 
+          strong= @member.full_phone_number
+    .two.columns
+      - if @member.phone_number?
+        = link_to 'Change phone number', member_settings_path(@member), class: 'button'
+      - else
+        = link_to 'Add SMS number', member_settings_new_two_factor_fallback_sms_path, class: 'button'
+
+  hr
+  .row
+    .two.columns
+      strong Delivery Options
+    .eight.columns
+      p
+        | Your primary delivery method is: 
+        strong= @member.two_factor_delivery_method
+    .two.columns
+      br
+- else
+  p Setup two factor on your account for secure two-setup authentication

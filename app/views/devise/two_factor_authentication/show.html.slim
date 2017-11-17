@@ -1,0 +1,21 @@
+- if resource.direct_otp
+  p Enter the code that was sent to you
+- else
+  p Enter the code from your two-factor authentication app on your device
+
+= form_tag([resource_name, :two_factor_authentication], method: :put) do
+  = text_field_tag :code
+  = submit_tag "Log in", class: 'button button-primary'
+  = link_to "Cancel", destroy_member_session_path, method: :delete, class: 'button'
+
+- if resource.direct_otp
+  = link_to "Resend code", resend_code_member_two_factor_authentication_path, method: :get, class: 'button'
+- else 
+  = link_to "Send a code instead", resend_code_member_two_factor_authentication_path, method: :get, class: 'button'
+
+br
+br
+p
+  strong Don’t have your phone?
+p
+  = link_to 'Enter a recovery code', member_two_factor_recovery_path, method: :get, class: 'button'

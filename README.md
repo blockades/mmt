@@ -39,6 +39,11 @@ Install a JavaScript runtime
 sudo apt-get install -y nodejs
 ```
 
+Install Redis
+```
+sudo apt-get install redis-server
+```
+
 Setup Rails
 
 If using Rails for the first time, [follow these instructions](https://github.com/rbenv/rbenv) to setup Ruby environment. MMT ruby version is 2.4.0.
@@ -60,6 +65,12 @@ rake db:migrate
 
 # Start the server
 rails s
+
+# Start Redis
+redis-server
+
+# Start Sidekiq
+bundle exec sidekiq -C config/sidekiq.yml
 ```
 
 Navigate to [app.blockades.dev:5000](http://app.blockades.dev:5000/)
@@ -89,8 +100,13 @@ Contributing
 - Make your changes
 - Pull request into `development`
 
+Projects
+--------
+- Feature and project workflows can be viewed in the repository's [projects section](https://github.com/blockades/mmt/projects)
+
 Issues
 ------
+
 - Create new issue
 - Add a label
 
@@ -115,3 +131,4 @@ GNU Affero General Public License for more details.
 You should have received a copy of the GNU Affero General Public License
 along with this program.  If not, see <http://www.gnu.org/licenses/>.
 ```
+=======
