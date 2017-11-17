@@ -2,6 +2,7 @@
 
 module Transaction
   class SystemDeposit < Transaction::Base
+
     validates :destination_coin_id,
               :destination_rate,
               :destination_quantity,
