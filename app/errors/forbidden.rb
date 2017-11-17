@@ -1,2 +1,1 @@
-class Forbidden < StandardError
-end
+Forbidden = Class.new(StandardError)

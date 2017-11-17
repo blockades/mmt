@@ -9,12 +9,15 @@ module Subscribers
           coin = transaction.destination_coin
           member = transaction.destination_member
 
+          # Increase liability to members
+          # Decrease available funds
           coin.publish!(
             liability: transaction.destination_quantity,
             available: -transaction.destination_quantity,
             transaction_id: transaction.id
           )
 
+          # Increase coin available to member
           member.publish!(
             coin_id: coin.id,
             available: transaction.destination_quantity,
