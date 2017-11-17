@@ -11,8 +11,7 @@ module Transaction
     validates :source_quantity,
               numericality: { greater_than: 0 }
 
-    validate :ensure_less_than_destination_member_balance
+    validate :destination_member_has_sufficient_source_coin
 
   end
 end
-

@@ -48,7 +48,7 @@ class Coin < ApplicationRecord
   # ===> Live value and rate
 
   def value(iso_currency)
-    btc_rate * 1.0 / fiat_btc_rate(iso_currency)
+    btc_rate * 1.0/fiat_btc_rate(iso_currency)
   end
 
   # @return The amount of this currency that buys one BTC

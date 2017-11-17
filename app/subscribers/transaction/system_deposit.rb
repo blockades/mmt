@@ -8,6 +8,8 @@ module Subscribers
         transaction = ::Transaction::SystemDeposit.find(transaction_id)
         coin = transaction.destination_coin
 
+        # Increase overall available in system
+        # Liability doesnt change
         coin.publish!(
           liability: 0,
           available: transaction.destination_quantity,

@@ -28,8 +28,8 @@ module Transaction
               :higher_subdivision,
               numericality: { greater_than: 0 }
 
-    validate :destination_members_source_coin_balance,
-             :ensure_availability,
+    validate :destination_member_has_sufficient_source_coin,
+             :destination_coin_available,
              :values_match,
              :rates_match
 

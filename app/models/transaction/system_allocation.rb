@@ -14,7 +14,7 @@ module Transaction
               :destination_quantity,
               numericality: { greater_than: 0 }
 
-    validate :ensure_availability
+    validate :destination_coin_available
 
   end
 end
