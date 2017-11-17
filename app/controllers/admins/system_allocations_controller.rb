@@ -8,10 +8,14 @@ module Admins
     end
 
     def create
-      transaction = Transaction::SystemAllocation.create(allocation_params)
-      if transaction.persisted?
+      transaction = verify_nonce :member_withdrawl, 60.seconds do
+        Transaction::SystemAllocation.create(allocation_params)
+      end
+
+      if transaction && transaction.persisted?
         redirect_to admins_coins_path, notice: "Successfully allocated #{quantity_as_integer}"
       else
+        error = transaction ? transaction.errors : "Wait 60 seconds before proceeding"
         redirect_to admins_new_coin_allocation_path(@coin.id), error: "Fail"
       end
     end

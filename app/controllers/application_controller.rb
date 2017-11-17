@@ -54,6 +54,24 @@ class ApplicationController < ActionController::Base
     render file: 'public/403', status: 403, layout: false
   end
 
+  def verify_nonce(accessor, time_difference, &block)
+    if block_given?
+      if session[accessor] && validate_nonce(session[accessor], time_difference)
+        return false
+      else
+        session[accessor] = nonce(Time.now)
+        return yield
+      end
+    else
+      if session[accessor] && validate_nonce(session[accessor], time_difference)
+        return false
+      else
+        session[accessor] = nonce(Time.now)
+        return true
+      end
+    end
+  end
+
   def nonce(time)
     ActionController::HttpAuthentication::Digest.nonce(ENV.fetch('NONCE_SECRET'), time)
   end
