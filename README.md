@@ -65,14 +65,14 @@ git clone git@github.com:ten-thousand-things/mmt.git && cd mmt
 bundle
 
 # Create the database
-rake db:create
-rake db:migrate
+bundle exec rake db:create
+bundle exec rake db:migrate
 
 # Seed the database
-rake setup
+bundle exec rake setup
 
 # Start the server
-rails s
+bundle exec rails s
 
 # Start Redis
 redis-server
