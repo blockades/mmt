@@ -3,7 +3,11 @@
 namespace :setup do
   task members: :environment do
     Member.find_or_initialize_by(email: "develop@blockades.dev") do |member|
-      member.update!(admin: true, password: "password", username: member.email.split('@').first.downcase)
+      member.update!(admin: true, password: "password", username: 'develop')
+    end
+
+    Member.find_or_initialize_by(email: 'random@blockades.dev') do |member|
+      member.update!(password: 'password', username: 'random')
     end
   end
 
@@ -53,15 +57,17 @@ namespace :setup do
       member.update!(admin: true, password: "password", username: member.email.split('@').first.downcase)
     end
 
-    btc = Coin.find_by(code: "BTC")
-    eth = Coin.find_by(code: "ETH")
-    Portfolio.create!(
-      member: member,
-      holdings_attributes: [
-        { coin_id: btc.id, quantity: 1.2 },
-        { coin_id: eth.id, quantity: 2.1 },
-      ]
-    )
+    unless member.live_portfolio.present?
+      btc = Coin.find_by(code: "BTC")
+      eth = Coin.find_by(code: "ETH")
+      Portfolio.create!(
+        member: member,
+        holdings_attributes: [
+          { coin_id: btc.id, quantity: 1.2 },
+          { coin_id: eth.id, quantity: 2.1 },
+        ]
+      )
+    end
   end
 
   task all: [:members, :coins, :portfolios]
