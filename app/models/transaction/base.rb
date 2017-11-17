@@ -24,9 +24,9 @@ module Transaction
                   :destination_quantity,
                   :destination_rate
 
-    TYPES = [
-      "SystemDeposit", "SystemAllocation", "SystemExchange", "SystemWithdrawl",
-      "MemberDeposit", "MemberAllocation", "MemberExchange", "MemberWithdrawl"
+    TYPES = %w[
+      SystemDeposit SystemAllocation SystemExchange SystemWithdrawl
+      MemberDeposit MemberAllocation MemberExchange MemberWithdrawl
     ].freeze
 
     TYPES.each do |type|
