@@ -44,6 +44,11 @@ Install Redis
 sudo apt-get install redis-server
 ```
 
+Install further dependencies
+```
+sudo apt-get install libxml2-dev
+```
+
 Setup Rails
 
 If using Rails for the first time, [follow these instructions](https://github.com/rbenv/rbenv) to setup Ruby environment. MMT ruby version is 2.4.0.
@@ -62,6 +67,9 @@ bundle
 # Create the database
 rake db:create
 rake db:migrate
+
+# Seed the database
+rake setup
 
 # Start the server
 rails s
