@@ -11,11 +11,16 @@ module Admins
       unless permitted_params[:destination_quantity].present?
         redirect_back fallback_location: admins_new_coin_deposit_path(@coin), alert: 'Quantity required' and return
       end
-      transaction = Transaction::SystemDeposit.create(deposit_params)
-      if transaction.persisted?
+
+      transaction = verify_nonce :system_deposit, 60.seconds do
+        Transaction::SystemDeposit.create(deposit_params)
+      end
+
+      if transaction && transaction.persisted?
         redirect_to admins_coins_path(@coin), notice: 'Success'
       else
-        redirect_to admins_new_coin_deposit_path(@coin), alert: 'Fail'
+        error = transaction ? transaction.errors : "Wait for 60 seconds before proceeding"
+        redirect_to admins_new_coin_deposit_path(@coin), alert: error
       end
     end
 

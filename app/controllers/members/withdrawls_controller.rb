@@ -14,10 +14,15 @@ module Members
       unless permitted_params[:source_quantity].present?
         redirect_back fallback_location: new_withdrawl_path, notice: 'Specify an amount to withdraw' and return
       end
-      transaction = Transaction::MemberWithdrawl.create(withdrawl_params)
-      if transaction.persisted?
+
+      transaction = verify_nonce :member_withdrawl, 60.seconds do
+        Transaction::MemberWithdrawl.create(withdrawl_params)
+      end
+
+      if transaction && transaction.persisted?
         redirect_to coins_path, notice: "Success"
       else
+        error = transaction ? transaction.errors : "Wait 60 seconds before proceeding"
         redirect_to new_withdrawl_path, error: error
       end
     end

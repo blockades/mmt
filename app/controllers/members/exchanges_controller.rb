@@ -11,10 +11,18 @@ module Members
     end
 
     def create
-      if exchange.success?
+      exchange = verify_nonce :system_exchange, 60.seconds do
+        MemberExchangeWithSystem.call(permitted_params: permitted_params.merge(
+          destination_coin_id: params[:coin_id],
+          destination_member_id: current_member.id
+        ))
+      end
+
+      if exchange && exchange.success?
         redirect_to coins_path, notice: exchange.message
       else
-        redirect_to new_exchange_path, error: exchange.message
+        error = exchange ? exchange.message : "Wait for 60 seconds before proceeding"
+        redirect_to new_exchange_path, error: error
       end
     end
 
@@ -26,13 +34,6 @@ module Members
 
     def permitted_params
       params.require(:exchange).permit(:destination_rate, :destination_quantity, :source_coin_id, :source_rate, :source_quantity)
-    end
-
-    def exchange
-      @exchange ||= MemberExchangeWithSystem.call(permitted_params: permitted_params.merge(
-        destination_coin_id: params[:coin_id],
-        destination_member_id: current_member.id
-      ))
     end
   end
 end
