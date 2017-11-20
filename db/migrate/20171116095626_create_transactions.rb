@@ -3,13 +3,13 @@ class CreateTransactions < ActiveRecord::Migration[5.1]
     create_table :transactions, id: :uuid do |t|
       t.string :type
 
-      t.uuid :source_coin_id, index: true
-      t.uuid :source_member_id, index: true
+      t.references :source_member, type: :uuid, foreign_key: { to_table: :members }
+      t.references :source_coin, type: :uuid, foreign_key: { to_table: :coins }
       t.integer :source_quantity, limit: 8
       t.decimal :source_rate
 
-      t.uuid :destination_coin_id, index: true
-      t.uuid :destination_member_id, index: true
+      t.references :destination_member, type: :uuid, foreign_key: { to_table: :members }
+      t.references :destination_coin, type: :uuid, foreign_key: { to_table: :coins }
       t.integer :destination_quantity, limit: 8
       t.decimal :destination_rate
 
