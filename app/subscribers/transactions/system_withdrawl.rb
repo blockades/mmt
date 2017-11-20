@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module Subscribers
-  module Transaction
+  module Transactions
     class SystemWithdrawl < Subscribers::Base
 
       def call(transaction_id)
-        transaction = ::Transaction::SystemWithdrawl.find(transaction_id)
+        transaction = Transaction::SystemWithdrawl.find(transaction_id)
         coin = transaction.source_coin
 
         # Decrease overall available in system

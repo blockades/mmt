@@ -1,11 +1,11 @@
 # frozen_string_literal: true
 
 module Subscribers
-  module Transaction
+  module Transactions
     class SystemDeposit < Subscribers::Base
 
       def call(transaction_id)
-        transaction = ::Transaction::SystemDeposit.find(transaction_id)
+        transaction = Transaction::SystemDeposit.find(transaction_id)
         coin = transaction.destination_coin
 
         # Increase overall available in system

@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Subscribers
-  module Transaction
+  module Transactions
     class MemberAllocation < Subscribers::Base
 
       def call(transaction_id)
         ActiveRecord::Base.transactiond do
-          transaction = ::Transaction::MemberAllocation.find(transaction_id)
+          transaction = Transaction::MemberAllocation.find(transaction_id)
           source_member = transaction.source_member
           destination_member = transaction.destination_member
           coin = transaction.destination_coin
@@ -14,14 +14,14 @@ module Subscribers
           # Decrease available funds to member performing allocation / gift
           source_member.publish!(
             coin_id: coin.id,
-            available: -transaction.destination_quantity,
+            liability: -transaction.destination_quantity,
             transaction_id: transaction.id
           )
 
           # Increase available funds to member receiving allocation / gift
           destination_member.publish!(
             coin_id: coin.id,
-            available: transaction.destination_quantity,
+            liability: transaction.destination_quantity,
             transaction_id: transaction.id
           )
 

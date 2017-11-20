@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Subscribers
-  module Transaction
+  module Transactions
     class MemberWithdrawl < Subscribers::Base
 
       def call(transaction_id)
         ActiveRecord::Base.transaction do
-          transaction = ::Transaction::MemberWithdrawl.find(transaction_id)
+          transaction = Transaction::MemberWithdrawl.find(transaction_id)
           coin = transaction.source_coin
           member = transaction.destination_member
 
@@ -21,7 +21,7 @@ module Subscribers
           # Decrease availability of source coin
           member.publish!(
             coin_id: transaction.source_coin_id,
-            available: -transaction.source_quantity,
+            liability: -transaction.source_quantity,
             rate: nil,
             transaction_id: transaction.id
           )

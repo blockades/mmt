@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Subscribers
-  module Transaction
+  module Transactions
     class SystemExchange < Subscribers::Base
 
       def call(transaction_id)
         ActiveRecord::Base.transaction do
-          transaction = ::Transaction::SystemExchange.find(transaction_id)
+          transaction = Transaction::SystemExchange.find(transaction_id)
           source_coin = transaction.source_coin
           destination_coin = transaction.destination_coin
           member = transaction.destination_member
@@ -30,7 +30,7 @@ module Subscribers
           # Decrease availability of source coin
           member.publish!(
             coin_id: source_coin.id,
-            available: -transaction.source_quantity,
+            liability: -transaction.source_quantity,
             rate: transaction.source_rate,
             transaction_id: transaction.id
           )
@@ -38,7 +38,7 @@ module Subscribers
           # Increase availability of destination coin
           member.publish!(
             coin_id: destination_coin.id,
-            available: transaction.destination_quantity,
+            liability: transaction.destination_quantity,
             rate: transaction.destination_rate,
             transaction_id: transaction.id
           )
