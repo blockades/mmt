@@ -1,10 +1,10 @@
 module Subscribers
-  module Transaction
+  module Transactions
     class SystemAllocation < Subscribers::Base
 
       def call(transaction_id)
         ActiveRecord::Base.transaction do
-          transaction = ::Transaction::SystemAllocation.find(transaction_id)
+          transaction = Transaction::SystemAllocation.find(transaction_id)
 
           coin = transaction.destination_coin
           member = transaction.destination_member
@@ -20,7 +20,7 @@ module Subscribers
           # Increase coin available to member
           member.publish!(
             coin_id: coin.id,
-            available: transaction.destination_quantity,
+            liability: transaction.destination_quantity,
             rate: transaction.destination_rate,
             transaction_id: transaction.id
           )

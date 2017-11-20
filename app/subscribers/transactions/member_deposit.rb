@@ -1,12 +1,12 @@
 # frozen_string_literal: true
 
 module Subscribers
-  module Transaction
+  module Transactions
     class MemberDeposit < Subscribers::Base
 
       def call(transaction_id)
         ActiveRecord::Base.transaction do
-          transaction = ::Transaction::MemberDeposit.find(transaction_id)
+          transaction = Transaction::MemberDeposit.find(transaction_id)
           coin = transaction.destination_coin
           member = transaction.source_member
 
@@ -21,7 +21,7 @@ module Subscribers
           # Increase available coin for member
           member.publish!(
             coin_id: coin.id,
-            available: transaction.destination_quantity,
+            liability: transaction.destination_quantity,
             transaction_id: transaction.id
           )
         end
