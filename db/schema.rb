@@ -55,7 +55,7 @@ ActiveRecord::Schema.define(version: 20171116162843) do
     t.uuid "coin_id"
     t.uuid "member_id"
     t.uuid "transaction_id"
-    t.bigint "available"
+    t.bigint "liability"
     t.decimal "rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
@@ -111,54 +111,30 @@ ActiveRecord::Schema.define(version: 20171116162843) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
-  create_table "notifications", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "recipient_id"
-    t.uuid "subject_id"
-    t.string "subject_type"
-    t.string "title"
-    t.string "body"
-    t.boolean "read", default: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["recipient_id"], name: "index_notifications_on_recipient_id"
-  end
-
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "type"
-    t.uuid "source_coin_id"
     t.uuid "source_member_id"
+    t.uuid "source_coin_id"
     t.bigint "source_quantity"
     t.decimal "source_rate"
-    t.uuid "destination_coin_id"
     t.uuid "destination_member_id"
+    t.uuid "destination_coin_id"
     t.bigint "destination_quantity"
     t.decimal "destination_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["destination_coin_id"], name: "index_transactions_on_destination_coin_id"
+    t.index ["destination_member_id"], name: "index_transactions_on_destination_member_id"
+    t.index ["source_coin_id"], name: "index_transactions_on_source_coin_id"
+    t.index ["source_member_id"], name: "index_transactions_on_source_member_id"
   end
 
-  create_table "withdrawl_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "state", default: "pending"
-    t.uuid "member_id"
-    t.uuid "coin_id"
-    t.integer "quantity"
-    t.uuid "transaction_id"
-    t.uuid "last_changed_by_id"
-    t.uuid "in_progress_by_id"
-    t.uuid "confirmed_by_id"
-    t.uuid "completed_by_id"
-    t.uuid "cancelled_by_id"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["cancelled_by_id"], name: "index_withdrawl_requests_on_cancelled_by_id"
-    t.index ["coin_id"], name: "index_withdrawl_requests_on_coin_id"
-    t.index ["completed_by_id"], name: "index_withdrawl_requests_on_completed_by_id"
-    t.index ["confirmed_by_id"], name: "index_withdrawl_requests_on_confirmed_by_id"
-    t.index ["in_progress_by_id"], name: "index_withdrawl_requests_on_in_progress_by_id"
-    t.index ["last_changed_by_id"], name: "index_withdrawl_requests_on_last_changed_by_id"
-    t.index ["member_id"], name: "index_withdrawl_requests_on_member_id"
-  end
-
-  add_foreign_key "withdrawl_requests", "coins"
-  add_foreign_key "withdrawl_requests", "members"
+  add_foreign_key "coin_events", "coins"
+  add_foreign_key "coin_events", "transactions"
+  add_foreign_key "member_coin_events", "coins"
+  add_foreign_key "member_coin_events", "members"
+  add_foreign_key "transactions", "coins", column: "destination_coin_id"
+  add_foreign_key "transactions", "coins", column: "source_coin_id"
+  add_foreign_key "transactions", "members", column: "destination_member_id"
+  add_foreign_key "transactions", "members", column: "source_member_id"
 end
