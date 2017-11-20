@@ -23,8 +23,8 @@ class Member < ApplicationRecord
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
-  scope :with_crypto, -> { joins(:member_coin_events).joins(:coins).where(coins: { crypto_currency: true }).uniq }
-  scope :with_fiat, -> { joins(:member_coin_events).joins(:coins).where(coins: { crypto_currency: false }).uniq }
+  scope :with_crypto, -> { joins(:crypto) }
+  scope :with_fiat, -> { joins(:fiat) }
 
   TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
 
@@ -35,8 +35,7 @@ class Member < ApplicationRecord
 
   validates :slug, uniqueness: { case_sensitive: true }
 
-  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys },
-                                  if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: :two_factor_activated?
 
   validates :phone_number, presence: true,
                            format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ },
@@ -54,10 +53,10 @@ class Member < ApplicationRecord
 
   # ===> Publishing Events
 
-  def publish!(coin_id:, available:, rate:, transaction_id:)
+  def publish!(coin_id:, liability:, rate:, transaction_id:)
     member_coin_events.create!(
       coin_id: coin_id,
-      available: available,
+      liability: liability,
       rate: rate,
       transaction_id: transaction_id
     )
@@ -70,7 +69,7 @@ class Member < ApplicationRecord
   end
 
   def balance(coin_id)
-    member_coin_events.where(coin_id: coin_id).sum(:available)
+    member_coin_events.where(coin_id: coin_id).sum(:liability)
   end
 
   # ===> Two Factor Authentication
@@ -115,6 +114,10 @@ class Member < ApplicationRecord
   end
 
   private
+
+  def two_factor_activated?
+    two_factor_enabled? && two_factor_enabled_changed?
+  end
 
   def email_against_username
     errors.add(:username, :invalid) if Member.where(email: username).exists?

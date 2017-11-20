@@ -4,13 +4,12 @@ class CoinEvent < ApplicationRecord
 
   belongs_to :coin
 
-  attr_readonly :liability, :available,
-                :coin_id,
-                :transaction_id
+  def readonly?
+    !new_record?
+  end
 
   validates :liability,
             :available,
-            :coin_id,
             :transaction_id,
             presence: true
 

@@ -4,20 +4,18 @@ class MemberCoinEvent < ApplicationRecord
   belongs_to :member
 
   scope :with_coin, ->(coin_id) { where coin_id: coin_id }
-  scope :crypto, -> { joins(:coin).where(coins: { crypto_currency: true }) }
-  scope :fiat, -> { joins(:coin).where(coins: { crypto_currency: false }) }
+  scope :with_coins, -> { joins(:coin) }
+  scope :crypto, -> { with_coins.where(coins: { crypto_currency: true }) }
+  scope :fiat, -> { with_coins.where(coins: { crypto_currency: false }) }
 
-  attr_readonly :available,
-                :coin_id,
-                :member_id,
-                :transaction_id
+  def readonly?
+    !new_record?
+  end
 
-  validates :available,
-            :coin_id,
-            :member_id,
+  validates :liability,
             :transaction_id,
             presence: true
 
-  validates :available, numericality: { only_integer: true }
+  validates :liability, numericality: { only_integer: true }
 
 end
