@@ -8,18 +8,14 @@ module Admins
     end
 
     def create
-      unless permitted_params[:destination_quantity].present?
-        redirect_back fallback_location: admins_new_coin_deposit_path(@coin), alert: 'Quantity required' and return
-      end
-
-      transaction = verify_nonce :system_deposit, 60.seconds do
+      transaction = verify_nonce :system_deposit, 15.seconds do
         Transaction::SystemDeposit.create(deposit_params)
       end
 
       if transaction && transaction.persisted?
         redirect_to admins_coins_path(@coin), notice: 'Success'
       else
-        error = transaction ? transaction.errors : "Wait for 60 seconds before proceeding"
+        error = transaction ? transaction.errors : "Wait for 15 seconds before proceeding"
         redirect_to admins_new_coin_deposit_path(@coin), alert: error
       end
     end
@@ -36,14 +32,9 @@ module Admins
 
     def deposit_params
       permitted_params.merge!(
-        destination_quantity: quantity_as_integer,
         destination_coin_id: @coin.id,
         source_member_id: current_member.id,
-      ).to_h.symbolize_keys
-    end
-
-    def quantity_as_integer
-      (permitted_params.fetch(:destination_quantity).to_d * 10**@coin.subdivision).to_i
+      )
     end
   end
 end

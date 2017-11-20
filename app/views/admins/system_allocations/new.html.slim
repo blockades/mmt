@@ -6,10 +6,14 @@ h2 Allocate #{@coin.name} (#{@coin.code})
   br
   .row
     = f.label :quantity
-    = f.number_field :destination_quantity, value: number_with_precision(0, precision: @coin.subdivision, unit: ''), step: :any
+    = number_field_tag :destination_quantity, number_with_precision(0, precision: @coin.subdivision, unit: ''), step: :any, id: 'destination_quantity_display', required: true
+    = f.number_field :destination_quantity, value: number_with_precision(0, precision: @coin.subdivision, unit: ''), step: :any, id: 'destination_quantity', class: 'hidden', required: true
   .row
     label BTC rate
     = f.number_field :destination_rate, value: number_with_precision(@coin.btc_rate, precision: @coin.subdivision, unit: ''), step: :any
   br
   .row
     = f.submit :allocate
+
+javascript:
+  var subdivision = #{@coin.subdivision};
