@@ -47,7 +47,7 @@ namespace :setup do
     )
   end
 
-  task all: [:members, :coins, :portfolios]
+  task all: [:members, :coins]
 end
 
 task setup: 'setup:all'

@@ -5,6 +5,8 @@ class Coin < ApplicationRecord
   extend FriendlyId
   friendly_id :code, use: :slugged
 
+  BTC_SUBDIVISION = 8
+
   has_many :coin_events
   has_many :member_coin_events
   has_many :members, through: :member_coin_events

@@ -15,20 +15,9 @@ module Transaction
     has_many :coin_events
     has_many :member_coin_events
 
-<<<<<<< Updated upstream
-    attr_readonly :source_coin_id,
-                  :source_member_id,
-                  :source_quantity,
-                  :source_rate,
-                  :destination_coin_id,
-                  :destination_member_id,
-                  :destination_quantity,
-                  :destination_rate
-=======
     def readonly?
       !new_record?
     end
->>>>>>> Stashed changes
 
     TYPES = %w[
       SystemDeposit SystemAllocation SystemExchange SystemWithdrawl
