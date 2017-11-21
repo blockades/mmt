@@ -103,16 +103,13 @@ gem install mailcatcher
 
 Contributing
 -----------
-
-- Pull master and development branch
-- Checkout to development branch
-- Checkout to feature/your-new-feature branch
+- Pull master branch
+- Checkout to a feature branch (naming convention is `feature/{descriptive-feature-name}`)
 - Make your changes
-- Pull request into development
+- Pull request into `development`
 
 Projects
--------
-
+--------
 - Feature and project workflows can be viewed in the repository's [projects section](https://github.com/blockades/mmt/projects)
 
 Issues
@@ -121,3 +118,25 @@ Issues
 - Create new issue
 - Add a label
 
+## License
+
+Copyright (C) 2017 blockades.org
+
+Designed, developed and maintained by Kieran Gibb <kieran@tenthousandthings.org.uk>,
+Dan Hassan <dan@dyne.org> & Nikolai Berkoff
+
+```
+This program is free software: you can redistribute it and/or modify
+it under the terms of the GNU Affero General Public License as published by
+the Free Software Foundation, either version 3 of the License, or
+(at your option) any later version.
+
+This program is distributed in the hope that it will be useful,
+but WITHOUT ANY WARRANTY; without even the implied warranty of
+MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+GNU Affero General Public License for more details.
+
+You should have received a copy of the GNU Affero General Public License
+along with this program.  If not, see <http://www.gnu.org/licenses/>.
+```
+=======
