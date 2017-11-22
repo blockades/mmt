@@ -8,7 +8,7 @@ module Admins
     end
 
     def create
-      transaction = verify_nonce :system_deposit, 15.seconds do
+      transaction = verify_nonce "system_deposit_#{@coin.id}", 15.seconds do
         Transaction::SystemDeposit.create(deposit_params)
       end
 

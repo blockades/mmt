@@ -11,11 +11,7 @@ module Members
     end
 
     def create
-      unless permitted_params[:source_quantity].present?
-        redirect_back fallback_location: new_withdrawl_path, notice: 'Specify an amount to withdraw' and return
-      end
-
-      transaction = verify_nonce :member_withdrawl, 60.seconds do
+      transaction = verify_nonce "member_withdrawl_#{@coin.id}", 60.seconds do
         Transaction::MemberWithdrawl.create(withdrawl_params)
       end
 
@@ -40,13 +36,8 @@ module Members
     def withdrawl_params
       permitted_params.merge(
         source_coin_id: @coin.id,
-        source_quantity: source_quantity_as_integer,
-        destination_member_id: current_member.id,
-      ).to_h.symbolize_keys
-    end
-
-    def source_quantity_as_integer
-      (permitted_params.fetch(:source_quantity).to_d * 10**@coin.subdivision).to_i
+        destination_member_id: current_member.id
+      )
     end
   end
 end
