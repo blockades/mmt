@@ -2,7 +2,7 @@
 
 # How do I give feedback about Loomio?
 
-We love feedback - feel free to [contact us]WHERE?. The team will review your message and get back to you as soon as we can.
+We love feedback - feel free to leave [feeback](https://github.com/blockades/mmt/issues). The team will review your message and get back to you as soon as we can.
 
 We don't have any rules about what feedback you can give, but we would love it if you read the rest of the page to learn how to make sure your feedback is constructive.
 
@@ -16,18 +16,17 @@ Try to include:
 * What actually happened - the buggy behaviour itself.
 * What web browser you were using.
 
-If you fill in your name and email address on the feedback form (or use github) we'll be able to let you know when the bug is fixed, and contact you if we need more information.
-
-If you’re reporting a bug in the software and want to work with the team directly we invite you to bypass the feedback form and [submit an issue on Github](https://github.com/loomio/loomio/issues/new).
+If you’re reporting a bug in the software and want to work with the team directly we invite you to bypass the feedback form and [submit an issue on Github](https://github.com/blockades/mmt/issues).
 
 Before reporting an issue:
 * Please have a brief look to see if the issue is already listed. If so please add any extra, clarifying information you can to the existing issue.
 
-## Can you translate Loomio to another Language?
-Please read [Our translation guide](docs/en/translation/) to find out how you can join our community of translators.
+## Want to help develop mmt?
 
-## Want to help develop Loomio?
+To participate in discussions about the app, potential features, and more the best place to find us is in the source code.
 
-Dive into our [docs](docs/en/) to find out how to deploy your own Loomio instance or develop a new feature in Loomio.
+## Elsewhere on the web
 
-To participate in discussions about the app, potential features, and more, [join the Loomio Community group on Loomio](https://www.loomio.org/g/WmPCB3IR/loomio-community).
+We also hang out on [Keybase](https://keybase.io/danielsan). Once you have installed search for the team `blockades.mmt` for access.
+
+A few of also hang out on [Patchwork](http://www.scuttlebutt.nz/) on the [pub.tshirt.horse](https://pub.tshirt.horse/) pub / server.
