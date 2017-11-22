@@ -68,7 +68,7 @@ class Member < ApplicationRecord
     member_coin_events.where(coin_id: coin_id)
   end
 
-  def balance(coin_id)
+  def liability(coin_id)
     member_coin_events.where(coin_id: coin_id).sum(:liability)
   end
 

@@ -27,6 +27,8 @@ class Coin < ApplicationRecord
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
 
+  validates :liability, :available, numericality: { greater_than_or_equal_to: 0 }
+
   def publish!(liability:, available:, transaction_id:)
     coin_events.create!(
       liability: liability,

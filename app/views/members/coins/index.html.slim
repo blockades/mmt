@@ -18,7 +18,7 @@
             tr
               td= coin.name
               td= coin.code
-              td= number_to_currency(@member.coin_balance(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
@@ -46,7 +46,7 @@
             tr
               td= coin.name
               td= coin.code
-              td= number_to_currency(@member.coin_balance(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
