@@ -16,4 +16,5 @@ class CoinEvent < ApplicationRecord
   validates :liability,
             :available,
             numericality: { only_integer: true }
+
 end

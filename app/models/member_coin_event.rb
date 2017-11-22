@@ -5,8 +5,8 @@ class MemberCoinEvent < ApplicationRecord
 
   scope :with_coin, ->(coin_id) { where coin_id: coin_id }
   scope :with_coins, -> { joins(:coin) }
-  scope :crypto, -> { with_coins.where(coins: { crypto_currency: true }) }
-  scope :fiat, -> { with_coins.where(coins: { crypto_currency: false }) }
+  scope :crypto, -> { with_coins.merge(Coin.crypto) }
+  scope :fiat, -> { with_coins.merge(Coin.fiat) }
 
   def readonly?
     !new_record?
