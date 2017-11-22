@@ -30,11 +30,11 @@ class Coin < ApplicationRecord
   validates :liability, :available, numericality: { greater_than_or_equal_to: 0 }
 
   def publish!(liability:, available:, transaction_id:)
-    coin_events.create!(
+    transaction_id.coin_events.build(
       liability: liability,
       available: available,
-      transaction_id: transaction_id
-    )
+      coin: self
+    ).valid?
   end
 
   def total

@@ -13,19 +13,23 @@ class CoinEvent < ApplicationRecord
 
   validates :liability,
             :available,
-            :transaction_id,
+            :triggered_by,
             presence: true
 
   validates :liability,
             :available,
             numericality: { only_integer: true }
 
-  validate :coin_liability
+  validate :coin_liability, unless: :deposit_event?
 
   private
 
   def coin_liability
     return true if liability.abs < coin.reload.available
     self.errors.add :destination_quantity, "Insufficient funds"
+  end
+
+  def deposit_event?
+    triggered_by.system_deposit?
   end
 end

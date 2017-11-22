@@ -8,7 +8,7 @@ module Admins
     end
 
     def create
-      transaction = verify_nonce :member_withdrawl, 15.seconds do
+      transaction = verify_nonce :system_allocation, 15.seconds do
         Transaction::SystemAllocation.create(allocation_params)
       end
 

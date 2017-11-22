@@ -18,5 +18,19 @@ module Transaction
                          :source_quantity,
                          :destination_member
 
+    before_create :publish_to_coin
+
+    private
+
+    def publish_to_coin
+      # Increase overall available in system
+      # Liability doesnt change
+      raise ActiveRecord::Rollback unless destination_coin.publish!(
+        liability: 0,
+        available: destination_quantity,
+        transaction_id: self
+      )
+    end
+
   end
 end
