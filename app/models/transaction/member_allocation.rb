@@ -9,7 +9,5 @@ module Transaction
               :destination_quantity,
               presence: true
 
-    validate :source_member_has_sufficient_destination_coin
-
   end
 end

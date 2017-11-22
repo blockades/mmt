@@ -1,9 +1,12 @@
 = form_for :withdrawl, url: withdrawl_path(@coin.id), method: :post do |f|
   .row
     = f.label :quantity
-    = f.number_field :source_quantity, step: :any, id: 'destination_quantity'
+    = number_field_tag :source_quantity, number_with_precision(0, precision: @coin.subdivision, unit: ''), step: :any, id: 'destination_quantity_display', required: true
+    = f.number_field :source_quantity, value: number_with_precision(0, precision: @coin.subdivision, unit: ''), step: :any, id: 'destination_quantity', class: 'hidden', required: true
   br
   .row
     = f.submit :withdraw
   br
 
+javascript:
+  var subdivision = #{@coin.subdivision};

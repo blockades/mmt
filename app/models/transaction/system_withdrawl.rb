@@ -15,7 +15,5 @@ module Transaction
                          :destination_coin,
                          :destination_member
 
-    validate :source_coin_available
-
   end
 end

@@ -12,11 +12,11 @@ module Transaction
     belongs_to :source_member, class_name: 'Member', foreign_key: :source_member_id
     belongs_to :destination_member, class_name: 'Member', foreign_key: :destination_member_id
 
-    has_many :coin_events
-    has_many :member_coin_events
+    has_many :coin_events, foreign_key: :transaction_id, inverse_of: :triggered_by
+    has_many :member_coin_events, foreign_key: :transaction_id, inverse_of: :triggered_by
 
     def readonly?
-      !new_record?
+      Rails.env.development? ? false : !new_record?
     end
 
     TYPES = %w[
@@ -26,6 +26,10 @@ module Transaction
 
     TYPES.each do |type|
       scope type.underscore.to_sym, -> { where type: "Transaction::#{type}" }
+
+      define_method "#{type.underscore}?" do
+        type == self.type.remove('Transaction::')
+      end
     end
 
     validates :type, presence: true, inclusion: { in: TYPES.map{ |type| "Transaction::#{type}" } }
@@ -36,16 +40,6 @@ module Transaction
 
     def notify_subscribers
       broadcast(:call, id)
-    end
-
-    def source_member_has_sufficient_destination_coin
-      return true if destination_quantity < source_member.reload.balance(destination_coin_id)
-      self.errors.add :destination_quantity, "Insufficient funds to complete this transaction"
-    end
-
-    def destination_member_has_sufficient_source_coin
-      return true if source_quantity < destination_member.reload.balance(source_coin_id)
-      self.errors.add :source_quantity, "Insufficient funds to complete this transaction"
     end
 
     def rates_match
@@ -60,16 +54,6 @@ module Transaction
       destination_value = ((destination_quantity * destination_rate).round(Coin::BTC_SUBDIVISION) * 10**(Coin::BTC_SUBDIVISION - destination_coin.subdivision)).to_i
       return true if (source_value - destination_value).zero?
       self.errors.add :values_match, "Invalid purchase"
-    end
-
-    def source_coin_available
-      return true if source_coin && source_quantity < source_coin.reload.available
-      self.errors.add :source_quantity, "Invalid withdrawl"
-    end
-
-    def destination_coin_available
-      return true if destination_coin && destination_quantity < destination_coin.reload.available
-      self.errors.add :destination_quantity, "Insufficient funds"
     end
   end
 end
