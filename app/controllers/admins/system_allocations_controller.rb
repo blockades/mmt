@@ -8,9 +8,10 @@ module Admins
     end
 
     def create
-      transaction = verify_nonce "system_allocation_#{@coin.id}", 15.seconds do
-        Transaction::SystemAllocation.create(allocation_params)
-      end
+      # transaction = verify_nonce "system_allocation_#{@coin.id}", 15.seconds do
+      #   Transaction::SystemAllocation.create(allocation_params)
+      # end
+      transaction = Transaction::SystemAllocation.create(allocation_params)
 
       if transaction && transaction.persisted?
         redirect_to admins_coins_path, notice: "Successfully allocated #{transaction.destination_quantity/(10**@coin.subdivision)}"

@@ -34,13 +34,13 @@ module Transaction
 
     validates :type, presence: true, inclusion: { in: TYPES.map{ |type| "Transaction::#{type}" } }
 
-    after_commit :notify_subscribers, on: :create
+    # before_create :notify_subscribers
 
     private
 
-    def notify_subscribers
-      broadcast(:call, id)
-    end
+    # def notify_subscribers
+    #   broadcast(:call, self)
+    # end
 
     def rates_match
       source_rate_matches = source_rate.to_d == source_coin.btc_rate

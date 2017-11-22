@@ -11,9 +11,10 @@ module Members
     end
 
     def create
-      transaction = verify_nonce "member_withdrawl_#{@coin.id}", 60.seconds do
-        Transaction::MemberWithdrawl.create(withdrawl_params)
-      end
+      # transaction = verify_nonce "member_withdrawl_#{@coin.id}", 60.seconds do
+      #   Transaction::MemberWithdrawl.create(withdrawl_params)
+      # end
+      transaction = Transaction::MemberWithdrawl.create(withdrawl_params)
 
       if transaction && transaction.persisted?
         redirect_to coins_path, notice: "Success"

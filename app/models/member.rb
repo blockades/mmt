@@ -54,11 +54,11 @@ class Member < ApplicationRecord
   # ===> Publishing Events
 
   def publish!(coin_id:, liability:, rate:, transaction_id:)
-    member_coin_events.create!(
+    transaction_id.member_coin_events.build(
       coin_id: coin_id,
       liability: liability,
       rate: rate,
-      transaction_id: transaction_id
+      member_id: id
     )
   end
 

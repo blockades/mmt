@@ -13,7 +13,7 @@ class CoinEvent < ApplicationRecord
 
   validates :liability,
             :available,
-            :transaction_id,
+            :triggered_by,
             presence: true
 
   validates :liability,
