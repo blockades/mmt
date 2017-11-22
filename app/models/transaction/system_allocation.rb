@@ -18,7 +18,5 @@ module Transaction
                          :source_quantity,
                          :source_rate
 
-    validate :destination_coin_available
-
   end
 end

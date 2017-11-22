@@ -17,7 +17,5 @@ module Transaction
                          :destination_quantity,
                          :destination_rate
 
-    validate :destination_member_has_sufficient_source_coin
-
   end
 end
