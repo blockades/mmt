@@ -18,7 +18,7 @@ module Members
       if transaction && transaction.persisted?
         redirect_to coins_path, notice: "Success"
       else
-        error = transaction ? exchange.errors : "Wait for 15 seconds before proceeding"
+        error = transaction ? transaction.errors : "Wait for 15 seconds before proceeding"
         redirect_to new_exchange_path, error: error
       end
     end
