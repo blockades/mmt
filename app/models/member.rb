@@ -53,13 +53,13 @@ class Member < ApplicationRecord
 
   # ===> Publishing Events
 
-  def publish!(coin_id:, liability:, rate:, transaction_id:)
+  def publish!(coin:, liability:, rate:, transaction_id:)
     transaction_id.member_coin_events.build(
-      coin_id: coin_id,
+      coin: coin,
       liability: liability,
       rate: rate,
-      member_id: id
-    )
+      member: self
+    ).valid?
   end
 
   # ===> Balance

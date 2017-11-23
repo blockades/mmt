@@ -23,14 +23,18 @@ class MemberCoinEvent < ApplicationRecord
 
   validates :liability, numericality: { only_integer: true }
 
-  validate :member_coin_liability
+  validate :member_coin_liability, unless: :allocation_event?
 
   private
 
   def member_coin_liability
-    return true if triggered_by.system_allocation? || triggered_by.member_allocation?
     return true if liability.abs < member.reload.liability(coin.id)
     self.errors.add :quantity, "Insufficient funds"
+  end
+
+  def allocation_event?
+    triggered_by.system_allocation? ||
+      triggered_by.member_allocation?
   end
 
 end

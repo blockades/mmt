@@ -33,8 +33,8 @@ class Coin < ApplicationRecord
     transaction_id.coin_events.build(
       liability: liability,
       available: available,
-      coin_id: id
-    )
+      coin: self
+    ).valid?
   end
 
   def total

@@ -22,26 +22,20 @@ module Transaction
 
     private
 
-    # We want to return false if the coin fails validation
-    # (other than the fact that its missing transaction_id)
-
     def publish_to_coin
       # Increase liability to members
       # Decrease available funds
-      destination_coin.publish!(
+     raise ActiveRecord::Rollback unless destination_coin.publish!(
         liability: destination_quantity,
         available: -destination_quantity,
         transaction_id: self
       )
     end
 
-    # We want to return false if the member fails validation
-    # (other than the fact that its missing transaction_id)
-
     def publish_to_member
       # Increase coin available to member
-      destination_member.publish!(
-        coin_id: destination_coin.id,
+     raise ActiveRecord::Rollback unless destination_member.publish!(
+        coin: destination_coin,
         liability: destination_quantity,
         rate: destination_rate,
         transaction_id: self
