@@ -3,8 +3,8 @@
 class CoinDecorator < Draper::Decorator
   delegate_all
 
-  def member_balance
-    h.current_member.balance(id).to_d / 10**subdivision
+  def member_liability
+    h.current_member.liability(id).to_d / 10**subdivision
   end
 
   def availability

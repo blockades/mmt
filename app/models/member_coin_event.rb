@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class MemberCoinEvent < ApplicationRecord
+  include EventHelper
 
   belongs_to :coin
   belongs_to :member
@@ -23,18 +24,21 @@ class MemberCoinEvent < ApplicationRecord
 
   validates :liability, numericality: { only_integer: true }
 
-  validate :member_coin_liability, unless: :allocation_event?
+  validate :member_coin_liability, if: proc { !allocation_event? && !exchange_event? }
+
+  validate :exchange_liability, if: :exchange_event?
 
   private
 
   def member_coin_liability
     return true if liability.abs < member.reload.liability(coin.id)
-    self.errors.add :quantity, "Insufficient funds"
+    self.errors.add :liability, "Insufficient funds"
   end
 
-  def allocation_event?
-    triggered_by.system_allocation? ||
-      triggered_by.member_allocation?
+  def exchange_liability
+    if destination_member_event?
+      return true if liability.abs < member.reload.liability(coin.id)
+      self.errors.add :liability, "Insufficient funds"
+    end
   end
-
 end

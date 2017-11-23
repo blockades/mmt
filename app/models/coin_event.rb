@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class CoinEvent < ApplicationRecord
+  include EventHelper
 
   belongs_to :coin
   belongs_to :triggered_by, class_name: 'Transaction::Base',
@@ -20,16 +21,22 @@ class CoinEvent < ApplicationRecord
             :available,
             numericality: { only_integer: true }
 
-  validate :coin_liability, unless: :deposit_event?
+  validate :coin_liability, unless: proc { deposit_event? || exchange_event? }
+
+  validate :exchange_liability, if: :exchange_event?
 
   private
 
   def coin_liability
     return true if liability.abs < coin.reload.available
-    self.errors.add :destination_quantity, "Insufficient funds"
+    self.errors.add :liability, "Insufficient funds"
   end
 
-  def deposit_event?
-    triggered_by.system_deposit?
+  def exchange_liability
+    if destination_coin_event?
+      binding.pry
+      return true if liability.abs < coin.reload.available
+      self.errors.add :liability, "Insufficient funds"
+    end
   end
 end
