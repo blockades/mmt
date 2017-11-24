@@ -7,11 +7,11 @@ class CoinDecorator < Draper::Decorator
     h.current_member.liability(id).to_d / 10**subdivision
   end
 
-  def availability
-    available.to_d / 10**subdivision
+  def available_assets
+    assets.to_d / 10**subdivision
   end
 
-  def assigned_holdings
+  def overall_liability
     liability.to_d / 10**subdivision
   end
 

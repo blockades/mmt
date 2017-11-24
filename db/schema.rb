@@ -20,8 +20,7 @@ ActiveRecord::Schema.define(version: 20171116162843) do
   create_table "coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "coin_id"
     t.uuid "transaction_id"
-    t.bigint "liability"
-    t.bigint "available"
+    t.bigint "assets"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["coin_id"], name: "index_coin_events_on_coin_id"
@@ -55,6 +54,7 @@ ActiveRecord::Schema.define(version: 20171116162843) do
     t.uuid "coin_id"
     t.uuid "member_id"
     t.uuid "transaction_id"
+    t.bigint "admin_liability"
     t.bigint "liability"
     t.decimal "rate"
     t.datetime "created_at", null: false
@@ -112,29 +112,39 @@ ActiveRecord::Schema.define(version: 20171116162843) do
   end
 
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.string "type"
-    t.uuid "source_member_id"
-    t.uuid "source_coin_id"
+    t.string "source_type", null: false
+    t.uuid "source_id", null: false
+    t.uuid "source_coin_id", null: false
+    t.string "destination_type", null: false
+    t.uuid "destination_id", null: false
+    t.uuid "destination_coin_id", null: false
+    t.uuid "previous_transaction_id"
+    t.uuid "initiated_by_id", null: false
+    t.uuid "authorized_by_id"
+    t.string "type", null: false
     t.bigint "source_quantity"
     t.decimal "source_rate"
-    t.uuid "destination_member_id"
-    t.uuid "destination_coin_id"
     t.bigint "destination_quantity"
     t.decimal "destination_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.index ["authorized_by_id"], name: "index_transactions_on_authorized_by_id"
     t.index ["destination_coin_id"], name: "index_transactions_on_destination_coin_id"
-    t.index ["destination_member_id"], name: "index_transactions_on_destination_member_id"
+    t.index ["destination_type", "destination_id"], name: "index_transactions_on_destination_type_and_destination_id"
+    t.index ["initiated_by_id"], name: "index_transactions_on_initiated_by_id"
+    t.index ["previous_transaction_id"], name: "index_transactions_on_previous_transaction_id"
     t.index ["source_coin_id"], name: "index_transactions_on_source_coin_id"
-    t.index ["source_member_id"], name: "index_transactions_on_source_member_id"
+    t.index ["source_type", "source_id"], name: "index_transactions_on_source_type_and_source_id"
   end
 
   add_foreign_key "coin_events", "coins"
   add_foreign_key "coin_events", "transactions"
   add_foreign_key "member_coin_events", "coins"
   add_foreign_key "member_coin_events", "members"
+  add_foreign_key "member_coin_events", "transactions"
   add_foreign_key "transactions", "coins", column: "destination_coin_id"
   add_foreign_key "transactions", "coins", column: "source_coin_id"
-  add_foreign_key "transactions", "members", column: "destination_member_id"
-  add_foreign_key "transactions", "members", column: "source_member_id"
+  add_foreign_key "transactions", "members", column: "authorized_by_id"
+  add_foreign_key "transactions", "members", column: "initiated_by_id"
+  add_foreign_key "transactions", "transactions", column: "previous_transaction_id"
 end

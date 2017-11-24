@@ -3,14 +3,15 @@ h2 Deposit #{@coin.code}
 = form_for :deposit, url: admins_coin_deposit_path(@coin), method: :post do |f|
   .row
     = f.label :quantity
-    = number_field_tag :destination_quantity, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'destination_quantity_display', required: true
-    = f.number_field :destination_quantity, value: number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'destination_quantity', class: 'hidden', required: true
+    = number_field_tag :destination_quantity, number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'destination_quantity_display', required: true
+    = f.number_field :destination_quantity, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'destination_quantity', class: 'hidden', required: true
   br
   .row
     label BTC Rate
-    = f.number_field :destination_rate, value: number_with_precision(@coin.btc_rate, precision: @coin.subdivision), step: :any, required: true
+    = f.number_field :destination_rate, value: number_with_precision(@coin.btc_rate, precision: Coin::BTC_SUBDIVISION), step: :any, required: true
   br
   .row
+    = f.hidden_field :previous_transaction_id, value: @previous_transaction.try(:id)
     = f.submit :deposit, class: 'button button-primary'
 
 javascript:
