@@ -3,20 +3,20 @@ default: &default
   encoding: utf8
   pool: 5
   username: postgres
-  host: <%= ENV['DATABASE_URL'] %>
+  host: postgres
   password:
 
 development:
   <<: *default
-  database: MMT_development
+  database: mmt_development
 
 test:
   <<: *default
-  database: MMT_test
+  database: mmt_test
 
 production:
   <<: *default
-  database: MMT_production
+  database: mmt_production
   username: MMT
   password: <%= ENV['MMT_DATABASE_PASSWORD'] %>
 
