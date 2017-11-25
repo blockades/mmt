@@ -3,7 +3,7 @@ default: &default
   encoding: utf8
   pool: 5
   username: postgres
-  host: postgres
+  host: <%= ENV['DATABASE_URL'] %>
   password:
 
 development:
