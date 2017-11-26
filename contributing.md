@@ -1,6 +1,6 @@
 # Contributing to MMT
 
-# How do I give feedback about Loomio?
+# How do I give feedback about MMT?
 
 We love feedback - feel free to leave [feeback](https://github.com/blockades/mmt/issues). The team will review your message and get back to you as soon as we can.
 
