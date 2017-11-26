@@ -1,4 +1,3 @@
-<<<<<<< HEAD
 **Please note that this is experimental software that is in development.**
 
 **This source code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Please refer to the GNU Public License for more details.**
@@ -7,10 +6,6 @@
 
 # MMT {magic money tree, margins merkle trees, mutual margins tributaries, mutual margin tendencies, margarine margins together}
 
-=======
-# MMT {magic money tree, margins merkle trees, mutual margins tributaries, mutual margin tendencies, margarine margins together}
-
->>>>>>> updating readme with project description
 _Working title: By the margins, for the margins_
 
 *A software platform for grass roots collective crypto speculation and assisting community driven peer-to-peer (person-to-person) cryptocurrency education at the margins.*
