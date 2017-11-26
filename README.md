@@ -1,6 +1,6 @@
-**Please note that this is experimental software that is in development.
+**Please note that this is experimental software that is in development.**
 
-This source code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Please refer to the GNU Public License for more details.**
+**This source code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Please refer to the GNU Public License for more details.**
 
 ---
 
