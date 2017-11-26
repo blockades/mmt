@@ -132,6 +132,10 @@ Install [mailcatcher](https://mailcatcher.me/)
 gem install mailcatcher
 ```
 
+Once the server is running you can see this locally here: http://localhost:3000/
+
+Passwords for signing in can be found here: https://github.com/blockades/mmt/blob/development/lib/tasks/setup.rake
+
 <hr>
 
 # Tools to make your life easier...
@@ -161,5 +165,12 @@ Projects
 Issues
 ------
 
+Thank you for digging into the code!
+
 - Create new issue
 - Add a label
+
+Code of Conduct (Work in Progress)
+------
+
+https://github.com/blockades/mmt/blob/development/code_of_conduct.md
