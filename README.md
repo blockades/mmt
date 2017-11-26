@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 **Please note that this is experimental software that is in development.**
 
 **This source code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Please refer to the GNU Public License for more details.**
@@ -6,6 +7,10 @@
 
 # MMT {magic money tree, margins merkle trees, mutual margins tributaries, mutual margin tendencies, margarine margins together}
 
+=======
+# MMT {magic money tree, margins merkle trees, mutual margins tributaries, mutual margin tendencies, margarine margins together}
+
+>>>>>>> updating readme with project description
 _Working title: By the margins, for the margins_
 
 *A software platform for grass roots collective crypto speculation and assisting community driven peer-to-peer (person-to-person) cryptocurrency education at the margins.*
@@ -14,7 +19,11 @@ _Working title: By the margins, for the margins_
 
 TL;DR
 
+<<<<<<< HEAD
 In a nutshell this software aims to assist and uplift peer-to-peer do-it-together practical education workshops like this:
+=======
+In a nutshell this software aims to assist an uplift peer-to-peer do-it-together practical education workshops like this:
+>>>>>>> updating readme with project description
 
 https://twitter.com/davidodoswell/status/933194999696461829
 
@@ -22,6 +31,7 @@ https://twitter.com/dan_mi_sun/status/933144890510151681
 
 ---
 
+<<<<<<< HEAD
 # Current Status and Team
 
 - MMT software is being funded by [blockades.org](http://blockades.org/).
@@ -42,6 +52,9 @@ In the future scenario where the 'value' of cryptocurrencies is much [higher](ht
 ---
 
 # Seeking | Aims | Intentions
+=======
+# Seeking Aims
+>>>>>>> updating readme with project description
 
 - MMT seeks to empower communities and individuals at the margins with the knowledge and tools required to get involved with cryptocurrencies.
 
@@ -190,8 +203,11 @@ Thank you for digging into the code!
 
 - Create new issue
 - Add a label
+<<<<<<< HEAD
 
 Code of Conduct (Work in Progress)
 ------
 
 https://github.com/blockades/mmt/blob/development/code_of_conduct.md
+=======
+>>>>>>> updating readme with project description
