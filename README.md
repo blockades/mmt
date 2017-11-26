@@ -35,7 +35,6 @@ https://twitter.com/dan_mi_sun/status/933144890510151681
 
 # Why?
 
-<<<<<<< HEAD
 P2P technologies such as Distributed Ledger technologies (a.k.a blockchains) are potentially transformative. Our belief is that they will only be truly transformative if we expand who has the power (information, tools, skills, access, resources) to be a peer (as in human peers within P2P) into  marginalised communities. This requires education and skill sharing. Our hope is that as this happens we will see localised transformations as people reconfigure the new skills, tools and access to meet their specific needs.
 
 In the future scenario where the 'value' of cryptocurrencies is much [higher](https://cointelegraph.com/news/bitcoin-price-might-exceed-1-million-more-millionaires-in-world-than-bitcoins) than they are now, we want to make sure that this potential future wealth is spread to the margins and that marginalised communities, projects and people have the tools to coordinate in novel, transformative and liberatory ways.
