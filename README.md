@@ -8,11 +8,22 @@ _Working title: By the margins, for the margins_
 
 TL;DR
 
-In a nutshell this software aims to assist an uplift peer-to-peer do-it-together practical education workshops like this:
+In a nutshell this software aims to assist and uplift peer-to-peer do-it-together practical education workshops like this:
 
 https://twitter.com/davidodoswell/status/933194999696461829
 
 https://twitter.com/dan_mi_sun/status/933144890510151681
+
+---
+
+# Current Status and Team
+
+- MMT software is being funded by DBL
+- Built as free and open source
+- Concurrently establishing an organisation (workers coop? friendly society? other?) to run the software as a service
+- This team is currently emergent
+- Being pulled from a friendship ecosystem of about 50 people, organising and establishing on [Loomio](http://loomio.org/)
+- You can read the backstory to the project here: https://viewer.scuttlebot.io/%25Vxdim9E7D8JHERHKLc6T0qMHcd2Bw9cG58Mb8Z0xpdQ%3D.sha256
 
 ---
 
