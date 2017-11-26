@@ -1,6 +1,40 @@
-# MMT
+# MMT {magic money tree, margins merkle trees, mutual margins tributaries, mutual margin tendencies, margarine margins together}
 
-<hr>
+_Working title: By the margins, for the margins_
+
+*A software platform for grass roots collective crypto speculation and assisting community driven peer-to-peer (person-to-person) cryptocurrency education at the margins.*
+
+---
+
+TL;DR
+
+In a nutshell this software aims to assist an uplift peer-to-peer do-it-together practical education workshops like this:
+
+https://twitter.com/davidodoswell/status/933194999696461829
+
+https://twitter.com/dan_mi_sun/status/933144890510151681
+
+---
+
+# Seeking Aims
+
+- MMT seeks to empower communities and individuals at the margins with the knowledge and tools required to get involved with cryptocurrencies.
+
+- MMT seeks to provide the community infrastructure to aid in the complete experience and journey of someone going from zero knowledge to owning and managing their own private keys.
+
+- MMT seeks to support those 'teachers' who are teaching new people, to make the experience of doing so as fluid as possible.  
+
+- MMT will be a community centered cryptocurrency exchange enabling the purchase of a pre-selected subset of cryptocurrencies (enabling community oriented folks to be able to access crypto from like minded folks rather than simply going to corporate platforms).
+
+- MMT will enable members to gift and 'IOU' crypto to new invited members.
+
+- MMT members will be able to manage a portion of their fees and direct them to pre-vetted projects on the platform.
+
+- MMT will allow projects to join the platform to be funded.
+
+- MMT will provide tools for socially backing up private keys and passwords to the platform.
+
+---
 
 # Set-up
 
@@ -59,7 +93,7 @@ gem install bundler
 gem install rails
 
 # Clone the repository
-git clone git@github.com:ten-thousand-things/mmt.git && cd mmt
+git clone git@github.com:blockades/mmt.git && cd mmt
 
 # Install dependencies
 bundle
@@ -80,8 +114,6 @@ redis-server
 # Start Sidekiq
 bundle exec sidekiq -C config/sidekiq.yml
 ```
-
-Navigate to [app.blockades.dev:5000](http://app.blockades.dev:5000/)
 
 Install [mailcatcher](https://mailcatcher.me/)
 
@@ -120,4 +152,3 @@ Issues
 
 - Create new issue
 - Add a label
-
