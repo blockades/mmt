@@ -1,3 +1,9 @@
+**Please note that this is experimental software that is in development.
+
+This source code is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. Please refer to the GNU Public License for more details.**
+
+---
+
 # MMT {magic money tree, margins merkle trees, mutual margins tributaries, mutual margin tendencies, margarine margins together}
 
 _Working title: By the margins, for the margins_
@@ -18,16 +24,24 @@ https://twitter.com/dan_mi_sun/status/933144890510151681
 
 # Current Status and Team
 
-- MMT software is being funded by DBL
-- Built as free and open source
-- Concurrently establishing an organisation (workers coop? friendly society? other?) to run the software as a service
-- This team is currently emergent
-- Being pulled from a friendship ecosystem of about 50 people, organising and establishing on [Loomio](http://loomio.org/)
+- MMT software is being funded by [blockades.org](http://blockades.org/).
+- Being built as at least open source, ideally free software.
+- Concurrently establishing an organisation (workers coop? friendly society? other?) to run the software as a service.
+- This team is currently emergent and in flux.
+- Being pulled from a friendship ecosystem of about 50 people, organising and establishing on [Loomio](http://loomio.org/).
 - You can read the backstory to the project here: https://viewer.scuttlebot.io/%25Vxdim9E7D8JHERHKLc6T0qMHcd2Bw9cG58Mb8Z0xpdQ%3D.sha256
 
 ---
 
-# Seeking Aims
+# Why?
+
+P2P technologies such as Distributed Ledger technologies (a.k.a blockchains) are potentially transformative. Our belief is that they will only be transformative if we expand the who we understand to be a peer into the marginalised communities. This requires education and skill sharing. Our hope is that as this happens we will see localised transformations as people reconfigure the new skills, tools and access to meet their specific needs.
+
+In the future scenario where the 'value' of cryptocurrencies is much higher than they are now, we want to make sure that this wealth is spread to the margins and that people have the tools to coordinate in novel and liberatory ways.
+
+---
+
+# Seeking | Aims | Intentions
 
 - MMT seeks to empower communities and individuals at the margins with the knowledge and tools required to get involved with cryptocurrencies.
 
@@ -53,8 +67,8 @@ Database Engine
 --------
 
 Install the correct Postgres for your Linux distribution.
-The `lsb_release -cs` sub-command below returns the name of your Ubuntu distribution, such as xenial.
-For Mint users, you might have to change $(lsb_release -cs) to your parent Ubuntu distribution.
+The `lsb_release -cs` sub-command below returns the name of your Linux distribution.
+For Mint users, you might have to change $(lsb_release -cs) to your parent Linux distribution.
 
 ```
 sudo add-apt-repository "deb http://apt.postgresql.org/pub/repos/apt/ $(lsb_release -cs)-pgdg main"
@@ -132,9 +146,11 @@ Install [mailcatcher](https://mailcatcher.me/)
 gem install mailcatcher
 ```
 
-Once the server is running you can see this locally here: http://localhost:3000/
+Once the server is running you can see this locally here: `http://localhost:3000/`
 
-Passwords for signing in can be found here: https://github.com/blockades/mmt/blob/development/lib/tasks/setup.rake
+Passwords for signing in can be found here:
+
+`https://github.com/blockades/mmt/blob/development/lib/tasks/setup.rake`
 
 <hr>
 
