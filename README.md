@@ -166,6 +166,12 @@ Passwords for signing in can be found here:
 - We have a private [Loomio](http://loomio.org) group where the organisation which will run the software is forming. If you are interested in joining this closed group, then please get in touch with one of us.
 - We are also using the p2p social network [patchwork](https://www.scuttlebutt.nz/) "a decent(ralised) secure gossip platform". You can find us hanging out in the #MMT channel on the [pub.tshirt.horse](https://pub.tshirt.horse/) 'pub'.
 
+# Social Spaces
+
+- We use [Keybase](https://keybase.io/) for communications (instead of slack). The team is `blockades.mmt`. Reach out if you would like a keybase invite.
+- We have a private [Loomio](http://loomio.org) group where the organisation which will run the software is forming. If you are interested in joining this closed group, then please get in touch with one of us.
+- We are also using the p2p social network [patchwork](https://www.scuttlebutt.nz/) "a decent(ralised) secure gossip platform". You can find us hanging out in the #MMT channel on the [pub.tshirt.horse](https://pub.tshirt.horse/) 'pub'.
+
 
 ---
 
