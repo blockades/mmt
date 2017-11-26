@@ -19,11 +19,7 @@ _Working title: By the margins, for the margins_
 
 TL;DR
 
-<<<<<<< HEAD
 In a nutshell this software aims to assist and uplift peer-to-peer do-it-together practical education workshops like this:
-=======
-In a nutshell this software aims to assist an uplift peer-to-peer do-it-together practical education workshops like this:
->>>>>>> updating readme with project description
 
 https://twitter.com/davidodoswell/status/933194999696461829
 
@@ -31,7 +27,6 @@ https://twitter.com/dan_mi_sun/status/933144890510151681
 
 ---
 
-<<<<<<< HEAD
 # Current Status and Team
 
 - MMT software is being funded by [blockades.org](http://blockades.org/).
@@ -45,6 +40,7 @@ https://twitter.com/dan_mi_sun/status/933144890510151681
 
 # Why?
 
+<<<<<<< HEAD
 P2P technologies such as Distributed Ledger technologies (a.k.a blockchains) are potentially transformative. Our belief is that they will only be truly transformative if we expand who has the power (information, tools, skills, access, resources) to be a peer (as in human peers within P2P) into  marginalised communities. This requires education and skill sharing. Our hope is that as this happens we will see localised transformations as people reconfigure the new skills, tools and access to meet their specific needs.
 
 In the future scenario where the 'value' of cryptocurrencies is much [higher](https://cointelegraph.com/news/bitcoin-price-might-exceed-1-million-more-millionaires-in-world-than-bitcoins) than they are now, we want to make sure that this potential future wealth is spread to the margins and that marginalised communities, projects and people have the tools to coordinate in novel, transformative and liberatory ways.
@@ -52,9 +48,7 @@ In the future scenario where the 'value' of cryptocurrencies is much [higher](ht
 ---
 
 # Seeking | Aims | Intentions
-=======
-# Seeking Aims
->>>>>>> updating readme with project description
+
 
 - MMT seeks to empower communities and individuals at the margins with the knowledge and tools required to get involved with cryptocurrencies.
 
@@ -165,7 +159,7 @@ Passwords for signing in can be found here:
 
 `https://github.com/blockades/mmt/blob/development/lib/tasks/setup.rake`
 
-<hr>
+---
 
 # Tools to make your life easier...
 
@@ -178,7 +172,8 @@ Passwords for signing in can be found here:
 - We have a private [Loomio](http://loomio.org) group where the organisation which will run the software is forming. If you are interested in joining this closed group, then please get in touch with one of us.
 - We are also using the p2p social network [patchwork](https://www.scuttlebutt.nz/) "a decent(ralised) secure gossip platform". You can find us hanging out in the #MMT channel on the [pub.tshirt.horse](https://pub.tshirt.horse/) 'pub'.
 
-<hr>
+
+---
 
 # Process
 
@@ -203,11 +198,8 @@ Thank you for digging into the code!
 
 - Create new issue
 - Add a label
-<<<<<<< HEAD
 
 Code of Conduct (Work in Progress)
 ------
 
 https://github.com/blockades/mmt/blob/development/code_of_conduct.md
-=======
->>>>>>> updating readme with project description
