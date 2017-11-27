@@ -16,8 +16,8 @@ $.fn.extend({
 
 $(document).on('turbolinks:load', function () {
   if (typeof subdivision !== 'undefined') {
-    $('#destination_quantity_display').asInteger({
-      actual: '#destination_quantity',
+    $('#quantity_display').asInteger({
+      actual: '#quantity',
       subdivision: subdivision
     });
   }
