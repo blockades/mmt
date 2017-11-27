@@ -3,8 +3,8 @@ $(document).on('turbolinks:load', function () {
   var exchange_rate = 0.0;
   var source_coin_select = $('#source_coin_select');
 
-  var destination_quantity = $('#destination_quantity');
-  var destination_quantity_display = $('#destination_quantity_display');
+  var destination_quantity = $('#quantity');
+  var destination_quantity_display = $('#quantity_display');
   var destination_rate = $('#destination_rate');
 
   var source_rate_display = $('#source_rate_display');
