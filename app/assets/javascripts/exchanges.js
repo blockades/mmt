@@ -12,15 +12,31 @@ $(document).on('turbolinks:load', function () {
   var source_quantity_display = $('#source_quantity_display');
   var source_quantity = $('#source_quantity');
 
-  var calculateCost = function (coin) {
+  var updateFields = function (coin) {
     var btc_to_destination_coin_rate = parseFloat(destination_rate.text());
     exchange_rate = parseFloat(coin.btc_rate);
     var quantity = parseFloat(destination_quantity_display.val());
     var quantity_in_btc = btc_to_destination_coin_rate * quantity;
-    cost = quantity_in_btc / exchange_rate;
+    cost = calculateCost(exchange_rate, quantity_in_btc);
+    rounded = roundCost(cost, coin.coin.subdivision);
+    if (!coin.coin.crypto_currency && rounded != cost) {
+      // Round up to 2 decimal places and readjust for fiat currencies
+      cost = rounded;
+      destination_cost = (cost * coin.btc_rate) / destination_rate.text();
+      destination_quantity_display.val(destination_cost);
+      destination_quantity.val(destination_cost * Math.pow(10, subdivision));
+    }
     $.each([source_quantity_display], updateCost);
     source_quantity.val(cost * Math.pow(10, coin.coin.subdivision));
     $.each([source_rate_display, source_rate], updateRate);
+  }
+
+  var roundCost = function (cost, subdivision) {
+    return Math.round(cost * 10**subdivision) / 10**subdivision;
+  }
+
+  var calculateCost = function (rate, quantity) {
+    return quantity / exchange_rate;
   }
 
   var updateCost = function () {
@@ -42,7 +58,7 @@ $(document).on('turbolinks:load', function () {
         url: "/coins/" + source_coin_id,
         type: "GET",
         dataType: "json",
-        success: calculateCost
+        success: updateFields
       });
     });
   });

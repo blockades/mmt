@@ -77,9 +77,14 @@ class Transaction < ApplicationRecord
     self.errors.add :previous_transaction, "Invalid previous transaction"
   end
 
+  def not_fiat_to_fiat
+    return true unless source_coin.fiat? && destination_coin.fiat?
+    self.errors.add :not_fiat_to_fiat, "Fiat to fiat not valid"
+  end
+
   def rates_match
-    source_rate_matches = source_rate.to_d == source_coin.btc_rate #.round(Coin::BTC_SUBDIVISION)
-    destination_rate_matches = destination_rate.to_d == destination_coin.btc_rate #.round(Coin::BTC_SUBDIVISION)
+    source_rate_matches = source_rate.to_d.round(Coin::BTC_SUBDIVISION) == source_coin.btc_rate.round(Coin::BTC_SUBDIVISION)
+    destination_rate_matches = destination_rate.to_d.round(Coin::BTC_SUBDIVISION) == destination_coin.btc_rate.round(Coin::BTC_SUBDIVISION)
     return true if source_rate_matches && destination_rate_matches
     self.errors.add :rates_match, "Rate has changed. Please resubmit purchase order after checking the new rate"
   end
