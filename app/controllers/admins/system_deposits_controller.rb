@@ -2,6 +2,8 @@
 
 module Admins
   class SystemDepositsController < AdminsController
+    include TransactionHelper
+
     before_action :find_coin
     before_action :find_previous_transaction, only: [:new]
 
@@ -9,15 +11,18 @@ module Admins
     end
 
     def create
+      unless previous_transaction?
+        redirect_back fallback_location: admins_new_coin_deposit_path(@coin.id), alert: "Invalid previous transaction" && return
+      end
+
       transaction = ActiveRecord::Base.transaction do
-        Transaction::SystemDeposit.create(deposit_params)
+        Transactions::SystemDeposit.create(deposit_params)
       end
 
       if transaction.persisted?
-        redirect_to admins_coins_path(@coin), notice: 'Success'
+        redirect_to admins_coins_path, notice: "Deposited #{transaction.destination_quantity/(10**@coin.subdivision)} #{@coin.code}"
       else
-        error = transaction ? transaction.errors : "Wait for 15 seconds before proceeding"
-        redirect_to admins_new_coin_deposit_path(@coin), alert: error
+        redirect_to admins_new_coin_deposit_path(@coin), alert: transaction.errors
       end
     end
 
@@ -28,7 +33,7 @@ module Admins
     end
 
     def find_previous_transaction
-      @previous_transaction = Transaction::SystemDeposit.order('created_at DESC').find_by(source_id: current_member.id, destination_id: @coin.id)
+      @previous_transaction = Transactions::SystemDeposit.ordered.for_source(current_member).last
     end
 
     def permitted_params
@@ -42,10 +47,10 @@ module Admins
     def deposit_params
       permitted_params.merge(
         destination_id: @coin.id,
-        destination_type: 'Coin',
+        destination_type: "Coin",
         destination_coin_id: @coin.id,
         source_id: current_member.id,
-        source_type: 'Member',
+        source_type: "Member",
         source_coin_id: @coin.id,
         initiated_by_id: current_member.id
       )

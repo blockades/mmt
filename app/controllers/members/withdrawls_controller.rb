@@ -2,6 +2,8 @@
 
 module Members
   class WithdrawlsController < ApplicationController
+    include TransactionHelper
+
     before_action :find_coin, except: [:index]
     before_action :find_previous_transaction, only: [:new]
 
@@ -12,15 +14,18 @@ module Members
     end
 
     def create
+      unless previous_transaction?
+        redirect_back fallback_location: new_withdrawl_path, alert: "Invalid previous transaction" && return
+      end
+
       transaction = ActiveRecord::Base.transaction do
-        Transaction::MemberWithdrawl.create(withdrawl_params)
+        Transactions::MemberWithdrawl.create(withdrawl_params)
       end
 
       if transaction.persisted?
         redirect_to coins_path, notice: "Success"
       else
-        error = transaction ? transaction.errors : "Wait 60 seconds before proceeding"
-        redirect_to new_withdrawl_path, error: error
+        redirect_to new_withdrawl_path, error: transaction.errors
       end
     end
 
@@ -31,20 +36,23 @@ module Members
     end
 
     def find_previous_transaction
-      @previous_transaction = Transaction::MemberWithdrawl.order('created_at DESC').find_by(source_id: current_member.id)
+      @previous_transaction = Transactions::MemberWithdrawl.ordered.for_source(current_member).last
     end
 
     def permitted_params
-      params.require(:withdrawl).permit(:source_quantity, :previous_transaction_id)
+      params.require(:withdrawl).permit(
+        :source_quantity,
+        :previous_transaction_id
+      )
     end
 
     def withdrawl_params
       permitted_params.merge(
         source_id: current_member.id,
-        source_type: 'Member',
+        source_type: Member,
         source_coin_id: @coin.id,
         destination_id: @coin.id,
-        destination_type: 'Coin',
+        destination_type: Coin,
         destination_coin_id: @coin.id,
         initiated_by_id: current_member.id
       )
