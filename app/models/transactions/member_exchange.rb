@@ -10,7 +10,7 @@ module Transactions
               presence: true,
               numericality: { greater_than: 0 }
 
-    validate :values_match, :rates_match
+    validate :values_match, :rates_match, :not_fiat_to_fiat
 
     before_save :publish_to_source,
                 :publish_to_destination,

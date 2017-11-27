@@ -13,7 +13,10 @@
   br
   .row
     = f.label :exchange_with
-    = f.select :source_coin_id, Coin.not_self(@coin.id).all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'source_coin_select'
+    - if @coin.fiat?
+      = f.select :source_coin_id, Coin.crypto.all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'source_coin_select'
+    - else
+      = f.select :source_coin_id, Coin.not_self(@coin.id).all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'source_coin_select'
   br
   .row
     label Purchase rate (to BTC)

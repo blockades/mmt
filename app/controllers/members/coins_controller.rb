@@ -13,7 +13,7 @@ module Members
     def show
       respond_to do |format|
         format.html
-        format.json { render json: { coin: @coin, btc_rate: @coin.btc_rate } }
+        format.json { render json: { coin: @coin, btc_rate: @coin.btc_rate, base_subdivision: @coin.subdivision } }
       end
     end
 
