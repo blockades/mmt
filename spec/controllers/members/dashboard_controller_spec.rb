@@ -3,8 +3,7 @@
 require "./spec/rails_helper"
 
 describe Members::DashboardController do
-  let(:portfolio) { create :portfolio }
-  let(:member) { portfolio.member }
+  include_examples "with member"
 
   before { sign_in member }
 

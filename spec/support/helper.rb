@@ -8,6 +8,6 @@ module SpecHelperMethods
   end
 
   def json_fixture(name)
-    File.read(Rails.root.join('spec/support/fixtures', name+'.json'))
+    File.read(Rails.root.join("spec", "support", "fixtures", "#{name}.json"))
   end
 end

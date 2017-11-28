@@ -45,11 +45,11 @@ class Coin < ApplicationRecord
   end
 
   def liability
-    member_coin_events.sum(:liability)
+    member_coin_events.sum(:liability) || 0
   end
 
   def assets
-    coin_events.sum(:assets)
+    coin_events.sum(:assets) || 0
   end
 
   # ===> Live value and rate

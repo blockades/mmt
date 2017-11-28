@@ -18,7 +18,7 @@ module Transactions
     private
 
     def referring_transaction
-      self.class.ordered.for_source(source).last
+      self.class.ordered.not_self(self).for_source(source).last
     end
 
     def publish_to_source

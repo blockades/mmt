@@ -36,6 +36,7 @@ class Member < ApplicationRecord
   validates :username, uniqueness: { case_sensitive: true },
                        format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
                        exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
+                       exclusion: { in: Member.pluck(:email) },
                        presence: true
 
   validates :slug, uniqueness: { case_sensitive: true }
@@ -50,8 +51,6 @@ class Member < ApplicationRecord
                            inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only },
                            if: :phone_number?
 
-  validate :email_against_username
-
   before_validation :adjust_slug, on: :update, if: :username_changed?
 
   attr_accessor :login
@@ -63,7 +62,7 @@ class Member < ApplicationRecord
   end
 
   def liability(coin_id)
-    coin_history(coin_id).sum(:liability)
+    coin_history(coin_id).sum(:liability) || 0
   end
 
   # ===> Two Factor Authentication
@@ -111,10 +110,6 @@ class Member < ApplicationRecord
 
   def two_factor_activated?
     two_factor_enabled? && two_factor_enabled_changed?
-  end
-
-  def email_against_username
-    errors.add(:username, :invalid) if Member.where(email: username).exists?
   end
 
   def adjust_slug

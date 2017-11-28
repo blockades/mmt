@@ -3,8 +3,13 @@
 module Transactions
   class MemberAllocation < SystemTransaction
 
-    validates :destination_quantity,
+    validates :destination_rate,
+              :destination_quantity,
               presence: true
+
+    validates :source_quantity,
+              :source_rate,
+              absence: true
 
     before_save :publish_to_destination,
                 :publish_to_source
@@ -12,7 +17,7 @@ module Transactions
     private
 
     def referring_transaction
-      self.class.ordered.for_destination(destination).last
+      self.class.ordered.not_self(self).for_destination(destination).last
     end
 
     def publish_to_source
@@ -21,7 +26,7 @@ module Transactions
         coin: source_coin,
         member: source,
         liability: -destination_quantity,
-        rate: nil
+        rate: destination_rate
       ).valid?
     end
 
@@ -31,7 +36,7 @@ module Transactions
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
-        rate: nil
+        rate: destination_rate
       ).valid?
     end
   end

@@ -17,6 +17,8 @@ class MemberCoinEvent < ApplicationRecord
 
   validates :liability, numericality: { only_integer: true }
 
+  validates_associated :member
+
   validate :member_coin_liability
 
   private
