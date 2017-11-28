@@ -7,8 +7,10 @@ module Transactions
               presence: true,
               numericality: { greater_than: 0 }
 
-    validates_absence_of :destination_quantity,
-                         :destination_rate
+    validates :destination_quantity,
+              :destination_rate,
+              :source_rate,
+              absence: true
 
     before_create :publish_to_source
                   # :publish_to_destination
@@ -16,7 +18,15 @@ module Transactions
     private
 
     def referring_transaction
-      self.class.ordered.for_destination(destination).last
+      self.class.ordered.not_self(self).for_destination(destination).last
+    end
+
+    def publish_to_source
+      # Debit source (coin) assets
+      throw(:abort) unless coin_events.build(
+        coin: source,
+        assets: -source_quantity
+      ).valid?
     end
 
     # def publish_to_destination
@@ -28,13 +38,5 @@ module Transactions
     #     rate: nil
     #   ).valid?
     # end
-
-    def publish_to_coin
-      # Debit source (coin) assets
-      throw(:abort) unless coin_events.build(
-        coin: source,
-        assets: -source_quantity
-      ).valid?
-    end
   end
 end

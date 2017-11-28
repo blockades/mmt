@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
-require "./spec/rails_helper"
+require "rails_helper"
 
 describe Members::MembersController do
-  let(:portfolio) { create :portfolio }
-  let(:member) { portfolio.member }
+  include_examples "with member"
+
   let(:json) { JSON.parse(response.body) }
 
   before do

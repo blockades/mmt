@@ -4,14 +4,12 @@ module Transactions
   class MemberDeposit < SystemTransaction
 
     validates :destination_quantity,
-              presence: true
-
-    validates :destination_quantity,
+              presence: true,
               numericality: { greater_than: 0 }
 
-    validates_absence_of :source_rate,
-                         :source_quantity,
-                         :destination_rate,
+    validates :source_rate,
+              :source_quantity,
+              absence: true
 
     before_create :publish_to_source,
                   :publish_to_destination
@@ -19,7 +17,7 @@ module Transactions
     private
 
     def referring_transaction
-      self.class.ordered.for_destination(destination).last
+      self.class.ordered.not_self(self).for_destination(destination).last
     end
 
     def publish_to_source

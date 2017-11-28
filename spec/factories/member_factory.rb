@@ -9,5 +9,7 @@ FactoryBot.define do
     trait :admin do
       admin true
     end
+
+    factory :admin, traits: [:admin]
   end
 end

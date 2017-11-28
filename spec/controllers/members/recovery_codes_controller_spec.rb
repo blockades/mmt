@@ -3,8 +3,7 @@
 require 'rails_helper'
 
 describe Members::RecoveryCodesController, type: :controller do
-  let(:portfolio) { create :portfolio }
-  let(:member) { portfolio.member }
+  include_examples "with member"
 
   before do
     sign_in member

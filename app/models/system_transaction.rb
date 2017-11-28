@@ -48,7 +48,8 @@ class SystemTransaction < ApplicationRecord
     end
   end
 
-  scope :ordered, -> { order(created_at: :desc) }
+  scope :ordered, -> { order(created_at: :asc) }
+  scope :not_self, ->(sys_transaction) { where.not(id: sys_transaction.id) }
   scope :for_source, ->(source) { where(source: source) }
   scope :for_destination, ->(destination) { where(destination: destination) }
 
