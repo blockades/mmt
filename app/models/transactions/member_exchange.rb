@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class MemberExchange < Transaction
+  class MemberExchange < SystemTransaction
 
     validates :source_rate,
               :source_quantity,

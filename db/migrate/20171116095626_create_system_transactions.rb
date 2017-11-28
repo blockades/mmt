@@ -1,13 +1,13 @@
-class CreateTransactions < ActiveRecord::Migration[5.1]
+class CreateSystemTransactions < ActiveRecord::Migration[5.1]
   def change
-    create_table :transactions, id: :uuid do |t|
-      t.references :source, type: :uuid, polymorphic: true, index: true, null: false
-      t.references :destination, type: :uuid, polymorphic: true, index: true, null: false
+    create_table :system_transactions, id: :uuid do |t|
+      t.references :source, type: :uuid, polymorphic: true, index: { name: "transactions_on_source" }, null: false
+      t.references :destination, type: :uuid, polymorphic: true, index: { name: "transactions_on_destination" }, null: false
 
       t.references :source_coin, type: :uuid, foreign_key: { to_table: :coins }, index: true, null: false
       t.references :destination_coin, type: :uuid, foreign_key: { to_table: :coins }, index: true, null: false
 
-      t.references :previous_transaction, type: :uuid, foreign_key: { to_table: :transactions }, index: true
+      t.references :previous_transaction, type: :uuid, foreign_key: { to_table: :system_transactions }, index: true
 
       t.references :initiated_by, type: :uuid, foreign_key: { to_table: :members }, index: true, null: false
       t.references :authorized_by, type: :uuid, foreign_key: { to_table: :members }, index: true
