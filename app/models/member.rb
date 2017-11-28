@@ -16,22 +16,22 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
-  has_many :source_transactions, as: :source
-  has_many :destination_transactions, as: :destination
-  has_many :initiated_transactions, class_name: 'Transaction::Base', foreign_key: :initiated_by_id, inverse_of: :initiated_by
-  has_many :authorized_transactions, class_name: 'Transaction::Base', foreign_key: :authorized_by_id, inverse_of: :authorized_by
+  has_many :source_transactions, as: :source, class_name: "SystemTransaction"
+  has_many :destination_transactions, as: :destination, class_name: "SystemTransaction"
+  has_many :initiated_transactions, class_name: "SystemTransaction", foreign_key: :initiated_by_id, inverse_of: :initiated_by
+  has_many :authorized_transactions, class_name: "SystemTransaction", foreign_key: :authorized_by_id, inverse_of: :authorized_by
 
   has_many :member_coin_events
   has_many :coins, through: :member_coin_events
-  has_many :crypto_events, -> { crypto }, class_name: 'MemberCoinEvent'
-  has_many :fiat_events, -> { fiat }, class_name: 'MemberCoinEvent'
+  has_many :crypto_events, -> { crypto }, class_name: "MemberCoinEvent"
+  has_many :fiat_events, -> { fiat }, class_name: "MemberCoinEvent"
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
   scope :with_crypto, -> { joins(:crypto) }
   scope :with_fiat, -> { joins(:fiat) }
 
-  TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
+  TWO_FACTOR_DELIVERY_METHODS = { sms: "Short message service (SMS)", app: "Authenticator application" }.with_indifferent_access
 
   validates :username, uniqueness: { case_sensitive: true },
                        format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
@@ -73,11 +73,11 @@ class Member < ApplicationRecord
   end
 
   def authenticated_by_app?
-    otp_delivery_method == 'app'
+    otp_delivery_method == "app"
   end
 
   def authenticated_by_phone?
-    otp_delivery_method == 'sms'
+    otp_delivery_method == "sms"
   end
 
   def need_two_factor_authentication?(request)

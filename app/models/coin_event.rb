@@ -4,9 +4,7 @@ class CoinEvent < ApplicationRecord
   include Eventable
 
   belongs_to :coin
-  belongs_to :transact, class_name: 'Transaction',
-                        foreign_key: :transaction_id,
-                        inverse_of: :coin_events
+  belongs_to :system_transaction
 
   validates :assets,
             presence: true

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class SystemDeposit < Transaction
+  class SystemDeposit < SystemTransaction
 
     validates :destination_rate,
               :destination_quantity,

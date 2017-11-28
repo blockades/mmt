@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-class Transaction < ApplicationRecord
+class SystemTransaction < ApplicationRecord
 
   ################### RULES OF TRANSACTION ####################
   #                                                           #
@@ -28,8 +28,8 @@ class Transaction < ApplicationRecord
   belongs_to :initiated_by, class_name: "Member", foreign_key: :initiated_by_id, inverse_of: :initiated_transactions
   belongs_to :authorized_by, class_name: "Member", foreign_key: :authorized_by_id, inverse_of: :authorized_transactions
 
-  has_many :coin_events, foreign_key: :transaction_id, inverse_of: :transact
-  has_many :member_coin_events, foreign_key: :transaction_id, inverse_of: :transact
+  has_many :coin_events
+  has_many :member_coin_events
 
   def readonly?
     (ENV["READONLY_TRANSACTIONS"] == "false") ? false : !new_record?

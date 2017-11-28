@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class SystemAllocation < Transaction
+  class SystemAllocation < SystemTransaction
 
     validates :destination_rate,
               :destination_quantity,

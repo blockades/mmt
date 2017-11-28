@@ -7,8 +7,8 @@ class Coin < ApplicationRecord
 
   BTC_SUBDIVISION = 8
 
-  has_many :source_transactions, as: :source, class_name: "Transaction"
-  has_many :destination_transactions, as: :destination, class_name: "Transaction"
+  has_many :source_transactions, as: :source, class_name: "SystemTransaction"
+  has_many :destination_transactions, as: :destination, class_name: "SystemTransaction"
 
   has_many :coin_events
   has_many :member_coin_events
