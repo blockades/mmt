@@ -3,29 +3,29 @@
 require "rails_helper"
 
 describe Transactions::MemberExchange, transactions: true do
-
-  include_examples "market rates"
+  include_examples "with bitcoin"
+  include_examples "with member"
+  include_examples "with sterling"
 
   let(:build_exchange) do
     -> (attributes = {}) { build(:member_exchange, { source: member, source_coin: bitcoin, destination_coin: sterling }.merge(attributes) ) }
   end
 
+  describe "polymorphism" do
+    let(:subject) { build_exchange.call }
+
+    it_behaves_like "source is a member"
+    it_behaves_like "destination is a member"
+  end
+
   describe "hooks" do
+    include_examples "market rates"
+
     include_examples "system with bitcoin", assets: 5
     include_examples "system with sterling", assets: 10000
     include_examples "member with bitcoin", liability: 2
 
     let(:exchange) { build_exchange.call }
-
-    describe "source and destination" do
-      it "is an instance of Member" do
-        expect(exchange.source).to be_an_instance_of Member
-      end
-
-      it "matches destination" do
-        expect(exchange.source).to eq exchange.destination
-      end
-    end
 
     describe "#publish_to_source" do
       it "debits source (member) source_coin" do
