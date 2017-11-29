@@ -44,7 +44,7 @@ FactoryBot.define do
       association :destination, factory: :member
       source_coin { source }
       destination_coin { source }
-      destination_quantiity { 1 * 10**destination_coin.subdivision }
+      destination_quantity { 1 * 10**destination_coin.subdivision }
     end
 
     trait :member_withdrawl do
