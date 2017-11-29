@@ -335,7 +335,6 @@ GEM
     websocket-driver (0.6.5)
       websocket-extensions (>= 0.1.0)
     websocket-extensions (0.1.2)
-    wisper (2.0.0)
     xpath (2.1.0)
       nokogiri (~> 1.3)
 
@@ -386,7 +385,6 @@ DEPENDENCIES
   uglifier (>= 1.3.0)
   web-console (>= 3.3.0)
   webmock
-  wisper (= 2.0.0)
 
 BUNDLED WITH
    1.15.4
