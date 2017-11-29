@@ -2,6 +2,8 @@
 
 module Members
   class ExchangesController < ApplicationController
+    include TransactionHelper
+
     before_action :find_coin, except: [:index]
     before_action :find_previous_transaction, only: [:new]
 
@@ -12,15 +14,18 @@ module Members
     end
 
     def create
-      transaction = verify_nonce :system_exchange, 15.seconds do
-        Transaction::MemberExchange.create(exchange_params)
+      unless previous_transaction?
+        redirect_back fallback_location: new_exchange_path, alert: "Invalid previous transaction" && return
+      end
+
+      transaction = ActiveRecord::Base.transaction do
+        Transactions::MemberExchange.create(exchange_params)
       end
 
       if transaction.persisted?
         redirect_to coins_path, notice: "Success"
       else
-        error = transaction ? transaction.errors : "Wait for 15 seconds before proceeding"
-        redirect_to new_exchange_path, error: error
+        redirect_to new_exchange_path, error: transaction.errors
       end
     end
 
@@ -31,7 +36,7 @@ module Members
     end
 
     def find_previous_transaction
-      @previous_transaction = Transaction::MemberExchange.order('created_at DESC').find_by(source_id: current_member.id, destination_id: current_member.id)
+      @previous_transaction = Transactions::MemberExchange.ordered.for_source(current_member).last
     end
 
     def permitted_params
@@ -48,9 +53,9 @@ module Members
     def exchange_params
       permitted_params.merge(
         source_id: current_member.id,
-        source_type: "Member",
+        source_type: Member,
         destination_id: current_member.id,
-        destination_type: "Member",
+        destination_type: Member,
         destination_coin_id: @coin.id,
         initiated_by_id: current_member.id
       )

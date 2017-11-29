@@ -39,45 +39,27 @@ class ApplicationController < ActionController::Base
   end
 
   def forbidden
-    raise Forbidden.new, '403 Forbidden'
+    raise Forbidden.new, "403 Forbidden"
   end
 
   def not_found
-    raise NotFound.new, '404 Not Found'
+    raise NotFound.new, "404 Not Found"
   end
 
   def rescue_404
-    render file: 'public/404', status: 404, layout: false
+    render file: "public/404", status: 404, layout: false
   end
 
   def rescue_403
-    render file: 'public/403', status: 403, layout: false
-  end
-
-  def verify_nonce(accessor, time_difference, &block)
-    if block_given?
-      if session[accessor] && validate_nonce(session[accessor], time_difference)
-        return false
-      else
-        session[accessor] = nonce(Time.now)
-        return yield
-      end
-    else
-      if session[accessor] && validate_nonce(session[accessor], time_difference)
-        return false
-      else
-        session[accessor] = nonce(Time.now)
-        return true
-      end
-    end
+    render file: "public/403", status: 403, layout: false
   end
 
   def nonce(time)
-    ActionController::HttpAuthentication::Digest.nonce(ENV.fetch('NONCE_SECRET'), time)
+    ActionController::HttpAuthentication::Digest.nonce(ENV.fetch("NONCE_SECRET"), time)
   end
 
   def validate_nonce(nonce_to_validate, seconds_to_timeout)
-    ActionController::HttpAuthentication::Digest.validate_nonce(ENV.fetch('NONCE_SECRET'), request, nonce_to_validate, seconds_to_timeout)
+    ActionController::HttpAuthentication::Digest.validate_nonce(ENV.fetch("NONCE_SECRET"), request, nonce_to_validate, seconds_to_timeout)
   end
 
 end

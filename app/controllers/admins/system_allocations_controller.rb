@@ -2,22 +2,27 @@
 
 module Admins
   class SystemAllocationsController < AdminsController
+    include TransactionHelper
+
     before_action :find_coin
-    before_action :find_previous_transaction, only: [:new]
+    before_action :find_previous_transaction, only: [:new, :create]
 
     def new
     end
 
     def create
+      unless previous_transaction?
+        redirect_back fallback_location: admins_new_coin_allocation_path(@coin.id), alert: "Invalid previous transaction" && return
+      end
+
       transaction = ActiveRecord::Base.transaction do
-        Transaction::SystemAllocation.create(allocation_params)
+        Transactions::SystemAllocation.create(allocation_params)
       end
 
       if transaction.persisted?
-        redirect_to admins_coins_path, notice: "Successfully allocated #{transaction.destination_quantity/(10**@coin.subdivision)}"
+        redirect_to admins_coins_path, notice: "Allocated #{transaction.destination_quantity/(10**@coin.subdivision)} #{@coin.code}"
       else
-        error = transaction ? transaction.errors : "Wait 15 seconds before proceeding"
-        redirect_to admins_new_coin_allocation_path(@coin.id), error: "Fail"
+        redirect_to admins_new_coin_allocation_path(@coin.id), error: transaction.errors
       end
     end
 
@@ -28,7 +33,7 @@ module Admins
     end
 
     def find_previous_transaction
-      @previous_transaction = Transaction::SystemAllocation.order('created_at DESC').find_by(source_id: @coin.id)
+      @previous_transaction = Transactions::SystemAllocation.ordered.for_destination(current_member).last
     end
 
     def permitted_params
@@ -43,9 +48,9 @@ module Admins
     def allocation_params
       permitted_params.merge(
         source_id: @coin.id,
-        source_type: 'Coin',
+        source_type: Coin,
         source_coin_id: @coin.id,
-        destination_type: 'Member',
+        destination_type: Member,
         destination_coin_id: @coin.id,
         initiated_by_id: current_member.id
       )
