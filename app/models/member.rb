@@ -16,6 +16,11 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
+  has_many :source_transactions, as: :source
+  has_many :destination_transactions, as: :destination
+  has_many :initiated_transactions, class_name: 'Transaction::Base', foreign_key: :initiated_by_id, inverse_of: :initiated_by
+  has_many :authorized_transactions, class_name: 'Transaction::Base', foreign_key: :authorized_by_id, inverse_of: :authorized_by
+
   has_many :member_coin_events
   has_many :coins, through: :member_coin_events
   has_many :crypto_events, -> { crypto }, class_name: 'MemberCoinEvent'
@@ -51,25 +56,14 @@ class Member < ApplicationRecord
 
   attr_accessor :login
 
-  # ===> Publishing Events
-
-  def publish!(coin:, liability:, rate:, transaction_id:)
-    transaction_id.member_coin_events.build(
-      coin: coin,
-      liability: liability,
-      rate: rate,
-      member: self
-    ).valid?
-  end
-
   # ===> Balance
 
-  def history(coin_id)
+  def coin_history(coin_id)
     member_coin_events.where(coin_id: coin_id)
   end
 
   def liability(coin_id)
-    member_coin_events.where(coin_id: coin_id).sum(:liability)
+    coin_history(coin_id).sum(:liability)
   end
 
   # ===> Two Factor Authentication
