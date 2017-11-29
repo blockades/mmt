@@ -1,42 +1,24 @@
 # frozen_string_literal: true
 
 class CoinEvent < ApplicationRecord
-  include EventHelper
+  include Eventable
 
   belongs_to :coin
-  belongs_to :triggered_by, class_name: 'Transaction::Base',
-                            foreign_key: :transaction_id,
-                            inverse_of: :coin_events
+  belongs_to :transact, class_name: 'Transaction',
+                        foreign_key: :transaction_id,
+                        inverse_of: :coin_events
 
-  def readonly?
-    Rails.env.development? ? false : !new_record?
-  end
-
-  validates :liability,
-            :available,
-            :triggered_by,
+  validates :assets,
             presence: true
 
-  validates :liability,
-            :available,
-            numericality: { only_integer: true }
+  validates :assets, numericality: { only_integer: true }
 
-  validate :coin_liability, unless: proc { deposit_event? || exchange_event? }
-
-  validate :exchange_liability, if: :exchange_event?
+  validate :coin_assets
 
   private
 
-  def coin_liability
-    return true if liability.abs < coin.reload.available
-    self.errors.add :liability, "Insufficient funds"
-  end
-
-  def exchange_liability
-    if destination_coin_event?
-      binding.pry
-      return true if liability.abs < coin.reload.available
-      self.errors.add :liability, "Insufficient funds"
-    end
+  def coin_assets
+    return true if assets.positive? || (coin.assets - assets.abs).positive?
+    self.errors.add :assets, "Insufficient assets"
   end
 end
