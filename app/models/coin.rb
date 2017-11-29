@@ -1,49 +1,66 @@
 # frozen_string_literal: true
 
 class Coin < ApplicationRecord
+
   extend FriendlyId
   friendly_id :code, use: :slugged
 
-  has_many :holdings
-  has_many :live_portfolios, -> { live }, through: :holdings, source: :portfolio
-  has_many :live_holdings, through: :live_portfolios, class_name: "Holding", source: :holdings
+  BTC_SUBDIVISION = 8
+
+  has_many :source_transactions, as: :source, class_name: "SystemTransaction"
+  has_many :destination_transactions, as: :destination, class_name: "SystemTransaction"
+
+  has_many :coin_events
+  has_many :member_coin_events
+  has_many :members, through: :member_coin_events
 
   scope :ordered, -> { order(:code) }
+  scope :crypto, -> { where(crypto_currency: true) }
+  scope :fiat, -> { where.not(crypto_currency: true) }
+  scope :not_self, ->(coin_id) { where.not(id: coin_id) }
 
   attr_readonly :code
 
-  validates :code, uniqueness: { case_sensitive: true }, format: { with: /\A[a-zA-Z0-9_\.]*\z/ }
-  validate :code_against_inaccessible_words
+  validates :code, uniqueness: { case_sensitive: true },
+                   format: { with: /\A[a-zA-Z0-9_\.]*\Z/ },
+                   exclusion: { in: MagicMoneyTree::InaccessibleWords.all }
+
+  validates :slug, uniqueness: { case_sensitive: true }
+
   validates :subdivision, :code, presence: true
   validates :subdivision, numericality: { greater_than_or_equal_to: 0 }
-  validates :central_reserve_in_sub_units, numericality: { greater_than: :live_holdings_quantity }
 
-  before_validation :adjust_slug, on: :update, if: proc { |c| c.code_changed? }
+  validates :assets, numericality: { greater_than_or_equal_to: 0 }
+
+  def crypto?
+    crypto_currency
+  end
+
+  def fiat?
+    !crypto_currency
+  end
+
+  def total
+    liability + assets
+  end
+
+  def liability
+    member_coin_events.sum(:liability) || 0
+  end
+
+  def assets
+    coin_events.sum(:assets) || 0
+  end
+
+  # ===> Live value and rate
 
   def value(iso_currency)
-    btc_rate * 1.0 / fiat_btc_rate(iso_currency)
+    btc_rate * 1.0/fiat_btc_rate(iso_currency)
   end
 
   # @return The amount of this currency that buys one BTC
   def btc_rate
     crypto_currency ? crypto_btc_rate : fiat_btc_rate
-  end
-
-  def central_reserve
-    BigDecimal.new(central_reserve_in_sub_units) / 10**subdivision
-  end
-
-  # @return <Integer> The value of the live holdings
-  def live_holdings_quantity
-    live_holdings.sum(:quantity) || 0
-  end
-
-  def live_holdings_quantity_display
-    live_holdings_quantity / 10**subdivision
-  end
-
-  def max_buyable_quantity
-    central_reserve_in_sub_units - live_holdings_quantity
   end
 
   private
@@ -85,13 +102,5 @@ class Coin < ApplicationRecord
     return unless subdivision
     return unless (subdivision % 10).zero?
     errors.add :subdivision, "must be a multiple of 10"
-  end
-
-  def code_against_inaccessible_words
-    errors.add(:code, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? code.downcase
-  end
-
-  def adjust_slug
-    self.slug = code
   end
 end

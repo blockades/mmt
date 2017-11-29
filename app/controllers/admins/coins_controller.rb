@@ -5,17 +5,15 @@ module Admins
     before_action :find_coin, only: [:edit, :update]
 
     def index
-      @coins = Coin.all
+      @coins = Coin.all.decorate
     end
 
     def edit
     end
 
     def update
-      # %%TODO%% UPDATE ACTION must be replaced with build new coin with new central reserve value is central reserve is being updated!!!
-      if @coin.update coin_params
-        flash[:success] = "Coin created"
-        redirect_to action: :index
+      if @coin.update permitted_params
+        redirect_to :index, notice: "Coin created"
       else
         flash[:error] = "Coin failed to be created"
         render :new
@@ -25,11 +23,11 @@ module Admins
     private
 
     def find_coin
-      @coin ||= Coin.friendly.find params[:id]
+      @coin ||= Coin.friendly.find(params[:id]).decorate
     end
 
-    def coin_params
-      params.require(:coin).permit(:name, :central_reserve_in_sub_units)
+    def permitted_params
+      params.require(:coin).permit(:name)
     end
   end
 end

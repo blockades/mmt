@@ -22,21 +22,8 @@ Bundler.require(*Rails.groups)
 module MMT
   class Application < Rails::Application
     config.autoload_paths += Dir["#{config.root}/app/**/"]
-
-    config.generators do |g|
-      g.orm :active_record, primary_key_type: :uuid
-    end
-
     config.before_initialize do
-      require Rails.root.join 'config', 'initializers', 'magic_money_tree'
+      require config.root.join 'config', 'initializers', 'magic_money_tree'
     end
-
-    config.cache_store = :redis_store, {
-      host: ENV.fetch('REDIS_HOST') { 'localhost' },
-      port: 6379,
-      db: 0,
-      # namespace: ENV.fetch('REDIS_NAMESPACE') { Rails.env }
-    }
-
   end
 end

@@ -1,2 +1,1 @@
-class NotFound < StandardError
-end
+NotFound = Class.new(StandardError)

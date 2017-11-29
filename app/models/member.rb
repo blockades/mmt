@@ -16,28 +16,57 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
-  has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"
-  has_many :portfolios
-  has_many :holdings, through: :live_portfolio
+  has_many :source_transactions, as: :source, class_name: "SystemTransaction"
+  has_many :destination_transactions, as: :destination, class_name: "SystemTransaction"
+  has_many :initiated_transactions, class_name: "SystemTransaction", foreign_key: :initiated_by_id, inverse_of: :initiated_by
+  has_many :authorized_transactions, class_name: "SystemTransaction", foreign_key: :authorized_by_id, inverse_of: :authorized_by
 
-  scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
+  has_many :member_coin_events
+  has_many :credits, -> { where("liability > 0") }, class_name: "MemberCoinEvent"
+  has_many :debits, -> { where("liability < 0") }, class_name: "MemberCoinEvent"
 
-  TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
+  has_many :coins, through: :member_coin_events
+  has_many :crypto_events, -> { crypto }, class_name: "MemberCoinEvent"
+  has_many :fiat_events, -> { fiat }, class_name: "MemberCoinEvent"
+  has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
+  has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
-  validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
+  scope :with_crypto, -> { joins(:crypto) }
+  scope :with_fiat, -> { joins(:fiat) }
+
+  TWO_FACTOR_DELIVERY_METHODS = { sms: "Short message service (SMS)", app: "Authenticator application" }.with_indifferent_access
+
+  validates :username, uniqueness: { case_sensitive: true },
+                       format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
+                       exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
+                       exclusion: { in: Member.pluck(:email) },
+                       presence: true
+
   validates :slug, uniqueness: { case_sensitive: true }
 
-  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: :two_factor_activated?
 
-  validates :phone_number, presence: true, format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ }, if: proc { country_code.present? }
-  validates :country_code, presence: true, inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only }, if: proc { phone_number.present? }
+  validates :phone_number, presence: true,
+                           format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ },
+                           if: :country_code?
 
-  validate :username_against_inaccessible_words
-  validate :email_against_username
+  validates :country_code, presence: true,
+                           inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only },
+                           if: :phone_number?
 
-  before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
+  before_validation :adjust_slug, on: :update, if: :username_changed?
 
   attr_accessor :login
+
+  # ===> Balance
+
+  def coin_history(coin_id)
+    member_coin_events.where(coin_id: coin_id)
+  end
+
+  def liability(coin_id)
+    coin_history(coin_id).sum(:liability) || 0
+  end
 
   # ===> Two Factor Authentication
 
@@ -46,11 +75,11 @@ class Member < ApplicationRecord
   end
 
   def authenticated_by_app?
-    otp_delivery_method == 'app'
+    otp_delivery_method == "app"
   end
 
   def authenticated_by_phone?
-    otp_delivery_method == 'sms'
+    otp_delivery_method == "sms"
   end
 
   def need_two_factor_authentication?(request)
@@ -82,12 +111,8 @@ class Member < ApplicationRecord
 
   private
 
-  def email_against_username
-    errors.add(:username, :invalid) if Member.where(email: username).exists?
-  end
-
-  def username_against_inaccessible_words
-    errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
+  def two_factor_activated?
+    two_factor_enabled? && two_factor_enabled_changed?
   end
 
   def adjust_slug

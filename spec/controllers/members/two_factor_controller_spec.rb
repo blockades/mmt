@@ -1,8 +1,7 @@
 require 'rails_helper'
 
 describe Members::TwoFactorController, type: :controller, two_factor: true do
-  let(:portfolio) { create :portfolio }
-  let(:member) { portfolio.member }
+  include_examples "with member"
 
   before do
     sign_in member
