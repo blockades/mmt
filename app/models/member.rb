@@ -22,6 +22,9 @@ class Member < ApplicationRecord
   has_many :authorized_transactions, class_name: "SystemTransaction", foreign_key: :authorized_by_id, inverse_of: :authorized_by
 
   has_many :member_coin_events
+  has_many :credits, -> { where("liability > 0") }, class_name: "MemberCoinEvent"
+  has_many :debits, -> { where("liability < 0") }, class_name: "MemberCoinEvent"
+
   has_many :coins, through: :member_coin_events
   has_many :crypto_events, -> { crypto }, class_name: "MemberCoinEvent"
   has_many :fiat_events, -> { fiat }, class_name: "MemberCoinEvent"

@@ -11,6 +11,8 @@ class MemberCoinEvent < ApplicationRecord
   scope :with_coins, -> { joins(:coin) }
   scope :crypto, -> { with_coins.merge(Coin.crypto) }
   scope :fiat, -> { with_coins.merge(Coin.fiat) }
+  scope :credit, -> { where("liability > 0") }
+  scope :debit, -> { where("liability < 0") }
 
   validates :liability,
             presence: true

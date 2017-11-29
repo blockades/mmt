@@ -6,6 +6,9 @@ class CoinEvent < ApplicationRecord
   belongs_to :coin
   belongs_to :system_transaction
 
+  scope :credit, -> { where("assets > 0") }
+  scope :debit, -> { where("assets < 0") }
+
   validates :assets,
             presence: true
 
