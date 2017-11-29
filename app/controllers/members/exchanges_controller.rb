@@ -2,7 +2,7 @@
 
 module Members
   class ExchangesController < ApplicationController
-    before_action :find_coin, except: [:index, :create]
+    before_action :find_coin, except: [:index]
 
     def index
     end
@@ -11,17 +11,14 @@ module Members
     end
 
     def create
-      exchange = verify_nonce :system_exchange, 60.seconds do
-        MemberExchangeWithSystem.call(permitted_params: permitted_params.merge(
-          destination_coin_id: params[:coin_id],
-          destination_member_id: current_member.id
-        ))
+      transaction = verify_nonce :system_exchange, 15.seconds do
+        Transaction::SystemExchange.create(exchange_params)
       end
 
-      if exchange && exchange.success?
-        redirect_to coins_path, notice: exchange.message
+      if transaction && transaction.persisted?
+        redirect_to coins_path, notice: "Success"
       else
-        error = exchange ? exchange.message : "Wait for 60 seconds before proceeding"
+        error = transaction ? exchange.errors : "Wait for 15 seconds before proceeding"
         redirect_to new_exchange_path, error: error
       end
     end
@@ -34,6 +31,13 @@ module Members
 
     def permitted_params
       params.require(:exchange).permit(:destination_rate, :destination_quantity, :source_coin_id, :source_rate, :source_quantity)
+    end
+
+    def exchange_params
+      permitted_params.merge(
+        destination_coin_id: @coin.id,
+        destination_member_id: current_member.id
+      )
     end
   end
 end
