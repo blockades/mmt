@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171116162843) do
+ActiveRecord::Schema.define(version: 20171116122309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -54,7 +54,6 @@ ActiveRecord::Schema.define(version: 20171116162843) do
     t.uuid "coin_id"
     t.uuid "member_id"
     t.uuid "transaction_id"
-    t.bigint "admin_liability"
     t.bigint "liability"
     t.decimal "rate"
     t.datetime "created_at", null: false
@@ -114,9 +113,9 @@ ActiveRecord::Schema.define(version: 20171116162843) do
   create_table "transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "source_type", null: false
     t.uuid "source_id", null: false
-    t.uuid "source_coin_id", null: false
     t.string "destination_type", null: false
     t.uuid "destination_id", null: false
+    t.uuid "source_coin_id", null: false
     t.uuid "destination_coin_id", null: false
     t.uuid "previous_transaction_id"
     t.uuid "initiated_by_id", null: false
