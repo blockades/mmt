@@ -2,7 +2,7 @@ h2 Allocate #{@coin.name} (#{@coin.code})
 = form_for :allocation, url: admins_coin_allocation_path(@coin) do |f|
   .row
     = f.label :member
-    = f.select :destination_member_id, Member.all.map {|member| [ member.email, member.id ] }, { include_blank: true }, class: "select2"
+    = f.select :destination_id, Member.all.map {|member| [ member.email, member.id ] }, { include_blank: true }, class: "select2"
   br
   .row
     = f.label :quantity
@@ -13,6 +13,7 @@ h2 Allocate #{@coin.name} (#{@coin.code})
     = f.number_field :destination_rate, value: number_with_precision(@coin.btc_rate, precision: @coin.subdivision, unit: ''), step: :any
   br
   .row
+    = f.hidden_field :previous_transaction_id, value: @previous_transaction.try(:id)
     = f.submit :allocate
 
 javascript:

@@ -25,6 +25,7 @@
     = f.number_field :source_quantity, value: number_with_precision(0, precision: 0), step: :any, id: 'source_quantity', class: 'hidden', required: true
   br
   .row
+    = f.hidden_field :previous_transaction_id, value: @previous_transaction.try(:id)
     = f.submit :exchange, class: 'button button-primary'
   br
 
