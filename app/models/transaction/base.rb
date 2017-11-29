@@ -15,14 +15,9 @@ module Transaction
     has_many :coin_events
     has_many :member_coin_events
 
-    attr_readonly :source_coin_id,
-                  :source_member_id,
-                  :source_quantity,
-                  :source_rate,
-                  :destination_coin_id,
-                  :destination_member_id,
-                  :destination_quantity,
-                  :destination_rate
+    def readonly?
+      !new_record?
+    end
 
     TYPES = %w[
       SystemDeposit SystemAllocation SystemExchange SystemWithdrawl
@@ -61,8 +56,8 @@ module Transaction
     end
 
     def values_match
-      source_value = (source_quantity_for_comparison * source_rate).round(higher_subdivision).to_i
-      destination_value = (destination_quantity_for_comparison * destination_rate).round(higher_subdivision).to_i
+      source_value = ((source_quantity * source_rate).round(Coin::BTC_SUBDIVISION) * 10**(Coin::BTC_SUBDIVISION - source_coin.subdivision)).to_i
+      destination_value = ((destination_quantity * destination_rate).round(Coin::BTC_SUBDIVISION) * 10**(Coin::BTC_SUBDIVISION - destination_coin.subdivision)).to_i
       return true if (source_value - destination_value).zero?
       self.errors.add :values_match, "Invalid purchase"
     end
@@ -74,7 +69,7 @@ module Transaction
 
     def destination_coin_available
       return true if destination_coin && destination_quantity < destination_coin.reload.available
-      self.errors.add :destination_quantity, "Invalid purchase"
+      self.errors.add :destination_quantity, "Insufficient funds"
     end
   end
 end
