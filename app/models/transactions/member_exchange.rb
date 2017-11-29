@@ -10,6 +10,9 @@ module Transactions
               presence: true,
               numericality: { greater_than: 0 }
 
+    validates :source_type, inclusion: { in: ["Member"] }
+    validates :destination_type, inclusion: { in: ["Member"] }
+
     validate :values_match, :rates_match, :not_fiat_to_fiat
 
     before_save :publish_to_source,

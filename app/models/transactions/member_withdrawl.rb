@@ -12,6 +12,9 @@ module Transactions
               :source_rate,
               absence: true
 
+    validates :source_type, inclusion: { in: ["Member"] }
+    validates :destination_type, inclusion: { in: ["Coin"] }
+
     before_create :publish_to_source,
                   :publish_to_destination
 
