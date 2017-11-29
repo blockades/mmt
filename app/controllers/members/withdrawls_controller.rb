@@ -3,6 +3,7 @@
 module Members
   class WithdrawlsController < ApplicationController
     before_action :find_coin, except: [:index]
+    before_action :find_previous_transaction, only: [:new]
 
     def index
     end
@@ -11,15 +12,11 @@ module Members
     end
 
     def create
-      unless permitted_params[:source_quantity].present?
-        redirect_back fallback_location: new_withdrawl_path, notice: 'Specify an amount to withdraw' and return
-      end
-
-      transaction = verify_nonce :member_withdrawl, 60.seconds do
+      transaction = ActiveRecord::Base.transaction do
         Transaction::MemberWithdrawl.create(withdrawl_params)
       end
 
-      if transaction && transaction.persisted?
+      if transaction.persisted?
         redirect_to coins_path, notice: "Success"
       else
         error = transaction ? transaction.errors : "Wait 60 seconds before proceeding"
@@ -33,20 +30,24 @@ module Members
       @coin = Coin.friendly.find(params[:coin_id]).decorate
     end
 
+    def find_previous_transaction
+      @previous_transaction = Transaction::MemberWithdrawl.order('created_at DESC').find_by(source_id: current_member.id)
+    end
+
     def permitted_params
-      params.require(:withdrawl).permit(:source_quantity)
+      params.require(:withdrawl).permit(:source_quantity, :previous_transaction_id)
     end
 
     def withdrawl_params
       permitted_params.merge(
+        source_id: current_member.id,
+        source_type: 'Member',
         source_coin_id: @coin.id,
-        source_quantity: source_quantity_as_integer,
-        destination_member_id: current_member.id,
-      ).to_h.symbolize_keys
-    end
-
-    def source_quantity_as_integer
-      (permitted_params.fetch(:source_quantity).to_d * 10**@coin.subdivision).to_i
+        destination_id: @coin.id,
+        destination_type: 'Coin',
+        destination_coin_id: @coin.id,
+        initiated_by_id: current_member.id
+      )
     end
   end
 end

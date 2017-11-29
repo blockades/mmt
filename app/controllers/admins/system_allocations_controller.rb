@@ -3,16 +3,17 @@
 module Admins
   class SystemAllocationsController < AdminsController
     before_action :find_coin
+    before_action :find_previous_transaction, only: [:new]
 
     def new
     end
 
     def create
-      transaction = verify_nonce :system_allocation, 15.seconds do
+      transaction = ActiveRecord::Base.transaction do
         Transaction::SystemAllocation.create(allocation_params)
       end
 
-      if transaction && transaction.persisted?
+      if transaction.persisted?
         redirect_to admins_coins_path, notice: "Successfully allocated #{transaction.destination_quantity/(10**@coin.subdivision)}"
       else
         error = transaction ? transaction.errors : "Wait 15 seconds before proceeding"
@@ -26,14 +27,27 @@ module Admins
       @coin = Coin.friendly.find(params[:coin_id]).decorate
     end
 
+    def find_previous_transaction
+      @previous_transaction = Transaction::SystemAllocation.order('created_at DESC').find_by(source_id: @coin.id)
+    end
+
     def permitted_params
-      params.require(:allocation).permit(:destination_member_id, :destination_quantity, :destination_rate)
+      params.require(:allocation).permit(
+        :destination_id,
+        :destination_quantity,
+        :destination_rate,
+        :previous_transaction_id
+      )
     end
 
     def allocation_params
       permitted_params.merge(
+        source_id: @coin.id,
+        source_type: 'Coin',
+        source_coin_id: @coin.id,
+        destination_type: 'Member',
         destination_coin_id: @coin.id,
-        source_member_id: current_member.id,
+        initiated_by_id: current_member.id
       )
     end
   end
