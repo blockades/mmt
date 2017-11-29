@@ -1,6 +1,7 @@
 # frozen_string_literal: true
 
 class SystemTransaction < ApplicationRecord
+  include Eventable
 
   ################### RULES OF TRANSACTION ####################
   #                                                           #
