@@ -15,8 +15,6 @@ module Transactions
     validates :source_type, inclusion: { in: ["Coin"] }
     validates :destination_type, inclusion: { in: ["Member"] }
 
-    before_create :publish_to_source, :publish_to_destination
-
     private
 
     def referring_transaction
@@ -24,9 +22,9 @@ module Transactions
     end
 
     def publish_to_source
-      # Debit source (coin) assets
+      # Source (coin) assets stays same
       throw(:abort) unless coin_events.build(
-        assets: -destination_quantity,
+        assets: 0,
         coin: source
       ).valid?
     end

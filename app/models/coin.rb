@@ -40,16 +40,16 @@ class Coin < ApplicationRecord
     !crypto_currency
   end
 
-  def total
-    liability + assets
+  def assets
+    coin_events.sum(:assets) || 0
   end
 
   def liability
     member_coin_events.sum(:liability) || 0
   end
 
-  def assets
-    coin_events.sum(:assets) || 0
+  def equity
+    assets - liability
   end
 
   # ===> Live value and rate

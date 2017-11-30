@@ -3,21 +3,6 @@
 class SystemTransaction < ApplicationRecord
   include Eventable
 
-  ################### RULES OF TRANSACTION ####################
-  #                                                           #
-  #     The sum of all entries on the asset side must equal   #
-  #       the sum of all entries on the liabilities side      #
-  #                                                           #
-  # For every action, there is an equal and opposite reaction #
-  #                                                           #
-  #                Source is always a debit                   #
-  #             Destination is always a credit                #
-  #         Every transaction must always have an equal       #
-  #                number of event entries                    #
-  #         whereby each corresponds to its opposite          #
-  #                                                           #
-  #############################################################
-
   belongs_to :previous_transaction, class_name: self.name, foreign_key: :previous_transaction_id, optional: true
 
   belongs_to :source, polymorphic: true
@@ -31,6 +16,8 @@ class SystemTransaction < ApplicationRecord
 
   has_many :coin_events
   has_many :member_coin_events
+
+  before_create :publish_to_source, :publish_to_destination
 
   def readonly?
     (ENV["READONLY_TRANSACTIONS"] == "false") ? false : !new_record?

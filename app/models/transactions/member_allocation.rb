@@ -14,9 +14,6 @@ module Transactions
     validates :source_type, inclusion: { in: ["Member"] }
     validates :destination_type, inclusion: { in: ["Member"] }
 
-    before_save :publish_to_destination,
-                :publish_to_source
-
     private
 
     def referring_transaction

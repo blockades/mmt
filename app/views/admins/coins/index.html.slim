@@ -3,18 +3,18 @@ table
     th Name
     th Code
     th Liability
-    th Available
-    th Total
-    th BTC rate (bittrex)
+    th Equity
+    th Assets
+    th BTC Rate
     th Actions
   tbody
     - @coins.each do |coin|
       tr
         td= coin.name
         td= coin.code
-        td= number_to_currency(coin.overall_liability, precision: coin.subdivision, unit: "")
-        td= number_to_currency(coin.available_assets, precision: coin.subdivision, unit: "")
-        td= number_to_currency(coin.total_in_system, precision: coin.subdivision, unit: "")
+        td= number_to_currency(coin.system_liability, precision: coin.subdivision, unit: "")
+        td= number_to_currency(coin.system_equity, precision: coin.subdivision, unit: "")
+        td= number_to_currency(coin.system_assets, precision: coin.subdivision, unit: "")
         td= coin.btc_rate
         td
           .icons

@@ -15,9 +15,6 @@ module Transactions
     validates :source_type, inclusion: { in: ["Coin"] }
     validates :destination_type, inclusion: { in: ["Member"] }
 
-    before_create :publish_to_source
-                  # :publish_to_destination
-
     private
 
     def referring_transaction
@@ -32,14 +29,14 @@ module Transactions
       ).valid?
     end
 
-    # def publish_to_destination
-    #   # Credit destination (admin) liability
+    def publish_to_destination
+    #   # Debit destination (admin) liability
     #   throw(:abort) unless admin_coin_events.build(
     #     admin: destination,
     #     coin: destination_coin,
-    #     liability: source_quantity,
+    #     liability: -source_quantity,
     #     rate: nil
     #   ).valid?
-    # end
+    end
   end
 end
