@@ -18,9 +18,9 @@ ActiveRecord::Schema.define(version: 20171116122309) do
   enable_extension "pgcrypto"
 
   create_table "coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coin_id"
-    t.uuid "system_transaction_id"
-    t.bigint "assets"
+    t.uuid "coin_id", null: false
+    t.uuid "system_transaction_id", null: false
+    t.bigint "assets", null: false
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["coin_id"], name: "index_coin_events_on_coin_id"
@@ -51,10 +51,10 @@ ActiveRecord::Schema.define(version: 20171116122309) do
   end
 
   create_table "member_coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coin_id"
-    t.uuid "member_id"
-    t.uuid "system_transaction_id"
-    t.bigint "liability"
+    t.uuid "coin_id", null: false
+    t.uuid "member_id", null: false
+    t.uuid "system_transaction_id", null: false
+    t.bigint "liability", null: false
     t.decimal "rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
