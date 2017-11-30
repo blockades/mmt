@@ -15,7 +15,7 @@ module Admins
         redirect_back fallback_location: admins_new_coin_allocation_path(@coin.id), alert: "Invalid previous transaction" && return
       end
 
-      transaction = ActiveRecord::Base.transaction do
+      transaction = current_member.with_lock do
         Transactions::SystemAllocation.create(allocation_params)
       end
 

@@ -18,7 +18,7 @@ module Members
         redirect_back fallback_location: new_withdrawl_path, alert: "Invalid previous transaction" && return
       end
 
-      transaction = ActiveRecord::Base.transaction do
+      transaction = current_member.with_lock do
         Transactions::MemberWithdrawl.create(withdrawl_params)
       end
 
