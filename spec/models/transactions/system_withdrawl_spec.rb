@@ -23,6 +23,16 @@ describe Transactions::SystemWithdrawl, transactions: true do
         it "creates coin event" do
           expect{ subject.save }.to change{ bitcoin.coin_events.count }.by(1)
         end
+
+        it "debits source (coin) assets" do
+          assets = bitcoin.assets
+          expect{ subject.save }.to change{ bitcoin.assets }.from(assets).to(assets - subject.source_quantity)
+        end
+
+        it "source_coin equity decreases" do
+          equity = bitcoin.equity
+          expect { subject.save }.to change { bitcoin.equity }.from(equity).to(equity - subject.source_quantity)
+        end
       end
 
       # describe "#publish_to_destination" do

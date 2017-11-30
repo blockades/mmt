@@ -45,6 +45,16 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
         it "creates coin event" do
           expect{ subject.save }.to change{ bitcoin.coin_events.count }.by(1)
         end
+
+        it "credits source (coin) assets" do
+          assets = bitcoin.assets
+          expect{ subject.save }.to change{ bitcoin.assets }.from(assets).to(assets + subject.destination_quantity)
+        end
+
+        it "source_coin equity increases" do
+          equity = bitcoin.equity
+          expect { subject.save }.to change { bitcoin.equity }.from(equity).to(equity + subject.destination_quantity)
+        end
       end
 
       context "invalid" do

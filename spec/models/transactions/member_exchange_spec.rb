@@ -27,43 +27,37 @@ describe Transactions::MemberExchange, transactions: true do
 
     let(:exchange) { build_exchange.call }
 
+    it "creates member coin event" do
+      expect{ exchange.save }.to change{ member.member_coin_events.count }.by(2)
+    end
+
     describe "#publish_to_source" do
       it "debits source (member) source_coin" do
-        liability = (member.liability(bitcoin) / 10**bitcoin.subdivision).to_i
-        expect(liability).to eq 2
-        exchange.save
-        liability = (member.reload.liability(bitcoin) / 10**bitcoin.subdivision).to_i
-        expect(liability).to eq 1
+        expect{ exchange.save }.to change{ member.liability(bitcoin) }.by -exchange.source_quantity
+      end
+
+      it "source_coin assets stay same" do
+        expect{ exchange.save }.to_not change{ bitcoin.assets }
+      end
+
+      it "source_coin equity increases" do
+        equity = bitcoin.equity
+        expect { exchange.save }.to change { bitcoin.equity }.from(equity).to(equity + exchange.source_quantity)
       end
     end
 
     describe "#publish_to_destination" do
       it "credits source (member) destination_coin" do
-        liability = (member.liability(sterling) / 10**sterling.subdivision).to_i
-        expect(liability).to eq 0
-        exchange.save
-        liability = (member.reload.liability(sterling) / 10**sterling.subdivision).to_i
-        expect(liability).to eq 5000
+        expect{ exchange.save }.to change{ member.liability(sterling) }.by exchange.destination_quantity
       end
-    end
 
-    describe "#publish_to_destination_coin" do
-      it "debits system destination coin" do
-        assets = (sterling.assets / 10**sterling.subdivision).to_i
-        expect(assets).to eq 10000
-        exchange.save
-        assets = (sterling.reload.assets / 10**sterling.subdivision).to_i
-        expect(assets).to eq 5000
+      it "destination_coin assets stay same" do
+        expect{ exchange.save }.to_not change{ sterling.assets }
       end
-    end
 
-    describe "#publish_to_source_coin" do
-      it "credits system source coin" do
-        assets = (bitcoin.assets / 10**bitcoin.subdivision).to_i
-        expect(assets).to eq 3
-        exchange.save
-        assets = (bitcoin.reload.assets / 10**bitcoin.subdivision).to_i
-        expect(assets).to eq 4
+      it "destination_coin equity decreases" do
+        equity = sterling.equity
+        expect{ exchange.save }.to change{ sterling.equity }.from(equity).to(equity - exchange.destination_quantity)
       end
     end
   end
@@ -80,12 +74,12 @@ describe Transactions::MemberExchange, transactions: true do
       let(:destination_quantity) { 5000 * 10**sterling.subdivision }
 
       it "throws abort" do
-        expect{ exchange.send(:publish_to_destination_coin) }.to throw_symbol(:abort)
+        expect{ exchange.send(:publish_to_destination) }.to throw_symbol(:abort)
       end
 
       it "is invalid" do
         expect(exchange.save).to be_falsey
-        expect(exchange.tap(&:valid?).errors).to include :coin_events
+        expect(exchange.tap(&:valid?).errors).to include :member_coin_events
       end
     end
 
