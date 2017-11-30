@@ -13,7 +13,7 @@ module Transactions
     validates :source_type, inclusion: { in: ["Member"] }
     validates :destination_type, inclusion: { in: ["Member"] }
 
-    validate :values_match, :rates_match, :not_fiat_to_fiat
+    validate :values_match, :rates_match, :not_fiat_to_fiat, if: proc { errors.empty? }
 
     private
 

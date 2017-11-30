@@ -38,8 +38,7 @@ class Member < ApplicationRecord
 
   validates :username, uniqueness: { case_sensitive: true },
                        format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
-                       exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
-                       exclusion: { in: Member.pluck(:email) },
+                       exclusion: { in: [ MagicMoneyTree::InaccessibleWords.all, Member.pluck(:email) ].flatten },
                        presence: true
 
   validates :slug, uniqueness: { case_sensitive: true }

@@ -1,65 +1,47 @@
-$(document).on('turbolinks:load', function () {
-  var cost = 0;
-  var exchange_rate = 0.0;
-  var source_coin_select = $('#source_coin_select');
+var Exchange = function (coin) {
+  // baseSubdivision == Coin::BTC_SUBDIVISION == 8
+  baseSubdivision = coin.base_subdivision;
 
-  var destination_quantity = $('#quantity');
-  var destination_quantity_display = $('#quantity_display');
-  var destination_rate = $('#destination_rate');
+  destinationRate = coin.btc_rate;
+  destinationSubdivision = coin.subdivision;
 
-  var source_rate_display = $('#source_rate_display');
-  var source_rate = $('#source_rate');
-  var source_quantity_display = $('#source_quantity_display');
-  var source_quantity = $('#source_quantity');
+  var updateFields = function (sourceCoin) {
+    var sourceSubdivision = sourceCoin.subdivision;
+    var sourceRate = sourceCoin.btc_rate;
 
-  var updateFields = function (coin) {
-    var btc_to_destination_coin_rate = parseFloat(destination_rate.text());
-    exchange_rate = parseFloat(coin.btc_rate);
-    var quantity = parseFloat(destination_quantity_display.val());
-    var quantity_in_btc = btc_to_destination_coin_rate * quantity;
-    cost = calculateCost(exchange_rate, quantity_in_btc);
-    rounded = roundCost(cost, coin.subdivision);
-    if (!coin.crypto_currency && rounded != cost) {
-      // Round up to 2 decimal places and readjust for fiat currencies
-      cost = rounded;
-      destination_cost = (cost * coin.btc_rate) / destination_rate.text();
-      destination_quantity_display.val(destination_cost);
-      destination_quantity.val(destination_cost * Math.pow(10, subdivision));
-    }
-    $.each([source_quantity_display], updateCost);
-    source_quantity.val(cost * Math.pow(10, coin.subdivision));
-    $.each([source_rate_display, source_rate], updateRate);
+    var destinationQuantity = $('#destinationQuantityDisplay').val();
+
+    var quantityInBtc = destinationRate * destinationQuantity;
+    var cost = quantityInBtc / sourceRate;
+
+    if (!sourceCoin.crypto_currency)
+      cost = Math.round(cost * Math.pow(10, sourceSubdivision)) / Math.pow(10, sourceSubdivision);
+
+    destinationQuantity = (cost * sourceRate) / destinationRate;
+    $('#destinationQuantityDisplay').val(destinationQuantity);
+    $('#destinationQuantity').val(cost * Math.pow(10, destinationSubdivision));
+
+    $('#sourceQuantityDisplay').val(cost);
+    $('#sourceQuantity').val(cost * Math.pow(10, sourceSubdivision));
+    $('#destinationQuantity').val(destinationQuantity * Math.pow(10, destinationSubdivision));
+    $('#sourceRate').val(sourceRate);
   }
 
-  var roundCost = function (cost, subdiv) {
-    return Math.round(cost * 10**subdiv) / 10**subdiv;
-  }
+  var sourceCoinSelect = $('#source_coin_select');
+  var destinationQuantityDisplay = $('#destinationQuantityDisplay');
 
-  var calculateCost = function (rate, quantity) {
-    return quantity / exchange_rate;
-  }
-
-  var updateCost = function () {
-    $(this).text(cost);
-    $(this).val(cost);
-  }
-
-  var updateRate = function () {
-    $(this).text(exchange_rate);
-    $(this).val(exchange_rate);
-  }
-
-  $.each([source_coin_select, destination_quantity_display], function () {
+  $.each([sourceCoinSelect, destinationQuantityDisplay], function () {
     $(this).on('change', function () {
-      var source_coin_id = source_coin_select.find('option:selected').val();
-      var quantity = destination_quantity.val();
-      if (!quantity || /^\s*$/.test(quantity) || !source_coin_id || /^\s*$/.test(source_coin_id)) { return; }
+      var sourceCoinId = sourceCoinSelect.find('option:selected').val();
+      var quantity = destinationQuantityDisplay.val();
+      if (quantity <= 0 || !sourceCoinId || /^\s*$/.test(sourceCoinId)) { return; }
       $.ajax({
-        url: "/coins/" + source_coin_id,
+        url: "/coins/" + sourceCoinId,
         type: "GET",
         dataType: "json",
         success: updateFields
       });
     });
   });
-});
+}
+
