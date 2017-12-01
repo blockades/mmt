@@ -6,15 +6,12 @@ module Admins
 
     before_action :find_coin
     before_action :find_previous_transaction, only: [:new, :create]
+    before_action :check_previous_transaction, only: [:create]
 
     def new
     end
 
     def create
-      unless previous_transaction?
-        return redirect_back fallback_location: admins_new_coin_allocation_path(@coin.id), alert: "Invalid previous transaction"
-      end
-
       transaction = transaction_commiter(Transactions::SystemAllocation, allocation_params)
 
       if transaction.persisted?
@@ -33,6 +30,12 @@ module Admins
 
     def find_previous_transaction
       @previous_transaction = Transactions::SystemAllocation.ordered.for_destination(current_member).last
+    end
+
+    def check_previous_transaction
+      return if previous_transaction?
+      return redirect_back fallback_location: admins_new_coin_allocation_path(@coin.id),
+                           alert: "Invalid previous transaction"
     end
 
     def permitted_params

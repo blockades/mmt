@@ -11,7 +11,8 @@ class UpdatePassword
   protected
 
   def update_password!
-    context.fail!(message: "Failed to update password") unless member.update! password_params
+    return if member.update! password_params
+    context.fail!(message: "Failed to update password")
   end
 
   private
@@ -24,4 +25,3 @@ class UpdatePassword
     context.password_params.except(:authentication_code)
   end
 end
-

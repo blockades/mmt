@@ -3,11 +3,11 @@
 namespace :setup do
   task members: :environment do
     Member.find_or_initialize_by(email: "develop@blockades.dev") do |member|
-      member.update!(admin: true, password: "password", username: 'develop')
+      member.update!(admin: true, password: "password", username: "develop")
     end
 
-    Member.find_or_initialize_by(email: 'random@blockades.dev') do |member|
-      member.update!(password: 'password', username: 'random')
+    Member.find_or_initialize_by(email: "random@blockades.dev") do |member|
+      member.update!(password: "password", username: "random")
     end
   end
 
@@ -15,19 +15,19 @@ namespace :setup do
     Coin.find_or_initialize_by(
       code: "NEO"
     ).update!(
-      name: "AntShares",
+      name: "AntShares"
     )
 
     Coin.find_or_initialize_by(
       code: "BTC"
     ).update!(
-      name: "Bitcoin",
+      name: "Bitcoin"
     )
 
     Coin.find_or_initialize_by(
       code: "ETH"
     ).update!(
-      name: "Ethereum",
+      name: "Ethereum"
     )
 
     Coin.find_or_initialize_by(
@@ -50,4 +50,4 @@ namespace :setup do
   task all: [:members, :coins]
 end
 
-task setup: 'setup:all'
+task setup: "setup:all"

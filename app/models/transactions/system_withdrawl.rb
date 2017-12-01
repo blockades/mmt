@@ -2,7 +2,6 @@
 
 module Transactions
   class SystemWithdrawl < SystemTransaction
-
     validates :source_quantity,
               presence: true,
               numericality: { greater_than: 0 }

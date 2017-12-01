@@ -10,7 +10,7 @@ describe UpdatePassword, type: :interactor, two_factor: true do
     )
   end
 
-  describe '#call' do
+  describe "#call" do
     let(:member) { create :member }
 
     let(:password_params) do
@@ -26,7 +26,7 @@ describe UpdatePassword, type: :interactor, two_factor: true do
       end
 
       it "updates the password" do
-        expect{ context }.to change{ member.password }
+        expect { context }.to change { member.password }
       end
 
       it "returns a flash message" do
@@ -47,7 +47,5 @@ describe UpdatePassword, type: :interactor, two_factor: true do
         expect(context.message).to eq "Failed to update password"
       end
     end
-
   end
 end
-

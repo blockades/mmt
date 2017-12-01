@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'member with bitcoin' do |options|
+RSpec.shared_examples "member with bitcoin" do |options|
   include_examples "with admin"
   include_examples "with member"
 
@@ -14,4 +14,3 @@ RSpec.shared_examples 'member with bitcoin' do |options|
                                initiated_by: admin
   end
 end
-

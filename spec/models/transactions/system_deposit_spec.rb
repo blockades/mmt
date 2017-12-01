@@ -11,7 +11,7 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
     # describe "#publish_to_source" do
     #   context "valid" do
     #     it "creates admin coin event" do
-    #       expect{ subject.save }.to change{ admin.admin_coin_events.count }.by(1)
+    #       expect { subject.save }.to change { admin.admin_coin_events.count }.by(1)
     #     end
     #   end
 
@@ -27,12 +27,12 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
     describe "#publish_to_destination" do
       context "valid" do
         it "creates coin event" do
-          expect{ subject.save }.to change{ bitcoin.coin_events.count }.by(1)
+          expect { subject.save }.to change { bitcoin.coin_events.count }.by(1)
         end
 
         it "credits source (coin) assets" do
           assets = bitcoin.assets
-          expect{ subject.save }.to change{ bitcoin.assets }.from(assets).to(assets + subject.destination_quantity)
+          expect { subject.save }.to change { bitcoin.assets }.from(assets).to(assets + subject.destination_quantity)
         end
 
         it "source_coin equity increases" do
@@ -51,4 +51,3 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
     end
   end
 end
-

@@ -25,17 +25,15 @@ class ApplicationController < ActionController::Base
   end
 
   def reauthenticate_member!
-    unless session[:reauthenticated_at] && session[:reauthenticated_at] > 30.minutes.ago
-      redirect_to new_reauthentication_path, notice: "Enter password to proceed"
-    end
+    return if session[:reauthenticated_at] && session[:reauthenticated_at] > 30.minutes.ago
+    redirect_to new_reauthentication_path, notice: "Enter password to proceed"
   end
 
   def store_return_paths
     session[:return_paths] ||= []
     session[:return_paths].shift if session[:return_paths].count >= 5
-    if !devise_controller? && request.get? && (request.fullpath != session[:return_paths].last)
-      session[:return_paths] << request.fullpath
-    end
+    return unless !devise_controller? && request.get? && (request.fullpath != session[:return_paths].last)
+    session[:return_paths] << request.fullpath
   end
 
   def forbidden
@@ -59,7 +57,9 @@ class ApplicationController < ActionController::Base
   end
 
   def validate_nonce(nonce_to_validate, seconds_to_timeout)
-    ActionController::HttpAuthentication::Digest.validate_nonce(ENV.fetch("NONCE_SECRET"), request, nonce_to_validate, seconds_to_timeout)
+    ActionController::HttpAuthentication::Digest.validate_nonce(
+      ENV.fetch("NONCE_SECRET"), request, nonce_to_validate, seconds_to_timeout
+    )
   end
 
 end

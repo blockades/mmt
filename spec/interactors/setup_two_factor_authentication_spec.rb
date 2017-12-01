@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
   let(:member) { create :member }
@@ -10,7 +10,7 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
       let(:context) do
         SetupTwoFactorAuthentication.call(
           member: member,
-          setup_params: { otp_delivery_method: 'app' }
+          setup_params: { otp_delivery_method: "app" }
         )
       end
 
@@ -20,15 +20,18 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
         end
 
         it "sets the otp_encrypted_secret_key" do
-          expect{ context }.to change{ member.encrypted_otp_secret_key }.from(nil).to(/\w+/)
+          expect { context }.to change { member.encrypted_otp_secret_key }.from(nil).to(/\w+/)
         end
 
         it "sets otp_recovery_codes" do
-          expect{ context }.to change{ member.otp_recovery_codes }
+          expect { context }.to change { member.otp_recovery_codes }
         end
 
-        it 'renders a message' do
-          expect(context.message).to eq "Setup authentication by Authenticator application. Please continue to confirm two factor authentication"
+        it "renders a message" do
+          expect(context.message).to eq <<-STRING.delete("\n").squish
+            Setup authentication by Authenticator application.
+            Please continue to confirm two factor authentication
+          STRING
         end
       end
 
@@ -49,7 +52,7 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
       let(:context) do
         SetupTwoFactorAuthentication.call(
           member: member,
-          setup_params: { otp_delivery_method: 'sms', phone_number: '1234567890', country_code: '44' }
+          setup_params: { otp_delivery_method: "sms", phone_number: "1234567890", country_code: "44" }
         )
       end
 
@@ -59,19 +62,22 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
         end
 
         it "sets the member's phone number" do
-          expect{ context }.to change{ member.phone_number }.from(nil).to('1234567890')
+          expect { context }.to change { member.phone_number }.from(nil).to("1234567890")
         end
 
         it "sets the member's country code" do
-          expect{ context }.to change{ member.country_code }.from(nil).to('44')
+          expect { context }.to change { member.country_code }.from(nil).to("44")
         end
 
         it "sets the member's direct otp code" do
-          expect{ context }.to change{ member.direct_otp }.from(nil).to(/\d+/)
+          expect { context }.to change { member.direct_otp }.from(nil).to(/\d+/)
         end
 
-        it 'renders a message' do
-          expect(context.message).to eq "Setup authentication by Short message service (SMS). Please continue to confirm two factor authentication"
+        it "renders a message" do
+          expect(context.message).to eq <<-STRING.delete("\n").squish
+            Setup authentication by Short message service (SMS).
+            Please continue to confirm two factor authentication
+          STRING
         end
       end
 
@@ -92,7 +98,7 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
       let(:context) do
         SetupTwoFactorAuthentication.call(
           member: member,
-          setup_params: { otp_delivery_method: 'some random thing' }
+          setup_params: { otp_delivery_method: "some random thing" }
         )
       end
 
@@ -101,7 +107,7 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
       end
 
       it "renders a message" do
-        expect(context.message).to eq 'Invalid delivery method'
+        expect(context.message).to eq "Invalid delivery method"
       end
     end
   end

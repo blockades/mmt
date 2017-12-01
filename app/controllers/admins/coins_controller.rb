@@ -13,9 +13,9 @@ module Admins
 
     def update
       if @coin.update permitted_params
-        redirect_to :index, notice: "Coin created"
+        redirect_to :index, notice: "Coin updated"
       else
-        flash[:error] = "Coin failed to be created"
+        flash[:error] = "Coin failed to update"
         render :new
       end
     end

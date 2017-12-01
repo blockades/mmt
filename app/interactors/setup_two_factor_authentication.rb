@@ -7,11 +7,11 @@ class SetupTwoFactorAuthentication
     ActiveRecord::Base.transaction do
       member.update otp_delivery_method: otp_delivery_method
 
-      unless setup_by_method.blank?
+      if setup_by_method.present?
         setup_by_method.call
         context.message = success_message
       else
-        context.fail!(message: 'Invalid delivery method')
+        context.fail!(message: "Invalid delivery method")
         raise ActiveRecord::Rollback
       end
     end
@@ -21,13 +21,14 @@ class SetupTwoFactorAuthentication
 
   def setup_by_method
     {
-      app: Proc.new { setup_by_app },
-      sms: Proc.new { setup_by_phone }
+      app: proc { setup_by_app },
+      sms: proc { setup_by_phone }
     }.with_indifferent_access[member.otp_delivery_method]
   end
 
   def setup_by_app
-    context.fail!(message: "Failed to setup two factor authentication. Please try again") unless member.update! app_params
+    return if member.update! app_params
+    context.fail!(message: "Failed to setup two factor authentication. Please try again")
   end
 
   def setup_by_phone
@@ -40,7 +41,10 @@ class SetupTwoFactorAuthentication
   end
 
   def success_message
-    "Setup authentication by #{Member::TWO_FACTOR_DELIVERY_METHODS[member.otp_delivery_method]}. Please continue to confirm two factor authentication"
+    <<-STRING.delete("\n").squish
+      Setup authentication by #{Member::TWO_FACTOR_DELIVERY_METHODS[member.otp_delivery_method]}.
+      Please continue to confirm two factor authentication
+    STRING
   end
 
   private

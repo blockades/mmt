@@ -12,7 +12,7 @@ describe SystemTransaction, transactions: true do
     context "update" do
       it "raises error" do
         transaction.source_id = SecureRandom.uuid
-        expect{ transaction.save }.to raise_error ActiveRecord::ReadOnlyRecord
+        expect { transaction.save }.to raise_error ActiveRecord::ReadOnlyRecord
       end
     end
   end
@@ -33,19 +33,14 @@ describe SystemTransaction, transactions: true do
         expect(next_transaction).to_not be_valid
       end
     end
-
   end
 
   describe "#not_fiat_to_fiat" do
-
   end
 
   describe "#rates match" do
-
   end
 
   describe "#values_match" do
-
   end
-
 end

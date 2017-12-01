@@ -31,8 +31,8 @@ var Exchange = function (coin) {
   var destinationQuantityDisplay = $('#destinationQuantityDisplay');
 
   $.each([sourceCoinSelect, destinationQuantityDisplay], function () {
-    $(this).on('change', function () {
-      var sourceCoinId = sourceCoinSelect.find('option:selected').val();
+    $(this).on("change", function () {
+      var sourceCoinId = sourceCoinSelect.find("option:selected").val();
       var quantity = destinationQuantityDisplay.val();
       if (quantity <= 0 || !sourceCoinId || /^\s*$/.test(sourceCoinId)) { return; }
       $.ajax({

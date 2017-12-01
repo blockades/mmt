@@ -5,7 +5,6 @@ module Members
     before_action :decorate_member
 
     def index
-
     end
 
     private
@@ -13,6 +12,5 @@ module Members
     def decorate_member
       @member = current_member.decorate
     end
-
   end
 end

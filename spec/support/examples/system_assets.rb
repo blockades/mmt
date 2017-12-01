@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-RSpec.shared_examples 'system with bitcoin' do |options|
+RSpec.shared_examples "system with bitcoin" do |options|
   include_examples "with admin"
   include_examples "with bitcoin"
 

@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 describe AuthenticatePassword, type: :interactor do
   let(:member) { create :member }
   let(:password) { SecureRandom.hex }
 
-  describe '#call' do
+  describe "#call" do
     context "with a valid password" do
-      let(:context) { AuthenticatePassword.call(member: member, password: 'password') }
+      let(:context) { AuthenticatePassword.call(member: member, password: "password") }
 
       it "succeeds" do
         expect(context).to be_a_success

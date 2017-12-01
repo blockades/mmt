@@ -17,4 +17,3 @@ class DisableTwoFactorAuthentication
     context.member
   end
 end
-

@@ -2,7 +2,6 @@
 
 module Transactions
   class MemberAllocation < SystemTransaction
-
     validates :destination_quantity,
               :source_rate,
               presence: true

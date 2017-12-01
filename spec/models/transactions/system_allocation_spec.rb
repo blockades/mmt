@@ -16,23 +16,24 @@ describe Transactions::SystemAllocation, transactions: true do
 
       describe "#publish_to_source" do
         it "creates coin event" do
-          expect{ subject.save }.to change{ bitcoin.coin_events.count }.by(1)
+          expect { subject.save }.to change { bitcoin.coin_events.count }.by(1)
         end
 
         it "credit source (coin) assets" do
-          assets = bitcoin.assets
-          expect{ subject.save }.to_not change{ bitcoin.assets }
+          expect { subject.save }.to_not change { bitcoin.assets }
         end
       end
 
       describe "#publish_to_destination" do
         it "creates member coin event" do
-          expect{ subject.save }.to change{ member.member_coin_events.count }.by(1)
+          expect { subject.save }.to change { member.member_coin_events.count }.by(1)
         end
 
         it "credits destination (member) destination_coin liability" do
           liability = member.liability(bitcoin)
-          expect{ subject.save }.to change{ member.liability(bitcoin) }.from(liability).to(liability + subject.destination_quantity)
+          expect { subject.save }.to change { member.liability(bitcoin) }.from(liability).to(
+            liability + subject.destination_quantity
+          )
         end
       end
     end
@@ -54,4 +55,3 @@ describe Transactions::SystemAllocation, transactions: true do
     end
   end
 end
-

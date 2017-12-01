@@ -1,17 +1,21 @@
 # frozen_string_literal: true
 
 class Coin < ApplicationRecord
-
   extend FriendlyId
   friendly_id :code, use: :slugged
 
   BTC_SUBDIVISION = 8
 
-  has_many :source_transactions, as: :source, class_name: "SystemTransaction"
-  has_many :destination_transactions, as: :destination, class_name: "SystemTransaction"
+  has_many :source_transactions, as: :source,
+                                 class_name: "SystemTransaction",
+                                 dependent: :restrict_with_error
 
-  has_many :coin_events
-  has_many :member_coin_events
+  has_many :destination_transactions, as: :destination,
+                                      class_name: "SystemTransaction",
+                                      dependent: :restrict_with_error
+
+  has_many :coin_events, dependent: :restrict_with_error
+  has_many :member_coin_events, dependent: :restrict_with_error
   has_many :members, through: :member_coin_events
 
   scope :ordered, -> { order(:code) }
@@ -55,7 +59,7 @@ class Coin < ApplicationRecord
   # ===> Live value and rate
 
   def value(iso_currency)
-    btc_rate * 1.0/fiat_btc_rate(iso_currency)
+    btc_rate * (1.0 / fiat_btc_rate(iso_currency))
   end
 
   # @return The amount of this currency that buys one BTC
@@ -94,7 +98,7 @@ class Coin < ApplicationRecord
 
   def coins_by_bittrex
     bittrex_rates["result"].compact.map do |market|
-      market["MarketName"].split('-').last
+      market["MarketName"].split("-").last
     end
   end
 

@@ -28,31 +28,31 @@ describe Members::MembersController do
     end
   end
 
-  describe 'PATCH #update' do
-    context 'json' do
+  describe "PATCH #update" do
+    context "json" do
       let(:params) { { id: member.id, member: { username: Faker::Internet.user_name }, format: :json } }
       let(:patch_update) { patch :update, params: params }
 
-      it 'updates the member' do
-        expect{ patch_update }.to change{ member.reload.username }
+      it "updates the member" do
+        expect { patch_update }.to change { member.reload.username }
       end
 
-      it 'renders JSON response' do
+      it "renders JSON response" do
         patch_update
-        expect(json['success']).to be_truthy
-        expect(json['member']['id']).to eq member.id
+        expect(json["success"]).to be_truthy
+        expect(json["member"]["id"]).to eq member.id
       end
     end
 
-    context 'html' do
+    context "html" do
       let(:params) { { id: member.id, member: { username: Faker::Internet.user_name } } }
       let(:patch_update) { patch :update, params: params }
 
-      it 'updates the member' do
-        expect{ patch_update }.to change{ member.reload.username }
+      it "updates the member" do
+        expect { patch_update }.to change { member.reload.username }
       end
 
-      it 'redirects to members#show' do
+      it "redirects to members#show" do
         patch_update
         member.reload
         expect(response).to redirect_to member_path(member)

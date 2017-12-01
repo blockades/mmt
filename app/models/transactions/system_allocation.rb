@@ -2,7 +2,6 @@
 
 module Transactions
   class SystemAllocation < SystemTransaction
-
     validates :destination_rate,
               :destination_quantity,
               presence: true,

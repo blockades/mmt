@@ -2,7 +2,6 @@
 
 module Transactions
   class SystemDeposit < SystemTransaction
-
     validates :destination_rate,
               :destination_quantity,
               presence: true,
