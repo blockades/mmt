@@ -6,6 +6,12 @@ describe MemberCoinEvent, type: :model, transactions: true do
   let(:member) { create :member }
   let(:bitcoin) { create :bitcoin }
 
+  let(:coin_event) do
+    build :coin_event, coin: bitcoin,
+                       assets: 10_000_000_000,
+                       system_transaction: SystemTransaction.new
+  end
+
   let(:member_coin_event) do
     lambda do |liability|
       build :member_coin_event, member: member,
@@ -19,13 +25,15 @@ describe MemberCoinEvent, type: :model, transactions: true do
     create :member_coin_event, member: member,
                                system_transaction: SystemTransaction.new,
                                coin: bitcoin,
-                               liability: 1000000000
+                               liability: 1_000_000_000
   end
 
   describe "#member_coin_liability" do
+    before { coin_event.save }
+
     context "liability positive" do
       it "is valid" do
-        event = member_coin_event.call(100000000)
+        event = member_coin_event.call(100_000_000)
         expect(event).to be_valid
       end
     end
@@ -34,14 +42,14 @@ describe MemberCoinEvent, type: :model, transactions: true do
       context "sufficient member liability" do
         it "is valid" do
           with_bitcoin
-          event = member_coin_event.call(-100000000)
+          event = member_coin_event.call(-100_000_000)
           expect(event).to be_valid
         end
       end
 
       context "insufficient member liability" do
         it "is invalid" do
-          event = member_coin_event.call(-1000000000)
+          event = member_coin_event.call(-1_000_000_000)
           expect(event).to_not be_valid
         end
       end
@@ -50,6 +58,8 @@ describe MemberCoinEvent, type: :model, transactions: true do
 
   describe "readonly" do
     context "update" do
+      before { coin_event.save }
+
       it "raises error" do
         event = member_coin_event.call(2).tap(&:save)
         event.liability = 2
