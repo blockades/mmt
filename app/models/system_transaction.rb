@@ -14,10 +14,10 @@ class SystemTransaction < ApplicationRecord
   belongs_to :initiated_by, class_name: "Member", foreign_key: :initiated_by_id, inverse_of: :initiated_transactions
   belongs_to :authorized_by, class_name: "Member", foreign_key: :authorized_by_id, inverse_of: :authorized_transactions
 
-  has_many :coin_events
-  has_many :member_coin_events
+  has_many :coin_events, autosave: true
+  has_many :member_coin_events, autosave: true
 
-  before_create :publish_to_source, :publish_to_destination
+  before_validation :publish_to_source, :publish_to_destination, on: :create
 
   def error_message
     errors.full_messages.to_sentence

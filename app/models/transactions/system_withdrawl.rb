@@ -23,20 +23,20 @@ module Transactions
 
     def publish_to_source
       # Debit source (coin) assets
-      throw(:abort) unless coin_events.build(
+      coin_events.build(
         coin: source,
         assets: -source_quantity
-      ).valid?
+      )
     end
 
     def publish_to_destination
     #   # Debit destination (admin) liability
-    #   throw(:abort) unless admin_coin_events.build(
+    #   admin_coin_events.build(
     #     admin: destination,
     #     coin: destination_coin,
     #     liability: -source_quantity,
     #     rate: nil
-    #   ).valid?
+    #   )
     end
   end
 end

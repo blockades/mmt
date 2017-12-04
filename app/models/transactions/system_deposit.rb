@@ -23,20 +23,20 @@ module Transactions
 
     def publish_to_source
     #   # Credit source (admin) liability
-    #   throw(:abort) unless admin_coin_events.build(
+    #   admin_coin_events.build(
     #     admin: source,
     #     coin: destination_coin,
     #     liability: destination_quantity,
     #     rate: nil,
-    #   ).valid?
+    #   )
     end
 
     def publish_to_destination
       # Credit the destination (coin) assets
-      throw(:abort) unless coin_events.build(
+      coin_events.build(
         assets: destination_quantity,
         coin: destination
-      ).valid?
+      )
     end
   end
 end
