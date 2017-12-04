@@ -19,6 +19,10 @@ class SystemTransaction < ApplicationRecord
 
   before_create :publish_to_source, :publish_to_destination
 
+  def error_message
+    errors.full_messages.to_sentence
+  end
+
   def readonly?
     (ENV["READONLY_TRANSACTIONS"] == "false") ? false : !new_record?
   end
