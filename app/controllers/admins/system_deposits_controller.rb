@@ -15,7 +15,7 @@ module Admins
         return redirect_back fallback_location: admins_new_coin_deposit_path(@coin.id), alert: "Invalid previous transaction"
       end
 
-      transaction = transaction_commiter(Transactions::MemberExchange, exchange_params)
+      transaction = transaction_commiter(Transactions::MemberExchange, deposit_params)
 
       if transaction.persisted?
         redirect_to admins_coins_path, notice: "Deposited #{transaction.destination_quantity/(10**@coin.subdivision)} #{@coin.code}"
