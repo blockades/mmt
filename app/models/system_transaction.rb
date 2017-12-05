@@ -85,5 +85,11 @@ class SystemTransaction < ApplicationRecord
     self.errors.add :values_match, "Invalid purchase"
   end
 
-  def referring_transaction; end
+  def referring_transaction_to_destination
+    self.class.ordered.not_self(self).for_destination(destination).last
+  end
+
+  def referring_transaction_to_source
+    self.class.ordered.not_self(self).for_destination(source).last
+  end
 end
