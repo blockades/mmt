@@ -22,20 +22,20 @@ module Transactions
 
     def publish_to_source
       # Credit source (coin) assets
-      throw(:abort) unless coin_events.build(
+      coin_events.build(
         coin: source,
-        assets: destination_quantity,
-      ).valid?
+        assets: destination_quantity
+      )
     end
 
     def publish_to_destination
       # Credit destination (member) liability
-      throw(:abort) unless member_coin_events.build(
+      member_coin_events.build(
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
         rate: nil
-      ).valid?
+      )
     end
   end
 end

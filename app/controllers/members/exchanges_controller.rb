@@ -15,17 +15,15 @@ module Members
 
     def create
       unless previous_transaction?
-        redirect_back fallback_location: new_exchange_path, alert: "Invalid previous transaction" && return
+        return redirect_back fallback_location: new_exchange_path, alert: "Invalid previous transaction"
       end
 
-      transaction = ActiveRecord::Base.transaction do
-        Transactions::MemberExchange.create(exchange_params)
-      end
+      transaction = transaction_commiter(Transactions::MemberExchange, exchange_params)
 
       if transaction.persisted?
         redirect_to coins_path, notice: "Success"
       else
-        redirect_to new_exchange_path, error: transaction.errors
+        redirect_to new_exchange_path, alert: transaction.error_message
       end
     end
 

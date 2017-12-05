@@ -12,17 +12,15 @@ module Admins
 
     def create
       unless previous_transaction?
-        redirect_back fallback_location: admins_new_coin_deposit_path(@coin.id), alert: "Invalid previous transaction" && return
+        return redirect_back fallback_location: admins_new_coin_deposit_path(@coin.id), alert: "Invalid previous transaction"
       end
 
-      transaction = current_member.with_lock do
-        Transactions::SystemDeposit.create(deposit_params)
-      end
+      transaction = transaction_commiter(Transactions::MemberExchange, exchange_params)
 
       if transaction.persisted?
         redirect_to admins_coins_path, notice: "Deposited #{transaction.destination_quantity/(10**@coin.subdivision)} #{@coin.code}"
       else
-        redirect_to admins_new_coin_deposit_path(@coin), alert: transaction.errors
+        redirect_to admins_new_coin_deposit_path(@coin), alert: transaction.error_message
       end
     end
 

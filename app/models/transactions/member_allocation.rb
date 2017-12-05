@@ -22,7 +22,7 @@ module Transactions
 
     def publish_to_source
       # Debit source (member) liability
-      throw(:abort) unless member_coin_events.build(
+      member_coin_events.build(
         coin: source_coin,
         member: source,
         liability: -destination_quantity,
@@ -32,12 +32,12 @@ module Transactions
 
     def publish_to_destination
       # Credit destination (member) liability
-      throw(:abort) unless member_coin_events.build(
+      member_coin_events.build(
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
         rate: destination_rate
-      ).valid?
+      )
     end
   end
 end
