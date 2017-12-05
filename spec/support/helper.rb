@@ -2,7 +2,7 @@
 
 module SpecHelperMethods
   def reauthenticate!
-    @request.session[:reauthenticated_at] = Time.zone.now
+    @request.session[:reauthenticated_at] = Time.current
   end
 
   def nonce(time)

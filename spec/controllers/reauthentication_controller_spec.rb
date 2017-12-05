@@ -22,7 +22,7 @@ describe ReauthenticationController, type: :controller do
 
   describe "POST create" do
     before do
-      Timecop.freeze(Time.zone.now)
+      Timecop.freeze(Time.current)
       allow(request).to receive(:referer).and_return new_reauthentication_path
       @request.session[:return_paths] = [member_settings_two_factor_path]
     end
@@ -38,7 +38,7 @@ describe ReauthenticationController, type: :controller do
 
       it "sets time of reauthentication to session" do
         post_create
-        expect(@request.session[:reauthenticated_at]).to eq Time.zone.now
+        expect(@request.session[:reauthenticated_at]).to eq Time.current
       end
     end
 

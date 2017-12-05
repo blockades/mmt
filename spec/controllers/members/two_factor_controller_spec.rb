@@ -154,7 +154,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
 
     context "within nonce timestamp" do
       before do
-        @request.session[:resend_two_factor_code] = nonce(Time.zone.now)
+        @request.session[:resend_two_factor_code] = nonce(Time.current)
       end
 
       it "renders a JSON response" do

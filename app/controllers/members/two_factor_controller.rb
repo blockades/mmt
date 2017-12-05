@@ -48,7 +48,7 @@ module Members
         if session[:resend_two_factor_code] && validate_nonce(session[:resend_two_factor_code], 320.seconds)
           format.json { render json: { success: false, message: "Wait 5 minutes before requesting another code" } }
         else
-          session[:resend_two_factor_code] = nonce(Time.zone.now)
+          session[:resend_two_factor_code] = nonce(Time.current)
           current_member.create_direct_otp
           current_member.send_authentication_code_by_sms!
           format.json { render json: { success: true, message: "Two factor code sent" } }
