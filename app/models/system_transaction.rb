@@ -23,10 +23,6 @@ class SystemTransaction < ApplicationRecord
     errors.full_messages.to_sentence
   end
 
-  def readonly?
-    (ENV["READONLY_TRANSACTIONS"] == "false") ? false : !new_record?
-  end
-
   TYPES = %w[
     SystemDeposit SystemAllocation SystemWithdrawl
     MemberDeposit MemberAllocation MemberExchange MemberWithdrawl

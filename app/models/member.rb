@@ -116,7 +116,6 @@ class Member < ApplicationRecord
     self.errors.add(:username, "Username taken by email") if Member.where(email: username).exists?
   end
 
-  validates_exclusion_of :username, in: Member.pluck(:email)
   def two_factor_activated?
     two_factor_enabled? && two_factor_enabled_changed?
   end
