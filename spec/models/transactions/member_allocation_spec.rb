@@ -9,11 +9,10 @@ describe Transactions::MemberAllocation, transactions: true do
 
   let(:destination) { create :member }
 
-  let(:subject) { build :member_allocation, source: member, destination: destination, source_coin: bitcoin }
-
-  describe "polymorphism" do
-    it_behaves_like "source is a member"
-    it_behaves_like "destination is a member"
+  let(:subject) do
+    build :member_allocation, source: member,
+                              destination: destination,
+                              source_coin: bitcoin
   end
 
   describe "hooks" do
@@ -53,33 +52,15 @@ describe Transactions::MemberAllocation, transactions: true do
     end
 
     context "invalid" do
-      let(:bitcoin) { create :bitcoin }
-
-      let(:store_invalid_event!) do
-        build(:member_coin_event,
-          member: member,
-          liability: Utils.to_integer(-10, bitcoin.subdivision),
-          coin: bitcoin
-        ).tap {|e| e.save(validate: false) }
-      end
-
-      before { store_invalid_event! }
+      before { allow_any_instance_of(MemberCoinEvent).to receive(:save).and_return(false) }
 
       describe "#publish_to_source" do
-        it "throws abort" do
-          expect{ subject.send(:publish_to_source) }.to throw_symbol(:abort)
-        end
-
         it "fails to save" do
           expect(subject.save).to be_falsey
         end
       end
 
       describe "#publish_to_destination" do
-        it "throws abort" do
-          expect{ subject.send(:publish_to_source) }.to throw_symbol(:abort)
-        end
-
         it "fails to save" do
           expect(subject.save).to be_falsey
         end

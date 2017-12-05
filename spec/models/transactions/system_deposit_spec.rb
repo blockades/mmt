@@ -5,21 +5,9 @@ require "rails_helper"
 describe Transactions::SystemDeposit, type: :model, transactions: true do
   include_examples "with bitcoin"
 
-  let(:subject) { build :system_deposit, destination: bitcoin }
-
-  describe "polymorphism" do
-    it_behaves_like "source is a member"
-    it_behaves_like "destination is a coin"
-  end
+  let(:subject) { build :system_deposit, destination: bitcoin, destination_quantity: Utils.to_integer(1, bitcoin.subdivision) }
 
   describe "hooks" do
-    let(:store_invalid_event!) do
-      build(:coin_event,
-        assets: Utils.to_integer(-10, bitcoin.subdivision),
-        coin: bitcoin
-      ).tap {|e| e.save(validate: false) }
-    end
-
     # describe "#publish_to_source" do
     #   context "valid" do
     #     it "creates admin coin event" do
@@ -28,12 +16,8 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
     #   end
 
     #   context "invalid" do
-    #     before { store_invalid_event! }
-
-    #     it "throws abort" do
-    #       expect{ subject.send(:publish_to_source) }.to throw_symbol(:abort)
-    #     end
-
+    #     before { allow_any_instance_of(AdminCoinEvent).to receive(:save).and_return(false) }
+    #
     #     it "fails to save" do
     #       expect(subject.save).to be_falsey
     #     end
@@ -58,11 +42,7 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
       end
 
       context "invalid" do
-        before { store_invalid_event! }
-
-        it "throws abort" do
-          expect{ subject.send(:publish_to_destination) }.to throw_symbol(:abort)
-        end
+        before { allow_any_instance_of(CoinEvent).to receive(:save).and_return(false) }
 
         it "fails to save" do
           expect(subject.save).to be_falsey

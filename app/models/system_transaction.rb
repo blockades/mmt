@@ -84,7 +84,7 @@ class SystemTransaction < ApplicationRecord
 
   def values_match
     source_subdivision = Coin::BTC_SUBDIVISION - source_coin.subdivision
-    destination_subdivision - Coin::BTC_SUBDIVISION - destination_coin.subdivision
+    destination_subdivision = Coin::BTC_SUBDIVISION - destination_coin.subdivision
 
     source_value = Utils.to_integer(
       (source_quantity * source_rate).round(Coin::BTC_SUBDIVISION),
@@ -103,6 +103,6 @@ class SystemTransaction < ApplicationRecord
   end
 
   def referring_transaction_to_source
-    self.class.ordered.not_self(self).for_destination(source).last
+    self.class.ordered.not_self(self).for_source(source).last
   end
 end

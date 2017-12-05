@@ -7,11 +7,6 @@ describe Transactions::SystemWithdrawl, transactions: true do
 
   let(:subject) { build :system_withdrawl, source: bitcoin }
 
-  describe "polymorphism" do
-    it_behaves_like "source is a coin"
-    it_behaves_like "destination is a member"
-  end
-
   describe "hooks" do
     include_examples "market rates"
 
@@ -43,19 +38,8 @@ describe Transactions::SystemWithdrawl, transactions: true do
     end
 
     context "invalid" do
-      let(:store_invalid_event!) do
-        build(:member_coin_event,
-          liability: Utils.to_integer(-10, bitcoin.subdivision),
-          coin: bitcoin
-        ).tap {|e| e.save(validate: false) }
-      end
-
-      before { store_invalid_event! }
-
       describe "#publish_to_source" do
-        it "throws abort" do
-          expect{ subject.send(:publish_to_source) }.to throw_symbol(:abort)
-        end
+        before { allow_any_instance_of(CoinEvent).to receive(:save).and_return(false) }
 
         it "fails to save" do
           expect(subject.save).to be_falsey
@@ -63,10 +47,6 @@ describe Transactions::SystemWithdrawl, transactions: true do
       end
 
       # describe "#publish_to_destination" do
-      #   it "throws abort" do
-      #     expect{ subject.send(:publish_to_source) }.to throw_symbol(:abort)
-      #   end
-
       #   it "fails to save" do
       #     expect(subject.save).to be_falsey
       #   end

@@ -9,7 +9,7 @@ FactoryBot.define do
        source_coin { destination }
        destination_coin { destination }
        destination_rate { destination_coin.btc_rate }
-       destination_quantity { Utils.to_decimal((1 / destination_coin.btc_rate), destination_coin.subdivision) }
+       destination_quantity { Utils.to_integer((1 / destination_coin.btc_rate), destination_coin.subdivision) }
      end
 
      trait :system_allocation do
@@ -36,7 +36,7 @@ FactoryBot.define do
       association :source_coin, factory: :bitcoin
       destination_coin { source_coin }
       destination_quantity { Utils.to_integer(1, destination_coin.subdivision) }
-      destination_rate { destination_coin.btc_rate }
+      source_rate { source_coin.btc_rate }
     end
 
     trait :member_deposit do

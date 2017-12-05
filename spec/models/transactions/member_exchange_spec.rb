@@ -11,13 +11,6 @@ describe Transactions::MemberExchange, transactions: true do
     -> (attributes = {}) { build(:member_exchange, { source: member, source_coin: bitcoin, destination_coin: sterling }.merge(attributes) ) }
   end
 
-  describe "polymorphism" do
-    let(:subject) { build_exchange.call }
-
-    it_behaves_like "source is a member"
-    it_behaves_like "destination is a member"
-  end
-
   describe "hooks" do
     include_examples "market rates"
 
@@ -73,31 +66,20 @@ describe Transactions::MemberExchange, transactions: true do
       let(:source_quantity) { Utils.to_integer(1, bitcoin.subdivision) }
       let(:destination_quantity) { Utils.to_integer(5000, sterling.subdivision) }
 
-      it "throws abort" do
-        expect{ exchange.send(:publish_to_destination) }.to throw_symbol(:abort)
-      end
-
       it "is invalid" do
         expect(exchange.save).to be_falsey
-        expect(exchange.tap(&:valid?).errors).to include :member_coin_events
       end
     end
 
     context "insufficient member liability" do
       include_examples "system with bitcoin", assets: 5
       include_examples "system with sterling", assets: 10000
-      include_examples "member with bitcoin", liability: 2
 
       let(:source_quantity) { Utils.to_integer(10, bitcoin.subdivision) }
       let(:destination_quantity) { Utils.to_integer(50000, sterling.subdivision) }
 
-      it "throws abort" do
-        expect{ exchange.send(:publish_to_source) }.to throw_symbol(:abort)
-      end
-
       it "is invalid" do
         expect(exchange.save).to be_falsey
-        expect(exchange.tap(&:valid?).errors).to include :member_coin_events
       end
     end
   end

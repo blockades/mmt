@@ -8,11 +8,6 @@ describe Transactions::SystemAllocation, transactions: true do
 
   let(:subject) { build :system_allocation, source: bitcoin, destination: member }
 
-  describe "polymorphism" do
-    it_behaves_like "source is a coin"
-    it_behaves_like "destination is a member"
-  end
-
   describe "hooks" do
     include_examples "market rates"
 
@@ -43,30 +38,15 @@ describe Transactions::SystemAllocation, transactions: true do
     end
 
     context "invalid" do
-      let(:store_invalid_event!) do
-        build(:coin_event,
-          assets: Utils.to_integer(-10, bitcoin.subdivision),
-          coin: bitcoin
-        ).tap {|e| e.save(validate: false) }
-      end
-
-      before { store_invalid_event! }
+      before { allow_any_instance_of(MemberCoinEvent).to receive(:save).and_return(false) }
 
       describe "#publish_to_source" do
-        it "throws abort" do
-          expect{ subject.send(:publish_to_source) }.to throw_symbol(:abort)
-        end
-
         it "fails to save" do
           expect(subject.save).to be_falsey
         end
       end
 
       describe "#publish_to_destination" do
-        it "throws abort" do
-          expect{ subject.send(:publish_to_source) }.to throw_symbol(:abort)
-        end
-
         it "fails to save" do
           expect(subject.save).to be_falsey
         end
