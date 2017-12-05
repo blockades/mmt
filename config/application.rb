@@ -22,6 +22,7 @@ Bundler.require(*Rails.groups)
 module MMT
   class Application < Rails::Application
     config.autoload_paths += Dir["#{config.root}/app/**/"]
+    config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.before_initialize do
       require config.root.join 'config', 'initializers', 'magic_money_tree'
     end

@@ -45,7 +45,7 @@ describe Transactions::SystemWithdrawl, transactions: true do
     context "invalid" do
       let(:store_invalid_event!) do
         build(:member_coin_event,
-          liability: -10 * 10**bitcoin.subdivision,
+          liability: Utils.to_integer(-10, bitcoin.subdivision),
           coin: bitcoin
         ).tap {|e| e.save(validate: false) }
       end

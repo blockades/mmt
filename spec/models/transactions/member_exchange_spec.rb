@@ -70,8 +70,8 @@ describe Transactions::MemberExchange, transactions: true do
       include_examples "system with sterling", assets: 5000
       include_examples "member with bitcoin", liability: 2
 
-      let(:source_quantity) { 1 * 10**bitcoin.subdivision }
-      let(:destination_quantity) { 5000 * 10**sterling.subdivision }
+      let(:source_quantity) { Utils.to_integer(1, bitcoin.subdivision) }
+      let(:destination_quantity) { Utils.to_integer(5000, sterling.subdivision) }
 
       it "throws abort" do
         expect{ exchange.send(:publish_to_destination) }.to throw_symbol(:abort)
@@ -88,8 +88,8 @@ describe Transactions::MemberExchange, transactions: true do
       include_examples "system with sterling", assets: 10000
       include_examples "member with bitcoin", liability: 2
 
-      let(:source_quantity) { 10 * 10**bitcoin.subdivision }
-      let(:destination_quantity) { 50000 * 10**sterling.subdivision }
+      let(:source_quantity) { Utils.to_integer(10, bitcoin.subdivision) }
+      let(:destination_quantity) { Utils.to_integer(50000, sterling.subdivision) }
 
       it "throws abort" do
         expect{ exchange.send(:publish_to_source) }.to throw_symbol(:abort)

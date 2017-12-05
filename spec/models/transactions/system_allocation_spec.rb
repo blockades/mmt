@@ -45,7 +45,7 @@ describe Transactions::SystemAllocation, transactions: true do
     context "invalid" do
       let(:store_invalid_event!) do
         build(:coin_event,
-          assets: -10 * 10**bitcoin.subdivision,
+          assets: Utils.to_integer(-10, bitcoin.subdivision),
           coin: bitcoin
         ).tap {|e| e.save(validate: false) }
       end

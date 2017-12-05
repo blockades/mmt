@@ -4,18 +4,18 @@ class CoinDecorator < Draper::Decorator
   delegate_all
 
   def member_liability
-    h.current_member.liability(id).to_d / 10**subdivision
+    Utils.to_decimal(h.current_member.liability(id), subdivision)
   end
 
   def system_assets
-    assets.to_d / 10**subdivision
+    Utils.to_decimal(assets, subdivision)
   end
 
   def system_liability
-    liability.to_d / 10**subdivision
+    Utils.to_decimal(liability, subdivision)
   end
 
   def system_equity
-    equity.to_d / 10**subdivision
+    Utils.to_decimal(equity, subdivision)
   end
 end

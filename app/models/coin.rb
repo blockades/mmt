@@ -41,11 +41,11 @@ class Coin < ApplicationRecord
   end
 
   def assets
-    coin_events.sum(:assets) || 0
+    coin_events.sum(:assets)
   end
 
   def liability
-    member_coin_events.sum(:liability) || 0
+    member_coin_events.sum(:liability)
   end
 
   def equity

@@ -18,7 +18,8 @@ module Admins
       transaction = transaction_commiter(Transactions::SystemAllocation, allocation_params)
 
       if transaction.persisted?
-        redirect_to admins_coins_path, notice: "Allocated #{transaction.destination_quantity/(10**@coin.subdivision)} #{@coin.code}"
+        quantity = Utils.to_decimal(transaction.destination_quantity, @coin.subdivision)
+        redirect_to admins_coins_path, notice: "Allocated #{quantity} #{@coin.code}"
       else
         redirect_to admins_new_coin_allocation_path(@coin.id), error: transaction.error_message
       end

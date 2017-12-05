@@ -38,8 +38,10 @@ class Member < ApplicationRecord
 
   validates :username, uniqueness: { case_sensitive: true },
                        format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
-                       exclusion: { in: [ MagicMoneyTree::InaccessibleWords.all, Member.pluck(:email) ].flatten },
+                       exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
                        presence: true
+
+  validate :username_against_email
 
   validates :slug, uniqueness: { case_sensitive: true }
 
@@ -59,12 +61,12 @@ class Member < ApplicationRecord
 
   # ===> Balance
 
-  def coin_history(coin_id)
-    member_coin_events.where(coin_id: coin_id)
+  def coin_history(coin)
+    member_coin_events.where(coin_id: coin.id)
   end
 
-  def liability(coin_id)
-    coin_history(coin_id).sum(:liability) || 0
+  def liability(coin)
+    coin_history(coin).sum(:liability)
   end
 
   # ===> Two Factor Authentication
@@ -110,6 +112,11 @@ class Member < ApplicationRecord
 
   private
 
+  def username_against_email
+    self.errors.add(:username, "Username taken by email") if Member.where(email: username).exists?
+  end
+
+  validates_exclusion_of :username, in: Member.pluck(:email)
   def two_factor_activated?
     two_factor_enabled? && two_factor_enabled_changed?
   end

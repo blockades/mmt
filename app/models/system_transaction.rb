@@ -83,8 +83,17 @@ class SystemTransaction < ApplicationRecord
   end
 
   def values_match
-    source_value = ((source_quantity * source_rate).round(Coin::BTC_SUBDIVISION) * 10**(Coin::BTC_SUBDIVISION - source_coin.subdivision)).to_i
-    destination_value = ((destination_quantity * destination_rate).round(Coin::BTC_SUBDIVISION) * 10**(Coin::BTC_SUBDIVISION - destination_coin.subdivision)).to_i
+    source_subdivision = Coin::BTC_SUBDIVISION - source_coin.subdivision
+    destination_subdivision - Coin::BTC_SUBDIVISION - destination_coin.subdivision
+
+    source_value = Utils.to_integer(
+      (source_quantity * source_rate).round(Coin::BTC_SUBDIVISION),
+      source_subdivision
+    )
+    destination_value = Utils.to_integer(
+      (destination_quantity * destination_rate).round(Coin::BTC_SUBDIVISION),
+      destination_subdivision
+    )
     return true if (source_value - destination_value).zero?
     self.errors.add :values_match, "Invalid purchase"
   end

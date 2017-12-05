@@ -58,7 +58,7 @@ describe Transactions::MemberAllocation, transactions: true do
       let(:store_invalid_event!) do
         build(:member_coin_event,
           member: member,
-          liability: -10 * 10**bitcoin.subdivision,
+          liability: Utils.to_integer(-10, bitcoin.subdivision),
           coin: bitcoin
         ).tap {|e| e.save(validate: false) }
       end

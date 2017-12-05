@@ -18,7 +18,8 @@ module Admins
       transaction = transaction_commiter(Transactions::MemberExchange, deposit_params)
 
       if transaction.persisted?
-        redirect_to admins_coins_path, notice: "Deposited #{transaction.destination_quantity/(10**@coin.subdivision)} #{@coin.code}"
+        quantity = Utils.to_decimal(transaction.destination_quantity, @coin.subdivision)
+        redirect_to admins_coins_path, notice: "Deposited #{quantity} #{@coin.code}"
       else
         redirect_to admins_new_coin_deposit_path(@coin), alert: transaction.error_message
       end
@@ -45,10 +46,10 @@ module Admins
     def deposit_params
       permitted_params.merge(
         destination_id: @coin.id,
-        destination_type: "Coin",
+        destination_type: Coin,
         destination_coin_id: @coin.id,
         source_id: current_member.id,
-        source_type: "Member",
+        source_type: Member,
         source_coin_id: @coin.id,
         initiated_by_id: current_member.id
       )
