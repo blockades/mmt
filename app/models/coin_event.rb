@@ -10,9 +10,8 @@ class CoinEvent < ApplicationRecord
   scope :debit, -> { where("assets < 0") }
 
   validates :assets,
-            presence: true
-
-  validates :assets, numericality: { only_integer: true }
+            presence: true,
+            numericality: { only_integer: true }
 
   validates_associated :coin
 

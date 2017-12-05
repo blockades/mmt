@@ -14,10 +14,8 @@ class MemberCoinEvent < ApplicationRecord
   scope :credit, -> { where("liability > 0") }
   scope :debit, -> { where("liability < 0") }
 
-  validates :liability,
-            presence: true
-
-  validates :liability, numericality: { only_integer: true }
+  validates :liability, presence: true,
+                        numericality: { only_integer: true }
 
   validates_associated :member
 
@@ -32,7 +30,7 @@ class MemberCoinEvent < ApplicationRecord
 
   def member_coin_liability
     return true if liability.positive?
-    member_liability = member.liability(coin.id) - liability.abs
+    member_liability = member.liability(coin) - liability.abs
     return true if member_liability.positive? || member_liability.zero?
     self.errors.add :liability, "Insufficient funds"
   end

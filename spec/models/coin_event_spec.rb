@@ -3,55 +3,46 @@
 require "rails_helper"
 
 describe CoinEvent, type: :model, transactions: true do
-  let(:bitcoin) { create :bitcoin }
-  let(:transaction) { SystemTransaction.new }
+  include_examples "with bitcoin"
 
   let(:coin_event) do
-    lambda do |assets|
-      build :coin_event, system_transaction: transaction,
-                         coin: bitcoin,
-                         assets: assets
-    end
-  end
-
-  let(:with_bitcoin) do
-    create :coin_event, system_transaction: transaction,
-                        coin: bitcoin,
-                        assets: 1000000000
+    build :coin_event, coin: bitcoin,
+                       assets: Utils.to_integer(10, bitcoin.subdivision)
   end
 
   describe "#coin_assets" do
+    let(:coin_assets) { coin_event.send(:coin_assets) }
+
     context "assets positive" do
-      it "is valid" do
-        event = coin_event.call(100000000)
-        expect(event).to be_valid
+      it "returns true" do
+        expect(coin_assets).to be_truthy
       end
     end
 
     context "assets negative" do
+      before { coin_event.assets = Utils.to_integer(-10, bitcoin.subdivision) }
+
       context "sufficient system assets" do
-        it "is valid" do
-          with_bitcoin
-          event = coin_event.call(-100000000)
-          expect(event).to be_valid
+        it "returns true" do
+          expect(coin_assets).to be_truthy
         end
       end
 
       context "insufficient system assets" do
-        it "is invalid" do
-          event = coin_event.call(-1000000000)
-          expect(event).to_not be_valid
+        it "adds an error" do
+          expect(coin_assets).to include "Insufficient assets"
         end
       end
     end
   end
 
   describe "readonly" do
+    include_examples "system with bitcoin", assets: 5
+    let(:event) { CoinEvent.last }
+
     context "update" do
-      it "raises error" do
-        event = coin_event.call(100000000).tap(&:save)
-        event.assets = 2
-        expect{ event.save }.to raise_error ActiveRecord::ReadOnlyRecord
+      it "returns false" do
+        expect(event.send(:readonly?)).to be_truthy
       end
     end
   end

@@ -3,67 +3,49 @@
 require "rails_helper"
 
 describe MemberCoinEvent, type: :model, transactions: true do
-  let(:member) { create :member }
-  let(:bitcoin) { create :bitcoin }
-
-  let(:coin_event) do
-    build :coin_event, coin: bitcoin,
-                       assets: 10_000_000_000,
-                       system_transaction: SystemTransaction.new
-  end
+  include_examples "with member"
+  include_examples "with bitcoin"
 
   let(:member_coin_event) do
-    lambda do |liability|
-      build :member_coin_event, member: member,
-                                system_transaction: SystemTransaction.new,
-                                coin: bitcoin,
-                                liability: liability
-    end
-  end
-
-  let(:with_bitcoin) do
-    create :member_coin_event, member: member,
-                               system_transaction: SystemTransaction.new,
-                               coin: bitcoin,
-                               liability: 1_000_000_000
+    build :member_coin_event, member: member,
+                              coin: bitcoin,
+                              liability: Utils.to_integer(10, bitcoin.subdivision)
   end
 
   describe "#member_coin_liability" do
-    before { coin_event.save }
+    let(:member_coin_liability) { member_coin_event.send(:member_coin_liability) }
 
     context "liability positive" do
-      it "is valid" do
-        event = member_coin_event.call(100_000_000)
-        expect(event).to be_valid
+      it "returns true" do
+        expect(member_coin_liability).to be_truthy
       end
     end
 
     context "liability negative" do
+      before { member_coin_event.liability = Utils.to_integer(-10, bitcoin.subdivision) }
+
       context "sufficient member liability" do
-        it "is valid" do
-          with_bitcoin
-          event = member_coin_event.call(-100_000_000)
-          expect(event).to be_valid
+        it "returns true" do
+          expect(member_coin_liability).to be_truthy
         end
       end
 
       context "insufficient member liability" do
-        it "is invalid" do
-          event = member_coin_event.call(-1_000_000_000)
-          expect(event).to_not be_valid
+        it "adds an error" do
+          expect(member_coin_liability).to include "Insufficient funds"
         end
       end
     end
   end
 
   describe "readonly" do
-    context "update" do
-      before { coin_event.save }
+    include_examples "system with bitcoin", assets: 5
+    include_examples "member with bitcoin", liability: 2
+    let(:event) { MemberCoinEvent.last }
 
-      it "raises error" do
-        event = member_coin_event.call(2).tap(&:save)
-        event.liability = 2
-        expect{ event.save }.to raise_error ActiveRecord::ReadOnlyRecord
+    context "update" do
+      it "returns false" do
+        expect(event.send(:readonly?)).to be_truthy
       end
     end
   end
