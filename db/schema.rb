@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171116122309) do
+ActiveRecord::Schema.define(version: 20171204145945) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -136,6 +136,32 @@ ActiveRecord::Schema.define(version: 20171116122309) do
     t.index ["source_type", "source_id"], name: "transactions_on_source"
   end
 
+  create_table "withdrawl_requests", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "member_id", null: false
+    t.uuid "admin_id"
+    t.uuid "coin_id", null: false
+    t.uuid "system_transaction_id"
+    t.uuid "last_touched_by_id", null: false
+    t.uuid "processed_by_id"
+    t.uuid "confirmed_by_id"
+    t.uuid "completed_by_id"
+    t.uuid "cancelled_by_id"
+    t.string "state", default: "pending", null: false
+    t.bigint "quantity", null: false
+    t.decimal "rate", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["admin_id"], name: "index_withdrawl_requests_on_admin_id"
+    t.index ["cancelled_by_id"], name: "index_withdrawl_requests_on_cancelled_by_id"
+    t.index ["coin_id"], name: "index_withdrawl_requests_on_coin_id"
+    t.index ["completed_by_id"], name: "index_withdrawl_requests_on_completed_by_id"
+    t.index ["confirmed_by_id"], name: "index_withdrawl_requests_on_confirmed_by_id"
+    t.index ["last_touched_by_id"], name: "index_withdrawl_requests_on_last_touched_by_id"
+    t.index ["member_id"], name: "index_withdrawl_requests_on_member_id"
+    t.index ["processed_by_id"], name: "index_withdrawl_requests_on_processed_by_id"
+    t.index ["system_transaction_id"], name: "index_withdrawl_requests_on_system_transaction_id"
+  end
+
   add_foreign_key "coin_events", "coins"
   add_foreign_key "coin_events", "system_transactions"
   add_foreign_key "member_coin_events", "coins"
@@ -146,4 +172,13 @@ ActiveRecord::Schema.define(version: 20171116122309) do
   add_foreign_key "system_transactions", "members", column: "authorized_by_id"
   add_foreign_key "system_transactions", "members", column: "initiated_by_id"
   add_foreign_key "system_transactions", "system_transactions", column: "previous_transaction_id"
+  add_foreign_key "withdrawl_requests", "coins"
+  add_foreign_key "withdrawl_requests", "members"
+  add_foreign_key "withdrawl_requests", "members", column: "admin_id"
+  add_foreign_key "withdrawl_requests", "members", column: "cancelled_by_id"
+  add_foreign_key "withdrawl_requests", "members", column: "completed_by_id"
+  add_foreign_key "withdrawl_requests", "members", column: "confirmed_by_id"
+  add_foreign_key "withdrawl_requests", "members", column: "last_touched_by_id"
+  add_foreign_key "withdrawl_requests", "members", column: "processed_by_id"
+  add_foreign_key "withdrawl_requests", "system_transactions"
 end

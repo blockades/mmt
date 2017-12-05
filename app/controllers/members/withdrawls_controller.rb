@@ -5,7 +5,7 @@ module Members
     include TransactionHelper
 
     before_action :find_coin, except: [:index]
-    before_action :find_previous_transaction, only: [:new]
+    before_action :find_previous_transaction, only: [:new, :confirm]
 
     def index
     end
@@ -18,9 +18,21 @@ module Members
         return redirect_back fallback_location: new_withdrawl_path, alert: "Invalid previous transaction"
       end
 
-      transaction = transaction_commiter(Transactions::MemberWithdrawl, withdrawl_params)
+      withdrawl_request = WithdrawlRequest.create(withdrawl_params)
 
-      if transaction.persisted?
+      if withdrawl_request.persisted?
+        redirect_to coins_path, notice: "Success"
+      else
+        redirect_to new_withdrawl_path, error: transaction.error_message
+      end
+    end
+
+    def confirm
+      unless previous_transaction?
+        return redirect_back fallback_location: new_withdrawl_path, alert: "Invalid previous transaction"
+      end
+
+      if withdrawl_request.confirm(confirmation_params)
         redirect_to coins_path, notice: "Success"
       else
         redirect_to new_withdrawl_path, alert: transaction.error_message
@@ -38,9 +50,17 @@ module Members
     end
 
     def permitted_params
-      params.require(:withdrawl).permit(
+      params.require(:withdrawl_request).permit(
         :source_quantity,
         :previous_transaction_id
+      )
+    end
+
+    def confirmation_params
+      permitted_params.except(
+        :source_quantity
+      ).merge(
+        last_changed_by: current_member
       )
     end
 
