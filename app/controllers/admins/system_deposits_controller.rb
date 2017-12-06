@@ -12,7 +12,7 @@ module Admins
     end
 
     def create
-      transaction = transaction_commiter(Transactions::MemberExchange, deposit_params)
+      transaction = transaction_commiter(Transactions::SystemDeposit, deposit_params)
 
       if transaction.persisted?
         quantity = Utils.to_decimal(transaction.destination_quantity, @coin.subdivision)
