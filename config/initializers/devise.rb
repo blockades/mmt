@@ -8,7 +8,10 @@ Devise.setup do |config|
   # confirmation, reset password and unlock tokens in the database.
   # Devise will use the `secret_key_base` as its `secret_key`
   # by default. You can change it below and use your own secret key.
-  # config.secret_key = 'e5cc67c910562944164c96c4f2c00ed9970eaba741784b5e20e5531a044d4aa17b27f638f947338ca6133085d686744cf21c19e8a706c2cdf01e55189ce0d6e7'
+  # config.secret_key = <<-KEY.gsub(/\n/,"")
+  #   e5cc67c910562944164c96c4f2c00ed9970eaba741784b5e20e5531a044d4aa1
+  #   7b27f638f947338ca6133085d686744cf21c19e8a706c2cdf01e55189ce0d6e7
+  # KEY
 
   # ==> Mailer Configuration
   # Configure the e-mail address which will be shown in Devise::Mailer,
@@ -110,7 +113,10 @@ Devise.setup do |config|
   config.stretches = Rails.env.test? ? 1 : 11
 
   # Set up a pepper to generate the hashed password.
-  # config.pepper = 'f74abf26c5b777c5e863d4b51e0af996264c7b394fb1e56f0886dfdb094c4a9eebe56f42a230779f64315dc794259256eab206567193b97e0443a3a58719310f'
+  # config.pepper = <<-PEPPER.gsub(/\n/,"")
+  #   f74abf26c5b777c5e863d4b51e0af996264c7b394fb1e56f0886dfdb094c4a9e
+  #   ebe56f42a230779f64315dc794259256eab206567193b97e0443a3a58719310f
+  # PEPPER
 
   # Send a notification to the original email when the member's email is changed.
   # config.send_email_changed_notification = false
@@ -338,9 +344,9 @@ Devise.setup do |config|
   config.direct_otp_length = 6
   # Time before browser has to perform 2fA again. Default is 0.
   config.remember_otp_session_for_seconds = 30.days
-  config.otp_secret_encryption_key = ENV['OTP_SECRET_ENCRYPTION_KEY']
+  config.otp_secret_encryption_key = ENV["OTP_SECRET_ENCRYPTION_KEY"]
   # Field or method name used to set value for 2fA remember cookie
-  config.second_factor_resource_id = 'id'
+  config.second_factor_resource_id = "id"
 
   # ==> Two Factor Recovery Configuration
   config.otp_recovery_code_length = 16
@@ -348,5 +354,5 @@ Devise.setup do |config|
 end
 
 Rails.application.config.to_prepare do
-  Devise::SessionsController.layout 'devise'
+  Devise::SessionsController.layout "devise"
 end

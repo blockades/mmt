@@ -3,7 +3,6 @@
 module Admins
   class DashboardController < AdminsController
     def index
-
     end
   end
 end

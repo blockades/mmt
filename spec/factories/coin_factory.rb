@@ -4,7 +4,7 @@ FactoryBot.define do
   factory :coin do
     name Faker::Name.name
     code do
-      YAML.load_file(Rails.root.join 'spec','support','fixtures','coins.yml').find do |code|
+      YAML.load_file(Rails.root.join("spec", "support", "fixtures", "coins.yml")).find do |code|
         Coin.where(code: code).empty?
       end
     end

@@ -2,7 +2,6 @@
 
 module Transactions
   class MemberExchange < SystemTransaction
-
     validates :source_rate,
               :source_quantity,
               :destination_rate,

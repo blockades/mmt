@@ -1,4 +1,6 @@
-require 'rails_helper'
+# frozen_string_literal: true
+
+require "rails_helper"
 
 describe Members::TwoFactorController, type: :controller, two_factor: true do
   include_examples "with member"
@@ -8,7 +10,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     reauthenticate!
   end
 
-  describe 'GET index' do
+  describe "GET index" do
     let(:get_index) { get :index }
 
     it "returns a 200" do
@@ -16,16 +18,16 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
       expect(response.status).to eq 200
     end
 
-    it 'assigns @member' do
-      expect{ get_index }.to change{ assigns :member }
+    it "assigns @member" do
+      expect { get_index }.to change { assigns :member }
     end
 
-    it 'renders the setup template' do
+    it "renders the setup template" do
       expect(get_index).to render_template :index
     end
   end
 
-  describe 'GET new' do
+  describe "GET new" do
     let(:get_new) { get :new }
 
     context "before ConfirmTwoFactorAuthentication" do
@@ -34,19 +36,19 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
         expect(response.status).to eq 200
       end
 
-      it 'assigns @member' do
-        expect{ get_new }.to change{ assigns :member }
+      it "assigns @member" do
+        expect { get_new }.to change { assigns :member }
       end
 
-      it 'renders the setup template' do
+      it "renders the setup template" do
         expect(get_new).to render_template :new
       end
     end
   end
 
-  describe 'POST create' do
+  describe "POST create" do
     context "successful SetupTwoFactorAuthentication" do
-      let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: 'app' } } }
+      let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: "app" } } }
 
       it "redirects to the edit page" do
         expect(post_create).to redirect_to edit_member_settings_two_factor_path
@@ -54,7 +56,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
 
     context "failed SetupTwoFactorAuthentication" do
-      let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: 'bob' } } }
+      let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: "bob" } } }
 
       it "redirects to the index page" do
         expect(post_create).to redirect_to member_settings_two_factor_path
@@ -62,12 +64,13 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe 'GET edit' do
+  describe "GET edit" do
     let(:get_edit) { get :edit }
 
-    context 'after SetupTwoFactorAuthentication' do
+    context "after SetupTwoFactorAuthentication" do
       before do
-        member.update otp_secret_key: member.generate_totp_secret, otp_recovery_codes: member.generate_otp_recovery_codes
+        member.update otp_secret_key: member.generate_totp_secret,
+                      otp_recovery_codes: member.generate_otp_recovery_codes
       end
 
       it "returns a 200" do
@@ -75,11 +78,11 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
         expect(response.status).to eq 200
       end
 
-      it 'assigns @member' do
-        expect{ get_edit }.to change{ assigns :member }
+      it "assigns @member" do
+        expect { get_edit }.to change { assigns :member }
       end
 
-      it 'renders the setup template' do
+      it "renders the setup template" do
         expect(get_edit).to render_template :edit
       end
     end
@@ -105,13 +108,13 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe 'PATCH update' do
+  describe "PATCH update" do
     context "successful ConfirmTwoFactorAuthentication" do
       let(:patch_update) { patch :update, params: { two_factor: { code: member.direct_otp } } }
 
       before do
         member.create_direct_otp
-        member.update otp_delivery_method: 'app'
+        member.update otp_delivery_method: "app"
       end
 
       it "redirects to the edit page" do
@@ -120,7 +123,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
 
     context "failed ConfirmTwoFactorAuthentication" do
-      let(:patch_update) { patch :update, params: { two_factor: { code: '123456' } } }
+      let(:patch_update) { patch :update, params: { two_factor: { code: "123456" } } }
 
       before { allow(member).to receive(:authenticate_otp).and_return(false) }
 
@@ -130,7 +133,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe 'DELETE destroy' do
+  describe "DELETE destroy" do
     let(:delete_destroy) { delete :destroy }
 
     it "redirects to the index page" do
@@ -138,25 +141,25 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe 'GET resend_code' do
+  describe "GET resend_code" do
     let(:get_resend_code) { get :resend_code, xhr: true }
     let(:json_response) { JSON.parse(response.body) }
 
     context "outside nonce timestamp" do
       it "renders a JSON response" do
         get_resend_code
-        expect(json_response).to eq ({ "success" => true, "message" => "Two factor code sent" })
+        expect(json_response).to eq("success" => true, "message" => "Two factor code sent")
       end
     end
 
     context "within nonce timestamp" do
       before do
-        @request.session[:resend_two_factor_code] = nonce(Time.now)
+        @request.session[:resend_two_factor_code] = nonce(Time.current)
       end
 
       it "renders a JSON response" do
         get_resend_code
-        expect(json_response).to eq ({ "success" => false, "message" => "Wait 5 minutes before requesting another code" })
+        expect(json_response).to eq("success" => false, "message" => "Wait 5 minutes before requesting another code")
       end
     end
   end

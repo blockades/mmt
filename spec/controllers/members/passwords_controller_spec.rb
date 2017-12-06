@@ -9,7 +9,7 @@ describe Members::PasswordsController, type: :controller, two_factor: true do
     sign_in member
   end
 
-  describe 'GET new' do
+  describe "GET new" do
     let(:get_new) { get :new }
 
     it "returns a 200" do
@@ -17,20 +17,28 @@ describe Members::PasswordsController, type: :controller, two_factor: true do
       expect(response.status).to eq 200
     end
 
-    it 'assigns @member' do
-      expect{ get_new }.to change{ assigns :member }
+    it "assigns @member" do
+      expect { get_new }.to change { assigns :member }
     end
 
-    it 'renders the setup template' do
+    it "renders the setup template" do
       expect(get_new).to render_template :new
     end
   end
 
-  describe 'PATCH update' do
+  describe "PATCH update" do
     let(:random_password) { SecureRandom.hex }
 
     context "successful UpdatePassword" do
-      let(:patch_update) { patch :update, params: { member: { current_password: 'password', password: random_password, password_confirmation: random_password } } }
+      let(:patch_update) do
+        patch :update, params: {
+          member: {
+            current_password: "password",
+            password: random_password,
+            password_confirmation: random_password
+          }
+        }
+      end
 
       it "redirects to the edit page" do
         expect(patch_update).to redirect_to member_path(member)
@@ -38,9 +46,17 @@ describe Members::PasswordsController, type: :controller, two_factor: true do
     end
 
     context "failed UpdatePassword" do
-      let(:patch_update) { patch :update, params: { member: { password: random_password, password_confirmation: random_password, authentication_code: '123456' } } }
+      let(:patch_update) do
+        patch :update, params: {
+          member: {
+            password: random_password,
+            password_confirmation: random_password,
+            authentication_code: "123456"
+          }
+        }
+      end
 
-      before { member.update!(two_factor_enabled: true, otp_delivery_method: 'app') }
+      before { member.update!(two_factor_enabled: true, otp_delivery_method: "app") }
 
       it "redirects back" do
         expect(patch_update).to redirect_to new_member_settings_password_path

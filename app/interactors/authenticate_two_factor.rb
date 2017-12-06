@@ -16,11 +16,13 @@ class AuthenticateTwoFactor
   protected
 
   def check_for_authentication_code
-    context.fail!(message: "Two factor authentication required. Please enter a code") unless authentication_code.present?
+    return if authentication_code.present?
+    context.fail!(message: "Two factor authentication required. Please enter a code")
   end
 
   def authenticate_by_two_factor
-    context.fail!(message: "Two factor authentication failed") unless member.authenticate_otp(authentication_code)
+    return if member.authenticate_otp(authentication_code)
+    context.fail!(message: "Two factor authentication failed")
   end
 
   private

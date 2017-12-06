@@ -12,7 +12,7 @@ require "action_mailer/railtie"
 require "action_view/railtie"
 require "action_cable/engine"
 require "sprockets/railtie"
-require 'rqrcode'
+require "rqrcode"
 # require "rails/test_unit/railtie"
 
 # Require the gems listed in Gemfile, including any gems
@@ -24,7 +24,7 @@ module MMT
     config.autoload_paths += Dir["#{config.root}/app/**/"]
     config.autoload_paths += Dir["#{config.root}/lib/**/"]
     config.before_initialize do
-      require config.root.join 'config', 'initializers', 'magic_money_tree'
+      require config.root.join "config", "initializers", "magic_money_tree"
     end
   end
 end

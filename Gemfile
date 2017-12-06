@@ -7,40 +7,35 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
-gem "pg"
-gem "puma", "~> 3.0"
-gem "rails", "~> 5.1.0"
-gem "sass-rails", "~> 5.0"
-gem "uglifier", ">= 1.3.0"
-gem 'draper'
-
-gem "redis-rails"
-gem "sidekiq"
-
+gem "blockchain-api"
+gem "coinbase"
 gem "devise"
 gem "devise_invitable"
-gem 'two_factor_authentication'
-gem 'two_factor_recovery', git: "https://github.com/KGibb8/two_factor_recoverable"
-gem 'rqrcode-with-patches', '~> 0.5.4'
-gem 'twilio-ruby', '~> 5.4.3'
-
+gem "draper"
+gem "font-awesome-rails"
 gem "friendly_id", "~> 5.1.0"
 gem "interactor-rails"
 gem "jbuilder", "~> 2.5"
 gem "jquery-rails"
-gem "turbolinks", "~> 5"
-gem "font-awesome-rails"
-
-gem "blockchain-api"
-gem "coinbase"
 gem "kraken_ruby"
-
-gem "slim-rails"
+gem "pg"
+gem "puma", "~> 3.0"
+gem "rails", "~> 5.1.0"
+gem "redis-rails"
+gem "rqrcode-with-patches", "~> 0.5.4"
+gem "sass-rails", "~> 5.0"
 gem "select2-rails"
+gem "sidekiq"
+gem "slim-rails"
+gem "turbolinks", "~> 5"
+gem "twilio-ruby", "~> 5.4.3"
+gem "two_factor_authentication"
+gem "two_factor_recovery", git: "https://github.com/KGibb8/two_factor_recoverable"
+gem "uglifier", ">= 1.3.0"
 
 group :development, :test do
+  gem "awesome_print"
   gem "pry-byebug", platform: :mri
-  gem 'awesome_print'
 end
 
 group :development do
@@ -58,7 +53,7 @@ group :test do
   gem "faker"
   gem "rails-controller-testing"
   gem "rspec-rails"
-  gem 'rspec-sidekiq'
+  gem "rspec-sidekiq"
   gem "simplecov"
   gem "timecop"
   gem "webmock"

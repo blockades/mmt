@@ -1,14 +1,14 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 describe AuthenticateTwoFactor, type: :interactor do
-  let(:member) { create :member, otp_delivery_method: 'sms', two_factor_enabled: true }
+  let(:member) { create :member, otp_delivery_method: "sms", two_factor_enabled: true }
   let(:context) { AuthenticateTwoFactor.call(member: member, password_params: password_params) }
 
-  describe '#call' do
+  describe "#call" do
     context "with two factor disabled" do
-      let(:password_params) { { authentication_code: '123456' } }
+      let(:password_params) { { authentication_code: "123456" } }
 
       before do
         allow(member).to receive(:two_factor_enabled?).and_return(false)
@@ -24,7 +24,7 @@ describe AuthenticateTwoFactor, type: :interactor do
     end
 
     context "with an invalid authentication code" do
-      let(:password_params) { { authentication_code: '123456' } }
+      let(:password_params) { { authentication_code: "123456" } }
 
       it "fails" do
         expect(context).to be_a_failure

@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 describe Members::SettingsController, type: :controller do
   include_examples "with member"
@@ -9,7 +9,7 @@ describe Members::SettingsController, type: :controller do
     sign_in member
   end
 
-  describe 'GET index' do
+  describe "GET index" do
     let(:get_index) { get :index }
 
     it "returns a 200" do
@@ -17,11 +17,11 @@ describe Members::SettingsController, type: :controller do
       expect(response.status).to eq 200
     end
 
-    it 'assigns @member' do
-      expect{ get_index }.to change{ assigns :member }
+    it "assigns @member" do
+      expect { get_index }.to change { assigns :member }
     end
 
-    it 'renders the setup template' do
+    it "renders the setup template" do
       expect(get_index).to render_template :index
     end
   end

@@ -3,5 +3,4 @@
 require "rails_helper"
 
 describe Admins::AdminsController do
-
 end

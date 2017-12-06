@@ -16,28 +16,32 @@ describe Transactions::MemberDeposit, transactions: true do
       include_examples "member with bitcoin", liability: 2
 
       it "source_coin equity stays the same" do
-        expect{ subject.save }.to_not change{ bitcoin.equity }
+        expect { subject.save }.to_not change { bitcoin.equity }
       end
 
       describe "#publish_to_source" do
         it "creates coin event" do
-          expect{ subject.save }.to change{ bitcoin.coin_events.count }.by(1)
+          expect { subject.save }.to change { bitcoin.coin_events.count }.by(1)
         end
 
         it "credits source (coin) assets" do
           assets = bitcoin.assets
-          expect{ subject.save }.to change{ bitcoin.assets }.from(assets).to(assets + subject.destination_quantity)
+          expect { subject.save }.to change { bitcoin.assets }.from(assets).to(
+            assets + subject.destination_quantity
+          )
         end
       end
 
       describe "#publish_to_destination" do
         it "creates member coin event" do
-          expect{ subject.save }.to change{ member.member_coin_events.count }.by(1)
+          expect { subject.save }.to change { member.member_coin_events.count }.by(1)
         end
 
         it "credits destination (member) destination_coin liability" do
           liability = member.liability(bitcoin)
-          expect{ subject.save }.to change{ member.liability(bitcoin) }.from(liability).to(liability + subject.destination_quantity)
+          expect { subject.save }.to change { member.liability(bitcoin) }.from(liability).to(
+            liability + subject.destination_quantity
+          )
         end
       end
     end
@@ -58,8 +62,6 @@ describe Transactions::MemberDeposit, transactions: true do
           expect(subject.save).to be_falsey
         end
       end
-
     end
   end
 end
-

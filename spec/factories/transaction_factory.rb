@@ -2,7 +2,6 @@
 
 FactoryBot.define do
   factory :system_transaction do
-
      trait :system_deposit do
        association :source, factory: :admin
        association :destination, factory: :coin
@@ -74,13 +73,25 @@ FactoryBot.define do
       initiated_by { destination }
     end
 
-    factory :member_allocation, class: Transactions::MemberAllocation, traits: [:member_allocation, :initiated_by_source]
-    factory :member_deposit, class: Transactions::MemberDeposit, traits: [:member_deposit, :initiated_by_destination]
-    factory :member_exchange, class: Transactions::MemberExchange, traits: [:member_exchange, :initiated_by_source]
-    factory :member_withdrawl, class: Transactions::MemberWithdrawl, traits: [:member_withdrawl, :initiated_by_source]
+    factory :member_exchange, class: Transactions::MemberExchange,
+                              traits: [:member_exchange, :initiated_by_source]
 
-    factory :system_allocation, class: Transactions::SystemAllocation, traits: [:system_allocation]
-    factory :system_deposit, class: Transactions::SystemDeposit, traits: [:system_deposit, :initiated_by_source]
-    factory :system_withdrawl, class: Transactions::SystemWithdrawl, traits: [:system_withdrawl, :initiated_by_destination]
+    factory :member_withdrawl, class: Transactions::MemberWithdrawl,
+                               traits: [:member_withdrawl, :initiated_by_source]
+
+    factory :system_withdrawl, class: Transactions::SystemWithdrawl,
+                               traits: [:system_withdrawl, :initiated_by_destination]
+
+    factory :member_allocation, class: Transactions::MemberAllocation,
+                                traits: [:member_allocation, :initiated_by_source]
+
+    factory :system_allocation, class: Transactions::SystemAllocation,
+                                traits: [:system_allocation]
+
+    factory :member_deposit, class: Transactions::MemberDeposit,
+                             traits: [:member_deposit, :initiated_by_destination]
+
+    factory :system_deposit, class: Transactions::SystemDeposit,
+                             traits: [:system_deposit, :initiated_by_source]
   end
 end

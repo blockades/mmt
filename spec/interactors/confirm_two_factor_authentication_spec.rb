@@ -1,16 +1,15 @@
 # frozen_string_literal: true
 
-require 'rails_helper'
+require "rails_helper"
 
 describe ConfirmTwoFactorAuthentication, type: :interactor, two_factor: true do
-  let(:member) { create :member, otp_delivery_method: 'app' }
-  let(:context) { ConfirmTwoFactorAuthentication.call(member: member, authentication_code: '123456') }
-
+  let(:member) { create :member, otp_delivery_method: "app" }
+  let(:context) { ConfirmTwoFactorAuthentication.call(member: member, authentication_code: "123456") }
 
   describe "#call" do
     context "with a valid authentication code" do
       before do
-        allow(member).to receive(:authenticate_otp).with('123456').and_return(true)
+        allow(member).to receive(:authenticate_otp).with("123456").and_return(true)
       end
 
       context "with a valid member" do
@@ -40,7 +39,7 @@ describe ConfirmTwoFactorAuthentication, type: :interactor, two_factor: true do
 
     context "with an invalid authentication code" do
       before do
-        allow(member).to receive(:authenticate_otp).with('123456').and_return(false)
+        allow(member).to receive(:authenticate_otp).with("123456").and_return(false)
       end
 
       it "fails" do

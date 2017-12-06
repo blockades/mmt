@@ -3,7 +3,6 @@
 require "rails_helper"
 
 describe Coin, type: :model do
-
   it "#live_holdings_quantity" do
   end
 

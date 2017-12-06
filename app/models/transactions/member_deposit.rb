@@ -2,7 +2,6 @@
 
 module Transactions
   class MemberDeposit < SystemTransaction
-
     validates :destination_quantity,
               presence: true,
               numericality: { greater_than: 0 }
