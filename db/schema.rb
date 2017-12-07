@@ -10,19 +10,28 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171030104608) do
+ActiveRecord::Schema.define(version: 20171116122309) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
 
+  create_table "coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "coin_id", null: false
+    t.uuid "system_transaction_id", null: false
+    t.bigint "assets", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coin_id"], name: "index_coin_events_on_coin_id"
+    t.index ["system_transaction_id"], name: "index_coin_events_on_system_transaction_id"
+  end
+
   create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
     t.string "code"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.integer "central_reserve_in_sub_units", default: 0, null: false
     t.boolean "crypto_currency", default: true, null: false
     t.integer "subdivision", default: 8, null: false
     t.string "slug"
@@ -41,17 +50,17 @@ ActiveRecord::Schema.define(version: 20171030104608) do
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
-  create_table "holdings", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+  create_table "member_coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.uuid "coin_id", null: false
-    t.decimal "initial_btc_rate", precision: 10, scale: 8, default: "0.0", null: false
+    t.uuid "member_id", null: false
+    t.uuid "system_transaction_id", null: false
+    t.bigint "liability", null: false
+    t.decimal "rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.boolean "deposit", default: false, null: false
-    t.boolean "withdrawal", default: false, null: false
-    t.uuid "portfolio_id", null: false
-    t.integer "quantity", null: false
-    t.index ["coin_id", "portfolio_id"], name: "index_holdings_on_coin_id_and_portfolio_id", unique: true
-    t.index ["portfolio_id"], name: "index_holdings_on_portfolio_id"
+    t.index ["coin_id"], name: "index_member_coin_events_on_coin_id"
+    t.index ["member_id"], name: "index_member_coin_events_on_member_id"
+    t.index ["system_transaction_id"], name: "index_member_coin_events_on_system_transaction_id"
   end
 
   create_table "members", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -101,17 +110,40 @@ ActiveRecord::Schema.define(version: 20171030104608) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
-  create_table "portfolios", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
-    t.uuid "member_id", null: false
-    t.uuid "next_portfolio_id"
-    t.datetime "next_portfolio_at"
+  create_table "system_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "source_type", null: false
+    t.uuid "source_id", null: false
+    t.string "destination_type", null: false
+    t.uuid "destination_id", null: false
+    t.uuid "source_coin_id", null: false
+    t.uuid "destination_coin_id", null: false
+    t.uuid "previous_transaction_id"
+    t.uuid "initiated_by_id", null: false
+    t.uuid "authorized_by_id"
+    t.string "type", null: false
+    t.bigint "source_quantity"
+    t.decimal "source_rate"
+    t.bigint "destination_quantity"
+    t.decimal "destination_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
-    t.index ["member_id"], name: "index_portfolios_on_member_id", unique: true, where: "(next_portfolio_at IS NULL)"
-    t.index ["next_portfolio_id"], name: "index_portfolios_on_next_portfolio_id", unique: true
+    t.index ["authorized_by_id"], name: "index_system_transactions_on_authorized_by_id"
+    t.index ["destination_coin_id"], name: "index_system_transactions_on_destination_coin_id"
+    t.index ["destination_type", "destination_id"], name: "transactions_on_destination"
+    t.index ["initiated_by_id"], name: "index_system_transactions_on_initiated_by_id"
+    t.index ["previous_transaction_id"], name: "index_system_transactions_on_previous_transaction_id"
+    t.index ["source_coin_id"], name: "index_system_transactions_on_source_coin_id"
+    t.index ["source_type", "source_id"], name: "transactions_on_source"
   end
 
-  add_foreign_key "holdings", "portfolios"
-  add_foreign_key "portfolios", "members"
-  add_foreign_key "portfolios", "portfolios", column: "next_portfolio_id"
+  add_foreign_key "coin_events", "coins"
+  add_foreign_key "coin_events", "system_transactions"
+  add_foreign_key "member_coin_events", "coins"
+  add_foreign_key "member_coin_events", "members"
+  add_foreign_key "member_coin_events", "system_transactions"
+  add_foreign_key "system_transactions", "coins", column: "destination_coin_id"
+  add_foreign_key "system_transactions", "coins", column: "source_coin_id"
+  add_foreign_key "system_transactions", "members", column: "authorized_by_id"
+  add_foreign_key "system_transactions", "members", column: "initiated_by_id"
+  add_foreign_key "system_transactions", "system_transactions", column: "previous_transaction_id"
 end

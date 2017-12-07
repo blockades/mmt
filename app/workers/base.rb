@@ -5,7 +5,7 @@ module Workers
     include Sidekiq::Worker
 
     def send_error_message(error)
-      Rails.logger.error("\n#{e.message}\n\t#{e.backtrace.join("\n\t")}\n")
+      Rails.logger.error("\n#{error.message}\n\t#{error.backtrace.join("\n\t")}\n")
     end
   end
 end

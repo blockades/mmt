@@ -25,41 +25,41 @@ class ApplicationController < ActionController::Base
   end
 
   def reauthenticate_member!
-    unless session[:reauthenticated_at] && session[:reauthenticated_at] > 30.minutes.ago
-      redirect_to new_reauthentication_path, notice: "Enter password to proceed"
-    end
+    return if session[:reauthenticated_at] && session[:reauthenticated_at] > 30.minutes.ago
+    redirect_to new_reauthentication_path, notice: "Enter password to proceed"
   end
 
   def store_return_paths
     session[:return_paths] ||= []
     session[:return_paths].shift if session[:return_paths].count >= 5
-    if !devise_controller? && request.get? && (request.fullpath != session[:return_paths].last)
-      session[:return_paths] << request.fullpath
-    end
+    return unless !devise_controller? && request.get? && (request.fullpath != session[:return_paths].last)
+    session[:return_paths] << request.fullpath
   end
 
   def forbidden
-    raise Forbidden.new, '403 Forbidden'
+    raise Forbidden.new, "403 Forbidden"
   end
 
   def not_found
-    raise NotFound.new, '404 Not Found'
+    raise NotFound.new, "404 Not Found"
   end
 
   def rescue_404
-    render file: 'public/404', status: 404, layout: false
+    render file: "public/404", status: 404, layout: false
   end
 
   def rescue_403
-    render file: 'public/403', status: 403, layout: false
+    render file: "public/403", status: 403, layout: false
   end
 
   def nonce(time)
-    ActionController::HttpAuthentication::Digest.nonce(ENV.fetch('NONCE_SECRET'), time)
+    ActionController::HttpAuthentication::Digest.nonce(ENV.fetch("NONCE_SECRET"), time)
   end
 
   def validate_nonce(nonce_to_validate, seconds_to_timeout)
-    ActionController::HttpAuthentication::Digest.validate_nonce(ENV.fetch('NONCE_SECRET'), request, nonce_to_validate, seconds_to_timeout)
+    ActionController::HttpAuthentication::Digest.validate_nonce(
+      ENV.fetch("NONCE_SECRET"), request, nonce_to_validate, seconds_to_timeout
+    )
   end
 
 end

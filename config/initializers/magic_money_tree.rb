@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module MagicMoneyTree
   module InaccessibleWords
     class << self
@@ -6,11 +8,11 @@ module MagicMoneyTree
       end
 
       def reserved
-        @reserved ||= YAML.load_file('config/reserved_words.yml').compact
+        @reserved ||= YAML.load_file("config/reserved_words.yml").compact
       end
 
       def blocked
-        @blocked ||= YAML.load_file('config/blocked_words.yml').compact
+        @blocked ||= YAML.load_file("config/blocked_words.yml").compact
       end
 
       private
@@ -24,7 +26,7 @@ module MagicMoneyTree
   module MobileCountryCodes
     class << self
       def all
-        @all ||= YAML.load_file('config/mobile_codes.yml').compact
+        @all ||= YAML.load_file("config/mobile_codes.yml").compact
       end
 
       def with_code_only

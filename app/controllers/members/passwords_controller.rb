@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 module Members
   class PasswordsController < ApplicationController
     before_action :change_password, only: :update
@@ -32,6 +34,5 @@ module Members
     def password_params
       params.require(:member).permit(:password, :password_confirmation, :authentication_code)
     end
-
   end
 end

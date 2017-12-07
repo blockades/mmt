@@ -16,44 +16,95 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
-  has_one :live_portfolio, -> { live }, foreign_key: :member_id, class_name: "Portfolio"
-  has_many :portfolios
-  has_many :holdings, through: :live_portfolio
+  has_many :source_transactions, as: :source,
+                                 class_name: "SystemTransaction",
+                                 dependent: :restrict_with_error
 
-  scope :no_portfolio, -> { includes(:live_portfolio).where(portfolios: { id: nil }).references(:portfolios) }
+  has_many :destination_transactions, as: :destination,
+                                      class_name: "SystemTransaction",
+                                      dependent: :restrict_with_error
 
-  TWO_FACTOR_DELIVERY_METHODS = { sms: 'Short message service (SMS)', app: 'Authenticator application' }.with_indifferent_access
+  has_many :initiated_transactions, class_name: "SystemTransaction",
+                                    foreign_key: :initiated_by_id,
+                                    inverse_of: :initiated_by,
+                                    dependent: :restrict_with_error
 
-  validates :username, uniqueness: { case_sensitive: true }, format: { with: /^[a-zA-Z0-9_\.]*$/, multiline: true }, presence: true
+  has_many :authorized_transactions, class_name: "SystemTransaction",
+                                     foreign_key: :authorized_by_id,
+                                     inverse_of: :authorized_by,
+                                     dependent: :restrict_with_error
+
+  has_many :member_coin_events, dependent: :restrict_with_error
+
+  has_many :credits, -> { where("liability > 0") }, class_name: "MemberCoinEvent",
+                                                    dependent: :restrict_with_error
+
+  has_many :debits, -> { where("liability < 0") }, class_name: "MemberCoinEvent",
+                                                   dependent: :restrict_with_error
+
+  has_many :coins, through: :member_coin_events
+
+  has_many :crypto_events, -> { crypto }, class_name: "MemberCoinEvent",
+                                          dependent: :restrict_with_error
+
+  has_many :fiat_events, -> { fiat }, class_name: "MemberCoinEvent",
+                                      dependent: :restrict_with_error
+
+  has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
+  has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
+
+  scope :with_crypto, -> { joins(:crypto) }
+  scope :with_fiat, -> { joins(:fiat) }
+
+  TWO_FACTOR_DELIVERY_METHODS = {
+    sms: "Short message service (SMS)",
+    app: "Authenticator application"
+  }.with_indifferent_access
+
+  validates :username, uniqueness: { case_sensitive: true },
+                       format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
+                       exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
+                       presence: true
+
+  validate :username_against_email
+
   validates :slug, uniqueness: { case_sensitive: true }
 
-  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: proc { two_factor_enabled? && two_factor_enabled_changed? }
+  validates :otp_delivery_method, inclusion: { in: TWO_FACTOR_DELIVERY_METHODS.keys }, if: :two_factor_activated?
 
-  validates :phone_number, presence: true, format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ }, if: proc { country_code.present? }
-  validates :country_code, presence: true, inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only }, if: proc { phone_number.present? }
+  validates :phone_number, presence: true,
+                           format: { with: /\A\(?([0-9]{3})\)?[-. ]?([0-9]{3})[-. ]?([0-9]{4})\z/ },
+                           if: :country_code?
 
-  validate :username_against_inaccessible_words
-  validate :email_against_username
+  validates :country_code, presence: true,
+                           inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only },
+                           if: :phone_number?
 
-  before_validation :adjust_slug, on: :update, if: proc { |m| m.username_changed? }
+  before_validation :adjust_slug, on: :update, if: :username_changed?
 
   attr_accessor :login
 
-  # ===> Two Factor Authentication
+  def coin_history(coin)
+    member_coin_events.where(coin_id: coin.id)
+  end
+
+  def liability(coin)
+    coin_history(coin).sum(:liability)
+  end
 
   def full_phone_number
     "+#{country_code}#{phone_number}"
   end
 
   def authenticated_by_app?
-    otp_delivery_method == 'app'
+    otp_delivery_method == "app"
   end
 
   def authenticated_by_phone?
-    otp_delivery_method == 'sms'
+    otp_delivery_method == "sms"
   end
 
-  def need_two_factor_authentication?(request)
+  def need_two_factor_authentication?(_request)
     otp_setup_complete?
   end
 
@@ -72,22 +123,23 @@ class Member < ApplicationRecord
   class << self
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
-      if login = conditions.delete(:login)
-        where(conditions.to_h).where(["LOWER(username) = :value OR LOWER(email) = :value", { value: login.downcase }]).first
-      elsif conditions.has_key?(:username) || conditions.has_key?(:email)
-        where(conditions.to_h).first
+      if (login = conditions.delete(:login))
+        where(conditions.to_h).find_by(["LOWER(username) = :value OR LOWER(email) = :value", { value: login.downcase }])
+      elsif conditions.key?(:username) || conditions.key?(:email)
+        find_by(conditions.to_h)
       end
     end
   end
 
   private
 
-  def email_against_username
-    errors.add(:username, :invalid) if Member.where(email: username).exists?
+  def username_against_email
+    return true unless Member.where(email: username).exists?
+    self.errors.add(:username, "Username taken by email")
   end
 
-  def username_against_inaccessible_words
-    errors.add(:username, :invalid) if MagicMoneyTree::InaccessibleWords.all.include? username.downcase
+  def two_factor_activated?
+    two_factor_enabled? && two_factor_enabled_changed?
   end
 
   def adjust_slug

@@ -9,7 +9,7 @@ SimpleCov.start "rails" do
   add_filter "/app/jobs"
 end
 
-ENV["OTP_SECRET_ENCRYPTION_KEY"] = Digest::SHA2.hexdigest 'SUPER_DUPER_SECRET_KEY'
+ENV["OTP_SECRET_ENCRYPTION_KEY"] = Digest::SHA2.hexdigest "SUPER_DUPER_SECRET_KEY"
 ENV["NONCE_SECRET"] = SecureRandom.hex
 
 RSpec.configure do |config|
@@ -29,4 +29,3 @@ RSpec.configure do |config|
 
   Kernel.srand config.seed
 end
-

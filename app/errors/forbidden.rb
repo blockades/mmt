@@ -1,2 +1,3 @@
-class Forbidden < StandardError
-end
+# frozen_string_literal: true
+
+Forbidden = Class.new(StandardError)

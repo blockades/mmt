@@ -7,7 +7,7 @@ class AuthenticatePassword
     if member.valid_password?(password)
       context.message = "Successfully authenticated"
     else
-      context.fail!(message: 'Incorrect password')
+      context.fail!(message: "Incorrect password")
     end
   end
 

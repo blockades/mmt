@@ -4,7 +4,6 @@ describe DisableTwoFactorAuthentication, type: :interactor, two_factor: true do
   let(:member) { create :member }
   let(:context) { DisableTwoFactorAuthentication.call(member: member) }
 
-
   describe "#call" do
     context "with a valid member" do
       it "succeeds" do

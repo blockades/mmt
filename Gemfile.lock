@@ -114,6 +114,8 @@ GEM
     faraday (0.13.1)
       multipart-post (>= 1.2, < 3)
     ffi (1.9.18)
+    font-awesome-rails (4.7.0.2)
+      railties (>= 3.2, < 5.2)
     friendly_id (5.1.0)
       activerecord (>= 4.0.0)
     globalid (0.4.1)
@@ -351,6 +353,7 @@ DEPENDENCIES
   draper
   factory_bot_rails
   faker
+  font-awesome-rails
   friendly_id (~> 5.1.0)
   interactor-rails
   jbuilder (~> 2.5)
