@@ -1,13 +1,13 @@
 version: '2'
 
 services:
-  postgres:
+  db:
     image: postgres:9.6.5
     environment:
       POSTGRES_USER: postgres
       POSTGRES_PASSWORD: 
     ports:
-      - '5432'
+      - "5431:5432"
     volumes:
       - mmt-postgres:/var/lib/postgresql/data
   
@@ -21,13 +21,12 @@ services:
   mmt:
     build: .
     depends_on:
-      - postgres
-        #    - redis
+      - db
     volumes:
       - .:/mmt
     entrypoint: docker/entrypoint.sh
     environment:
-      DATABASE_URL: postgres
+      DATABASE_URL: db
     ports:
       - "3000:80"
 

@@ -3,7 +3,7 @@ default: &default
   encoding: utf8
   pool: 5
   username: postgres
-  host: <%= ENV['DATABASE_URL'] %>
+  host: <%= ENV.fetch('DATABASE_URL', 'localhost') %>
   password:
 
 development:
@@ -22,6 +22,6 @@ production:
 
 staging:
   <<: *default
-  database: MMT_staging
-  username: MMT
+  database: mmt_staging
+  username: mmt
   password: <%= ENV['MMT_DATABASE_PASSWORD'] %>
