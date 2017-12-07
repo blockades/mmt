@@ -10,18 +10,17 @@ services:
       - "5431:5432"
     volumes:
       - mmt-postgres:/var/lib/postgresql/data
-  
-  #redis:
-  # image: redis:3.0.5
-  # expose:
-  #   - '6379'
-  #  volumes:
-  #    - mmt-redis:/var/lib/redis/data
-  
+
+  redis:
+    image: redis:3.0.5
+    volumes:
+      - mmt-redis:/data
+
   mmt:
     build: .
     depends_on:
       - db
+      - redis
     volumes:
       - .:/mmt
       - bundle:/usr/local/bundle
@@ -31,16 +30,19 @@ services:
     ports:
       - "3000:80"
 
-  #sidekiq:
-  #  build: .
-  #  command: bundle exec sidekiq -C config/sidekiq.yml
-  #  links:
-  #    - postgres
-  #      #    - redis
-  #  volumes:
-  #    - .:/mmt
-  #  env_file:
-  #    - .mmt.env
+  # sidekiq:
+  #   build: .
+  #   command: ["sidekiq", "-C", "config/sidekiq.yml"]
+  #   links:
+  #     - db
+  #     - redis
+  #   volumes:
+  #     - .:/mmt
+  #     - bundle:/usr/local/bundle
+  #   environment:
+  #     DATABASE_URL: db
+
 volumes:
   mmt-postgres:
+  mmt-redis:
   bundle:
