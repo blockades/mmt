@@ -29,8 +29,8 @@ services:
     environment:
       DATABASE_URL: postgres
     ports:
-      - '3000:3000'
-  
+      - "3000:80"
+
   #sidekiq:
   #  build: .
   #  command: bundle exec sidekiq -C config/sidekiq.yml

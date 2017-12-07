@@ -10,25 +10,39 @@ MAINTAINER mmt <ccc@ccc.com>
 # - libpq-dev: Communicate with postgres through the postgres gem
 # - postgresql-client-9.4: In case you want to talk directly to postgres
 # - git: in order to build gems from git repos
-RUN apt-get update && apt-get install -qq -y libxml2 libxml2-dev git build-essential nodejs libpq-dev postgresql-client-9.4 --fix-missing --no-install-recommends
+RUN apt-get update -qq && \
+      apt-get install -qq -y  --fix-missing --no-install-recommends \
+      libxml2 \
+      libxml2-dev \
+      git \
+      build-essential \
+      nodejs \
+      libpq-dev \
+      postgresql-client-9.4
 
 # Set an environment variable to store where the app is installed to inside
 # of the Docker image.
-RUN mkdir -p /mnt 
+
+ENV PORT=80 HOST=0.0.0.0 INSTALL_PATH=/mmt
+
+RUN mkdir -p $INSTALL_PATH
+
+EXPOSE 80
 
 # This sets the context of where commands will be ran in and is documented
 # on Docker's website extensively.
-WORKDIR /mnt
+WORKDIR $INSTALL_PATH
 
 # Ensure gems are cached and only get updated when they change. This will
 # drastically increase build times when your gems do not change.
-COPY Gemfile Gemfile
+COPY Gemfile Gemfile.lock $INSTALL_PATH/
 RUN bundle install
+VOLUME /usr/local/bundle
 
 # Copy in the application code from your work station at the current directory
 # over to the working directory.
-COPY . /mnt
 
+COPY . $INSTALL_PATH
 # Provide dummy data to Rails so it can pre-compile assets.
 #RUN bundle exec rake RAILS_ENV=production DATABASE_URL=postgresql://user:pass@127.0.0.1/dbname SECRET_TOKEN=pickasecuretoken assets:precompile
 
