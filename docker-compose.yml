@@ -1,11 +1,11 @@
-version: '2'
+version: '3'
 
 services:
   db:
     image: postgres:9.6.5
     environment:
       POSTGRES_USER: postgres
-      POSTGRES_PASSWORD: 
+      POSTGRES_PASSWORD:
     ports:
       - "5431:5432"
     volumes:
@@ -24,6 +24,7 @@ services:
       - db
     volumes:
       - .:/mmt
+      - bundle:/usr/local/bundle
     entrypoint: docker/entrypoint.sh
     environment:
       DATABASE_URL: db
@@ -42,3 +43,4 @@ services:
   #    - .mmt.env
 volumes:
   mmt-postgres:
+  bundle:
