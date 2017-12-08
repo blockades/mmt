@@ -5,7 +5,8 @@ var AdminsCoins = function () {
   }
 
   var changeTotal = function (coin) {
-    $("#systemTotalDisplay").val(coin.as_system_total);
+    systemTotal = parseFloat(coin.as_system_total).toFixed(coin.subdivision);
+    $("#systemTotalDisplay").val(systemTotal);
   }
 
   var getCoin = function (id, callback) {

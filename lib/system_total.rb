@@ -4,13 +4,13 @@ class SystemTotal
   class << self
     def to_btc
       Coin.sum do |coin|
-        Utils.to_decimal(coin.assets, coin.subdivision) * coin.btc_rate
+        Utils.to_decimal(coin.assets * coin.btc_rate, coin.subdivision)
       end
     end
 
     Coin.not_btc.each do |coin|
       define_method "to_#{coin.code.downcase}" do
-        (to_btc / coin.btc_rate).floor(coin.subdivision)
+        (to_btc / coin.btc_rate)
       end
     end
   end

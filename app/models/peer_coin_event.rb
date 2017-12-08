@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class PeerCoinEvent < ApplicationRecord
   include Eventable
 
@@ -20,5 +22,7 @@ class PeerCoinEvent < ApplicationRecord
   private
 
   def coin_equity
+    return true if (coin.assets - equity.abs).positive?
+    self.errors.add :assets, "Insufficient equity"
   end
 end
