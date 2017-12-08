@@ -17,11 +17,15 @@ class Coin < ApplicationRecord
   has_many :coin_events, dependent: :restrict_with_error
   has_many :member_coin_events, dependent: :restrict_with_error
   has_many :members, through: :member_coin_events
+  has_many :peer_coin_events, dependent: :restrict_with_error
+  has_many :peers, through: :peer_coin_events
 
   scope :ordered, -> { order(:code) }
   scope :crypto, -> { where(crypto_currency: true) }
   scope :fiat, -> { where.not(crypto_currency: true) }
   scope :not_self, ->(coin_id) { where.not(id: coin_id) }
+  scope :btc, -> { find_by(code: "BTC") }
+  scope :not_btc, -> { where.not(code: "BTC") }
 
   attr_readonly :code
 
@@ -43,6 +47,10 @@ class Coin < ApplicationRecord
     !crypto_currency
   end
 
+  def as_system_total
+    SystemTotal.send("to_#{self.code.downcase}")
+  end
+
   def assets
     coin_events.sum(:assets)
   end
@@ -52,7 +60,7 @@ class Coin < ApplicationRecord
   end
 
   def equity
-    assets - liability
+    peer_coin_events.sum(:equity)
   end
 
   # ===> Live value and rate

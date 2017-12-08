@@ -1,24 +1,41 @@
-table
-  thead
-    th Name
-    th Code
-    th Liability
-    th Equity
-    th Assets
-    th BTC Rate
-    th Actions
-  tbody
-    - @coins.each do |coin|
-      tr
-        td= coin.name
-        td= coin.code
-        td= number_to_currency(coin.system_liability, precision: coin.subdivision, unit: "")
-        td= number_to_currency(coin.system_equity, precision: coin.subdivision, unit: "")
-        td= number_to_currency(coin.system_assets, precision: coin.subdivision, unit: "")
-        td= coin.btc_rate
-        td
-          .icons
-            = link_to admins_new_coin_deposit_path(coin), class: "icon", title: "Deposit" do
-              i.fa.fa-level-up.fa-lg
-            = link_to admins_new_coin_allocation_path(coin), class: "icon", title: "Allocate" do
-              i.fa.fa-user-plus.fa-lg
+.row
+  .offset-by-eight.columns
+    .total
+      span System Total in
+      = select_tag :coin_id, options_for_select(Coin.ordered.map {|coin| [ coin.code, coin.id ] }, Coin.btc.id ), class: "select2", id: "systemTotalSelect"
+      = number_field_tag :total, SystemTotal.to_btc, step: :any, id: "systemTotalDisplay", readonly: true
+
+.row
+  .twelve.columns
+    table.full-length
+      thead
+        th Name
+        th Code
+        th Liability
+        th Equity
+        th Assets
+        th BTC Rate
+        th
+          span.right Actions
+      tbody
+        - @coins.each do |coin|
+          tr
+            td= coin.name
+            td= coin.code
+            td= number_to_currency(coin.system_liability, precision: coin.subdivision, unit: "")
+            td= number_to_currency(coin.system_equity, precision: coin.subdivision, unit: "")
+            td= number_to_currency(coin.system_assets, precision: coin.subdivision, unit: "")
+            td= coin.btc_rate
+            td
+              .icons
+                = link_to admins_new_coin_deposit_path(coin), class: "icon", title: "Deposit #{coin.code}" do
+                  i.fa.fa-level-up.fa-lg
+                = link_to admins_new_coin_allocation_path(coin), class: "icon", title: "Allocate #{coin.code}" do
+                  i.fa.fa-user-plus.fa-lg
+                = link_to admins_new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
+                  i.fa.fa-level-down.fa-lg
+
+javascript:
+  $(document).on("turbolinks:load", function () {
+    AdminsCoins();
+  });

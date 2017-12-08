@@ -2,10 +2,16 @@
 
 module Admins
   class CoinsController < AdminsController
-    before_action :find_coin, only: [:edit, :update]
+    before_action :find_coin, only: [:edit, :show, :update]
 
     def index
       @coins = Coin.all.decorate
+    end
+
+    def show
+      respond_to do |format|
+        format.json { render json: @coin.as_json(methods: [:btc_rate, :as_system_total]) }
+      end
     end
 
     def edit
@@ -15,7 +21,7 @@ module Admins
       if @coin.update permitted_params
         redirect_to :index, notice: "Coin updated"
       else
-        flash[:error] = "Coin failed to update"
+        flash[:alert] = "Coin failed to update"
         render :new
       end
     end
