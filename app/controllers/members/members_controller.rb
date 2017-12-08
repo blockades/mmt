@@ -13,7 +13,7 @@ module Members
           format.html { redirect_to member_path(@member), notice: "Successfully updated" }
           format.json { render json: { success: true, member: @member } }
         else
-          format.html { redirect_to member_path(@member), error: "Failed to update" }
+          format.html { redirect_to member_path(@member), alert: "Failed to update" }
           format.json { render json: { success: false, errors: @member.errors, member: @member } }
         end
       end

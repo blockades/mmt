@@ -5,18 +5,6 @@ var Exchange = function (coin) {
   destinationRate = coin.btc_rate;
   destinationSubdivision = coin.subdivision;
 
-  var precision = function (subdivision) {
-    Math.pow(10, subdivision);
-  }
-
-  var toDecimal = function (quantity, subdivision) {
-    parseFloat(quantity) / precision(subdivision);
-  }
-
-  var toInteger = function (quantity, subdivision) {
-    parseInt(quantity * precision(subdivision));
-  }
-
   var updateFields = function (sourceCoin) {
     var sourceSubdivision = sourceCoin.subdivision;
     var sourceRate = sourceCoin.btc_rate;

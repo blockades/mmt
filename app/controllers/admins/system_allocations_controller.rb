@@ -18,7 +18,7 @@ module Admins
         quantity = Utils.to_decimal(transaction.destination_quantity, @coin.subdivision)
         redirect_to admins_coins_path, notice: "Allocated #{quantity} #{@coin.code}"
       else
-        redirect_to admins_new_coin_allocation_path(@coin.id), error: transaction.error_message
+        redirect_to admins_new_coin_allocation_path(@coin.id), alert: transaction.error_message
       end
     end
 
@@ -49,8 +49,8 @@ module Admins
 
     def allocation_params
       permitted_params.merge(
-        source_id: @coin.id,
-        source_type: Coin,
+        source_id: current_member.id,
+        source_type: Member,
         source_coin_id: @coin.id,
         destination_type: Member,
         destination_coin_id: @coin.id,
