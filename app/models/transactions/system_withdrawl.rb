@@ -29,13 +29,13 @@ module Transactions
     end
 
     def publish_to_destination
-    #   # Debit destination (admin) liability
-    #   admin_coin_events.build(
-    #     admin: destination,
-    #     coin: destination_coin,
-    #     liability: -source_quantity,
-    #     rate: nil
-    #   )
+      # Debit destination (member) liability
+      peer_coin_events.build(
+        member: destination,
+        coin: destination_coin,
+        equity: -source_quantity,
+        rate: nil
+      )
     end
   end
 end
