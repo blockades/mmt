@@ -1,8 +1,6 @@
 # frozen_string_literal: true
 
 class SystemTransaction < ApplicationRecord
-  include Eventable
-
   belongs_to :previous_transaction, class_name: self.name, foreign_key: :previous_transaction_id, optional: true
 
   belongs_to :source, polymorphic: true
@@ -16,8 +14,13 @@ class SystemTransaction < ApplicationRecord
 
   has_many :coin_events, autosave: true, dependent: :restrict_with_error
   has_many :member_coin_events, autosave: true, dependent: :restrict_with_error
+  has_many :peer_coin_events, autosave: true, dependent: :restrict_with_error
 
   before_validation :publish_to_source, :publish_to_destination, on: :create
+
+  def readonly?
+    ENV["READONLY_TRANSACTIONS"] == "false" ? false : !new_record?
+  end
 
   def error_message
     errors.full_messages.to_sentence
