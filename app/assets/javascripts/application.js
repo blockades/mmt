@@ -16,4 +16,5 @@
 //= require select2-full
 //= require exchanges
 //= require transaction
+//= require admins_coins
 //= require_self

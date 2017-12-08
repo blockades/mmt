@@ -5,35 +5,50 @@ var Exchange = function (coin) {
   destinationRate = coin.btc_rate;
   destinationSubdivision = coin.subdivision;
 
+  var precision = function (subdivision) {
+    Math.pow(10, subdivision);
+  }
+
+  var toDecimal = function (quantity, subdivision) {
+    parseFloat(quantity) / precision(subdivision);
+  }
+
+  var toInteger = function (quantity, subdivision) {
+    parseInt(quantity * precision(subdivision));
+  }
+
   var updateFields = function (sourceCoin) {
     var sourceSubdivision = sourceCoin.subdivision;
     var sourceRate = sourceCoin.btc_rate;
+    var sourceQuantityDisplay = $('#sourceQuantityDisplay').val();
 
-    var destinationQuantity = $('#destinationQuantityDisplay').val();
+    var quantityInBtc = sourceRate * sourceQuantityDisplay;
+    var destinationQuantityDisplay = quantityInBtc / destinationRate;
 
-    var quantityInBtc = destinationRate * destinationQuantity;
-    var cost = quantityInBtc / sourceRate;
+    if (!sourceCoin.crypto_currency) {
+      destinationQuantityDisplay = (destinationQuantityDisplay * Math.pow(10, sourceSubdivision)) / Math.pow(10, sourceSubdivision);
+    } else if (!coin.crypto_currency) {
+      destinationQuantityDisplay = Math.round(destinationQuantityDisplay * 100) / 100;
+    }
 
-    if (!sourceCoin.crypto_currency)
-      cost = Math.round(cost * Math.pow(10, sourceSubdivision)) / Math.pow(10, sourceSubdivision);
-
-    destinationQuantity = (cost * sourceRate) / destinationRate;
-    $('#destinationQuantityDisplay').val(destinationQuantity);
-    $('#destinationQuantity').val(cost * Math.pow(10, destinationSubdivision));
-
-    $('#sourceQuantityDisplay').val(cost);
-    $('#sourceQuantity').val(cost * Math.pow(10, sourceSubdivision));
-    $('#destinationQuantity').val(destinationQuantity * Math.pow(10, destinationSubdivision));
+    var sourceQuantity = (destinationQuantityDisplay * destinationRate) / sourceRate;
+    var sourceQuantityDisplay = Math.round(sourceQuantity * Math.pow(10, sourceSubdivision)) / Math.pow(10, sourceSubdivision);
+    var sourceQuantity = sourceQuantity * Math.pow(10, sourceSubdivision);
+    var destinationQuantity = destinationQuantityDisplay * Math.pow(10, destinationSubdivision);
+    $('#sourceQuantityDisplay').val(sourceQuantityDisplay);
+    $('#sourceQuantity').val(sourceQuantity);
+    $('#destinationQuantityDisplay').val(destinationQuantityDisplay);
+    $('#destinationQuantity').val(destinationQuantity);
     $('#sourceRate').val(sourceRate);
   }
 
-  var sourceCoinSelect = $('#source_coin_select');
-  var destinationQuantityDisplay = $('#destinationQuantityDisplay');
+  var sourceCoinSelect = $('#sourceCoinSelect');
+  var sourceQuantityDisplay = $('#sourceQuantityDisplay');
 
-  $.each([sourceCoinSelect, destinationQuantityDisplay], function () {
+  $.each([sourceCoinSelect, sourceQuantityDisplay], function () {
     $(this).on("change", function () {
       var sourceCoinId = sourceCoinSelect.find("option:selected").val();
-      var quantity = destinationQuantityDisplay.val();
+      var quantity = sourceQuantityDisplay.val();
       if (quantity <= 0 || !sourceCoinId || /^\s*$/.test(sourceCoinId)) { return; }
       $.ajax({
         url: "/coins/" + sourceCoinId,

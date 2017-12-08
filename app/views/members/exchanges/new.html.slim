@@ -1,28 +1,33 @@
-| Your current balance in #{@coin.name} is #{@coin.member_liability}
+span
+  | You currently hold 
+  strong #{number_to_currency(@coin.member_liability, precision: @coin.subdivision, unit: "")}
+  |  #{@coin.code}
 
+br
+br
 = form_for :exchange, url: exchange_path(@coin), method: :post do |f|
   .row
-    = f.label :current_market_rate
-    = f.number_field :destination_rate, value: @coin.btc_rate, step: :any, id: "destinationRate", readonly: true
-  br
+    label
+      | Debit
+      span#debit
+    - if @coin.fiat?
+      = f.select :source_coin_id, Coin.crypto.all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'sourceCoinSelect'
+    - else
+      = f.select :source_coin_id, Coin.not_self(@coin.id).all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'sourceCoinSelect'
+    = number_field_tag :source_quantity_display, number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantityDisplay'
+    = f.number_field :source_quantity, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantity', class: 'hidden', required: true
+    = f.number_field :source_rate, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceRate', class: 'hidden', readonly: true, required: true
   .row
-    = f.label :quantity
-    = number_field_tag :destination_quantity, number_with_precision(0, precision: @coin.subdivision), step: :any, id: "destinationQuantityDisplay", required: true
+    label
+      | Credit
+    = text_field_tag :destination_coin, @coin.code, style: "width: 71px;"
+    = number_field_tag :destination_quantity_display, number_with_precision(0, precision: @coin.subdivision), step: :any, id: "destinationQuantityDisplay", required: true, readonly: true
     = f.number_field :destination_quantity, value: number_with_precision(0, precision: @coin.subdivision), step: :any, id: "destinationQuantity", class: 'hidden', required: true
   br
   .row
-    = f.label :exchange_with
-    - if @coin.fiat?
-      = f.select :source_coin_id, Coin.crypto.all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'source_coin_select'
-    - else
-      = f.select :source_coin_id, Coin.not_self(@coin.id).all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'source_coin_select'
-  br
-  .row
-    = f.number_field :source_rate, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceRate', class: 'hidden', readonly: true, required: true
-  .row
-    = f.label :cost
-    = number_field_tag :source_quantity, number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantityDisplay', readonly: true
-    = f.number_field :source_quantity, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantity', class: 'hidden', required: true
+    label
+      | Bitcoin (BTC) market rate
+    = f.number_field :destination_rate, value: @coin.btc_rate, step: :any, id: "destinationRate", readonly: true
   br
   .row
     #destinationSubdivision.hidden= @coin.subdivision
@@ -32,6 +37,6 @@
 
 javascript:
   $(document).on('turbolinks:load', function () {
-    var coin = JSON.parse('#{raw @coin.as_json(only: [:id, :subdivision], methods: [:btc_rate]).merge(base_subdivision: Coin::BTC_SUBDIVISION).to_json}');
+    var coin = JSON.parse('#{raw @coin_as_json}');
     new Exchange(coin);
   });
