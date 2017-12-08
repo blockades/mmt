@@ -22,19 +22,20 @@ module Transactions
 
     def publish_to_source
       # Debit source (member) liability with source_coin
-      member_coin_events.build(
-        rate: nil,
+      liability_events.build(
         liability: -source_quantity,
         member: source,
-        coin: source_coin
+        coin: source_coin,
+        rate: nil
       )
     end
 
     def publish_to_destination
       # Debit destination (coin) assets
-      coin_events.build(
+      asset_events.build(
         assets: -source_quantity,
-        coin: destination
+        coin: destination,
+        member: source
       )
     end
   end

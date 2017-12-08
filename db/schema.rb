@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171206163455) do
+ActiveRecord::Schema.define(version: 20171208182813) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -36,6 +36,20 @@ ActiveRecord::Schema.define(version: 20171206163455) do
     t.integer "subdivision", default: 8, null: false
     t.string "slug"
     t.index ["code"], name: "index_coins_on_code", unique: true
+  end
+
+  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "type", null: false
+    t.uuid "coin_id", null: false
+    t.uuid "system_transaction_id", null: false
+    t.uuid "member_id"
+    t.bigint "entry", null: false
+    t.decimal "rate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coin_id"], name: "index_events_on_coin_id"
+    t.index ["member_id"], name: "index_events_on_member_id"
+    t.index ["system_transaction_id"], name: "index_events_on_system_transaction_id"
   end
 
   create_table "friendly_id_slugs", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -151,6 +165,9 @@ ActiveRecord::Schema.define(version: 20171206163455) do
 
   add_foreign_key "coin_events", "coins"
   add_foreign_key "coin_events", "system_transactions"
+  add_foreign_key "events", "coins"
+  add_foreign_key "events", "members"
+  add_foreign_key "events", "system_transactions"
   add_foreign_key "member_coin_events", "coins"
   add_foreign_key "member_coin_events", "members"
   add_foreign_key "member_coin_events", "system_transactions"

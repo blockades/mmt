@@ -21,14 +21,14 @@ module Transactions
 
     def publish_to_source
       # Debit source (member) liability of source_coin
-      member_coin_events.build(
+      liability_events.build(
         coin: source_coin,
         member: source,
         liability: -source_quantity,
         rate: source_rate
       )
       # Credit source_coin equity and assign to source (member)
-      peer_coin_events.build(
+      equity_events.build(
         coin: source_coin,
         member: source,
         equity: source_quantity,
@@ -38,14 +38,14 @@ module Transactions
 
     def publish_to_destination
       # Credit destination (member) liability of destination_coin
-      member_coin_events.build(
+      liability_events.build(
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
         rate: destination_rate
       )
       # Debit destination_coin equity and assign to destination (member)
-      peer_coin_events.build(
+      equity_events.build(
         coin: destination_coin,
         member: destination,
         equity: -destination_quantity,

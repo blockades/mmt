@@ -22,7 +22,7 @@ module Transactions
 
     def publish_to_source
       # Credit source (member) equity
-      peer_coin_events.build(
+      equity_events.build(
         member: source,
         coin: destination_coin,
         equity: destination_quantity,
@@ -32,9 +32,10 @@ module Transactions
 
     def publish_to_destination
       # Credit the destination (coin) assets
-      coin_events.build(
+      asset_events.build(
         assets: destination_quantity,
-        coin: destination
+        coin: destination,
+        member: source
       )
     end
   end

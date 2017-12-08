@@ -14,11 +14,18 @@ class Coin < ApplicationRecord
                                       class_name: "SystemTransaction",
                                       dependent: :restrict_with_error
 
-  has_many :coin_events, dependent: :restrict_with_error
-  has_many :member_coin_events, dependent: :restrict_with_error
-  has_many :members, through: :member_coin_events
-  has_many :peer_coin_events, dependent: :restrict_with_error
-  has_many :peers, through: :peer_coin_events
+  has_many :asset_events, class_name: "Events::Asset",
+                          dependent: :restrict_with_error
+
+  has_many :liability_events, class_name: "Events::Liability",
+                              dependent: :restrict_with_error
+
+  has_many :members, through: :liability_events
+
+  has_many :equity_events, class_name: "Events::Equity",
+                           dependent: :restrict_with_error
+
+  has_many :peers, through: :equity_events
 
   scope :ordered, -> { order(:code) }
   scope :crypto, -> { where(crypto_currency: true) }
@@ -52,15 +59,15 @@ class Coin < ApplicationRecord
   end
 
   def assets
-    coin_events.sum(:assets)
+    asset_events.sum(:assets)
   end
 
   def liability
-    member_coin_events.sum(:liability)
+    liability_events.sum(:liability)
   end
 
   def equity
-    peer_coin_events.sum(:equity)
+    equity_events.sum(:equity)
   end
 
   # ===> Live value and rate

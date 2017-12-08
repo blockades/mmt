@@ -22,15 +22,16 @@ module Transactions
 
     def publish_to_source
       # Debit source (coin) assets
-      coin_events.build(
+      asset_events.build(
         coin: source,
-        assets: -source_quantity
+        assets: -source_quantity,
+        member: destination
       )
     end
 
     def publish_to_destination
       # Debit destination (member) liability
-      peer_coin_events.build(
+      equity_events.build(
         member: destination,
         coin: destination_coin,
         equity: -source_quantity,

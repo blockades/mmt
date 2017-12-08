@@ -1,6 +1,8 @@
 # frozen_string_literal: true
 
 class SystemTransaction < ApplicationRecord
+  include InheritanceNamespace
+
   belongs_to :previous_transaction, class_name: self.name, foreign_key: :previous_transaction_id, optional: true
 
   belongs_to :source, polymorphic: true
@@ -12,9 +14,17 @@ class SystemTransaction < ApplicationRecord
   belongs_to :initiated_by, class_name: "Member", foreign_key: :initiated_by_id, inverse_of: :initiated_transactions
   belongs_to :authorized_by, class_name: "Member", foreign_key: :authorized_by_id, inverse_of: :authorized_transactions
 
-  has_many :coin_events, autosave: true, dependent: :restrict_with_error
-  has_many :member_coin_events, autosave: true, dependent: :restrict_with_error
-  has_many :peer_coin_events, autosave: true, dependent: :restrict_with_error
+  has_many :asset_events, class_name: "Events::Asset",
+                         autosave: true,
+                         dependent: :restrict_with_error
+
+  has_many :liability_events, class_name: "Events::Liability",
+                                autosave: true,
+                                dependent: :restrict_with_error
+
+  has_many :equity_events, class_name: "Events::Equity",
+                              autosave: true,
+                              dependent: :restrict_with_error
 
   before_validation :publish_to_source, :publish_to_destination, on: :create
 
@@ -50,17 +60,6 @@ class SystemTransaction < ApplicationRecord
   validates :initiated_by, presence: true
 
   validate :correct_previous_transaction
-
-  class << self
-    def find_sti_class(_type_name)
-      _type_name = self.name
-      super
-    end
-
-    def sti_name
-      self.name.demodulize
-    end
-  end
 
   private
 

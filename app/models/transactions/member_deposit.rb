@@ -21,15 +21,16 @@ module Transactions
 
     def publish_to_source
       # Credit source (coin) assets
-      coin_events.build(
+      asset_events.build(
         coin: source,
+        member: destination,
         assets: destination_quantity
       )
     end
 
     def publish_to_destination
       # Credit destination (member) liability
-      member_coin_events.build(
+      liability_events.build(
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,

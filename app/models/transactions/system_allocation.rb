@@ -22,7 +22,7 @@ module Transactions
 
     def publish_to_source
       # Debit source (member) equity
-      peer_coin_events.build(
+      equity_events.build(
         member: source,
         equity: -destination_quantity,
         coin: source_coin
@@ -31,7 +31,7 @@ module Transactions
 
     def publish_to_destination
       # Credit destination (member) liability
-      member_coin_events.build(
+      liability_events.build(
         rate: destination_rate,
         liability: destination_quantity,
         member: destination,
