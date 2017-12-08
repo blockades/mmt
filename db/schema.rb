@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171116122309) do
+ActiveRecord::Schema.define(version: 20171206163455) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -110,6 +110,19 @@ ActiveRecord::Schema.define(version: 20171116122309) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
+  create_table "peer_coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "member_id", null: false
+    t.uuid "coin_id", null: false
+    t.uuid "system_transaction_id", null: false
+    t.bigint "equity", null: false
+    t.decimal "rate"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["coin_id"], name: "index_peer_coin_events_on_coin_id"
+    t.index ["member_id"], name: "index_peer_coin_events_on_member_id"
+    t.index ["system_transaction_id"], name: "index_peer_coin_events_on_system_transaction_id"
+  end
+
   create_table "system_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "source_type", null: false
     t.uuid "source_id", null: false
@@ -141,6 +154,9 @@ ActiveRecord::Schema.define(version: 20171116122309) do
   add_foreign_key "member_coin_events", "coins"
   add_foreign_key "member_coin_events", "members"
   add_foreign_key "member_coin_events", "system_transactions"
+  add_foreign_key "peer_coin_events", "coins"
+  add_foreign_key "peer_coin_events", "members"
+  add_foreign_key "peer_coin_events", "system_transactions"
   add_foreign_key "system_transactions", "coins", column: "destination_coin_id"
   add_foreign_key "system_transactions", "coins", column: "source_coin_id"
   add_foreign_key "system_transactions", "members", column: "authorized_by_id"
