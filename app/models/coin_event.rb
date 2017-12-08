@@ -6,9 +6,6 @@ class CoinEvent < ApplicationRecord
   belongs_to :coin
   belongs_to :system_transaction
 
-  scope :credit, -> { where("assets > 0") }
-  scope :debit, -> { where("assets < 0") }
-
   validates :assets,
             presence: true,
             numericality: { only_integer: true }
@@ -16,6 +13,10 @@ class CoinEvent < ApplicationRecord
   validates_associated :coin
 
   validate :coin_assets
+
+  def self.accounting_column
+    :assets
+  end
 
   private
 

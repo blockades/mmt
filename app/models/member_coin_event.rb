@@ -7,19 +7,16 @@ class MemberCoinEvent < ApplicationRecord
   belongs_to :member
   belongs_to :system_transaction
 
-  scope :with_coin, ->(coin_id) { where coin_id: coin_id }
-  scope :with_coins, -> { joins(:coin) }
-  scope :crypto, -> { with_coins.merge(Coin.crypto) }
-  scope :fiat, -> { with_coins.merge(Coin.fiat) }
-  scope :credit, -> { where("liability > 0") }
-  scope :debit, -> { where("liability < 0") }
-
   validates :liability, presence: true,
                         numericality: { only_integer: true }
 
   validates_associated :member
 
   validate :coin_assets, :member_coin_liability
+
+  def self.accounting_column
+    :liability
+  end
 
   private
 
