@@ -1,0 +1,13 @@
+= form_for :withdrawl, url: admins_withdrawl_path(@coin.id), method: :post do |f|
+  .row
+    = f.label :quantity
+    = number_field_tag :source_quantity, number_with_precision(0, precision: @coin.subdivision, unit: ''), step: :any, id: 'quantity_display', required: true
+    = f.number_field :source_quantity, value: number_with_precision(1, precision: @coin.subdivision, unit: ''), step: :any, id: 'quantity', class: 'hidden', required: true
+  br
+  .row
+    = f.hidden_field :previous_transaction_id, value: @previous_transaction&.id
+    = f.submit :withdraw, class: 'button button-primary', data: { disable_with: "Processing&hellip;".html_safe }
+  br
+
+javascript:
+  var subdivision = #{@coin.subdivision};
