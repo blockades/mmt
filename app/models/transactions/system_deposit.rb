@@ -21,13 +21,13 @@ module Transactions
     end
 
     def publish_to_source
-    #   # Credit source (admin) liability
-    #   admin_coin_events.build(
-    #     admin: source,
-    #     coin: destination_coin,
-    #     liability: destination_quantity,
-    #     rate: nil,
-    #   )
+      # Credit source (member) equity
+      peer_coin_events.build(
+        member: source,
+        coin: destination_coin,
+        equity: destination_quantity,
+        rate: destination_rate
+      )
     end
 
     def publish_to_destination
