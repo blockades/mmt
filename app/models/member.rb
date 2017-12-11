@@ -46,7 +46,9 @@ class Member < ApplicationRecord
   has_many :fiat_events, -> { fiat }, class_name: "Events::Liability",
                                       dependent: :restrict_with_error
 
-  has_many :coins, through: :liabilities
+  has_many :coins, -> { distinct }, through: :liability_events
+  has_many :contributed_coins, -> { distinct }, through: :equity_events, source: :coin
+
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 

@@ -17,7 +17,7 @@ module Admins
         quantity = Utils.to_decimal(transaction.source_quantity, @coin.subdivision)
         redirect_to admins_coins_path, notice: "Withdrew #{quantity} #{@coin.code}"
       else
-        redirect_to new_admins_withdrawl_path, alert: transaction.error_message
+        redirect_to admins_new_withdrawl_path, alert: transaction.error_message
       end
     end
 

@@ -25,7 +25,7 @@ class Coin < ApplicationRecord
   has_many :equity_events, class_name: "Events::Equity",
                            dependent: :restrict_with_error
 
-  has_many :peers, through: :equity_events
+  has_many :contributors, through: :equity_events, source: :member
 
   scope :ordered, -> { order(:code) }
   scope :crypto, -> { where(crypto_currency: true) }

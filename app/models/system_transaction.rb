@@ -59,9 +59,31 @@ class SystemTransaction < ApplicationRecord
 
   validates :initiated_by, presence: true
 
-  validate :correct_previous_transaction
+  validate :correct_previous_transaction,
+           :system_sum_to_zero
 
   private
+
+  def system_total_sql
+    <<-SQL
+      SELECT
+        COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Liability'), 0) +
+        COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Equity'), 0) -
+        COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Asset'), 0)
+      AS total
+    SQL
+  end
+
+  def system_sum_to_zero
+    result = Event.find_by_sql(system_total_sql).first.tap do |result|
+      # Ensure most recent additions still sum to 0 on top of previous events
+      result.total += equity_events.sum { |e| e.equity } || 0
+      result.total += liability_events.sum { |e| e.liability } || 0
+      result.total -= asset_events.sum { |e| e.assets } || 0
+    end
+    return true if result.total.zero?
+    self.errors.add :system_sum_to_zero, "Invalid transaction"
+  end
 
   def correct_previous_transaction
     return true if previous_transaction.blank? || (previous_transaction.id == referring_transaction.id)
