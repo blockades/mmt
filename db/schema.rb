@@ -17,16 +17,6 @@ ActiveRecord::Schema.define(version: 20171208182813) do
   enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
 
-  create_table "coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coin_id", null: false
-    t.uuid "system_transaction_id", null: false
-    t.bigint "assets", null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["coin_id"], name: "index_coin_events_on_coin_id"
-    t.index ["system_transaction_id"], name: "index_coin_events_on_system_transaction_id"
-  end
-
   create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
     t.string "code"
@@ -62,19 +52,6 @@ ActiveRecord::Schema.define(version: 20171208182813) do
     t.index ["slug", "sluggable_type"], name: "index_friendly_id_slugs_on_slug_and_sluggable_type"
     t.index ["sluggable_id"], name: "index_friendly_id_slugs_on_sluggable_id"
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
-  end
-
-  create_table "member_coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "coin_id", null: false
-    t.uuid "member_id", null: false
-    t.uuid "system_transaction_id", null: false
-    t.bigint "liability", null: false
-    t.decimal "rate"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["coin_id"], name: "index_member_coin_events_on_coin_id"
-    t.index ["member_id"], name: "index_member_coin_events_on_member_id"
-    t.index ["system_transaction_id"], name: "index_member_coin_events_on_system_transaction_id"
   end
 
   create_table "members", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -124,19 +101,6 @@ ActiveRecord::Schema.define(version: 20171208182813) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
-  create_table "peer_coin_events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
-    t.uuid "member_id", null: false
-    t.uuid "coin_id", null: false
-    t.uuid "system_transaction_id", null: false
-    t.bigint "equity", null: false
-    t.decimal "rate"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
-    t.index ["coin_id"], name: "index_peer_coin_events_on_coin_id"
-    t.index ["member_id"], name: "index_peer_coin_events_on_member_id"
-    t.index ["system_transaction_id"], name: "index_peer_coin_events_on_system_transaction_id"
-  end
-
   create_table "system_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "source_type", null: false
     t.uuid "source_id", null: false
@@ -163,17 +127,9 @@ ActiveRecord::Schema.define(version: 20171208182813) do
     t.index ["source_type", "source_id"], name: "transactions_on_source"
   end
 
-  add_foreign_key "coin_events", "coins"
-  add_foreign_key "coin_events", "system_transactions"
   add_foreign_key "events", "coins"
   add_foreign_key "events", "members"
   add_foreign_key "events", "system_transactions"
-  add_foreign_key "member_coin_events", "coins"
-  add_foreign_key "member_coin_events", "members"
-  add_foreign_key "member_coin_events", "system_transactions"
-  add_foreign_key "peer_coin_events", "coins"
-  add_foreign_key "peer_coin_events", "members"
-  add_foreign_key "peer_coin_events", "system_transactions"
   add_foreign_key "system_transactions", "coins", column: "destination_coin_id"
   add_foreign_key "system_transactions", "coins", column: "source_coin_id"
   add_foreign_key "system_transactions", "members", column: "authorized_by_id"
