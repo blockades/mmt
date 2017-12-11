@@ -5,7 +5,7 @@ class Event < ApplicationRecord
 
   belongs_to :coin
   belongs_to :system_transaction
-  belongs_to :member, required: false
+  belongs_to :member
 
   def readonly?
     ENV["READONLY_TRANSACTIONS"] == "false" ? false : !new_record?
@@ -25,6 +25,8 @@ class Event < ApplicationRecord
 
   validates :type, presence: true,
                    inclusion: { in: TYPES }
+
+  validates_associated :coin, :member
 
   validate :system_sum_to_zero
 

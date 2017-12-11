@@ -1,5 +1,5 @@
 .row
-  .offset-by-eight.columns
+  .offset-by-eight.four.columns
     .total
       span System Total in
       = select_tag :coin_id, options_for_select(Coin.ordered.map {|coin| [ coin.code, coin.id ] }, Coin.btc.id ), class: "select2", id: "systemTotalSelect"

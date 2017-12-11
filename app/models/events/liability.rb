@@ -4,12 +4,8 @@ module Events
   class Liability < Event
     alias_attribute :liability, :entry
 
-    belongs_to :member, required: true
-
     validates :liability, presence: true,
                           numericality: { only_integer: true }
-
-    validates_associated :member
 
     validate :coin_assets, :member_coin_liability
 

@@ -42,7 +42,7 @@ ActiveRecord::Schema.define(version: 20171208182813) do
     t.string "type", null: false
     t.uuid "coin_id", null: false
     t.uuid "system_transaction_id", null: false
-    t.uuid "member_id"
+    t.uuid "member_id", null: false
     t.bigint "entry", null: false
     t.decimal "rate"
     t.datetime "created_at", null: false

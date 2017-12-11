@@ -8,8 +8,6 @@ module Events
               presence: true,
               numericality: { only_integer: true }
 
-    validates_associated :coin
-
     validate :coin_assets
 
     private
