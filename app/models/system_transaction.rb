@@ -75,20 +75,10 @@ class SystemTransaction < ApplicationRecord
   private
 
   def system_sum_to_zero
-    query = <<-SQL
-      SELECT
-        COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Liability'), 0) +
-        COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Equity'), 0) -
-        COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Asset'), 0)
-      AS total
-    SQL
-    result = Event.find_by_sql(query).first.tap do |result|
-      # Ensure most recent additions still sum to 0 on top of previous events
-      result.total += equity_events.sum { |e| e.equity } || 0
-      result.total += liability_events.sum { |e| e.liability } || 0
-      result.total -= asset_events.sum { |e| e.assets } || 0
-    end
-    return true if result.total.zero?
+    total = equity_events.sum { |e| e.equity * e.coin.btc_rate } +
+            liability_events.sum { |e| e.liability * e.coin.btc_rate } -
+            asset_events.sum { |e| e.assets * e.coin.btc_rate }
+    return true if total.zero?
     self.errors.add :system_sum_to_zero, "Invalid transaction"
   end
 
