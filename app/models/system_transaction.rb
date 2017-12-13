@@ -2,17 +2,31 @@
 
 class SystemTransaction < ApplicationRecord
   include InheritanceNamespace
+  include ReadOnlyModel
 
-  belongs_to :previous_transaction, class_name: self.name, foreign_key: :previous_transaction_id, optional: true
+  belongs_to :previous_transaction, class_name: self.name,
+                        foreign_key: :previous_transaction_id,
+                        optional: true
 
   belongs_to :source, polymorphic: true
+
   belongs_to :destination, polymorphic: true
 
-  belongs_to :source_coin, class_name: "Coin", foreign_key: :source_coin_id
-  belongs_to :destination_coin, class_name: "Coin", foreign_key: :destination_coin_id
+  belongs_to :source_coin, class_name: "Coin",
+                           foreign_key: :source_coin_id
 
-  belongs_to :initiated_by, class_name: "Member", foreign_key: :initiated_by_id, inverse_of: :initiated_transactions
-  belongs_to :authorized_by, class_name: "Member", foreign_key: :authorized_by_id, inverse_of: :authorized_transactions
+  belongs_to :destination_coin, class_name: "Coin",
+                                foreign_key: :destination_coin_id
+
+  belongs_to :initiated_by, class_name: "Member",
+                            foreign_key: :initiated_by_id,
+                            inverse_of: :initiated_transactions
+
+  belongs_to :authorized_by, class_name: "Member",
+                             foreign_key: :authorized_by_id,
+                             inverse_of: :authorized_transactions
+
+  has_many :events, autosave: true, dependent: :restrict_with_error
 
   has_many :asset_events, class_name: "Events::Asset",
                          autosave: true,
@@ -27,10 +41,6 @@ class SystemTransaction < ApplicationRecord
                               dependent: :restrict_with_error
 
   before_validation :publish_to_source, :publish_to_destination, on: :create
-
-  def readonly?
-    ENV["READONLY_TRANSACTIONS"] == "false" ? false : !new_record?
-  end
 
   def error_message
     errors.full_messages.to_sentence
@@ -64,18 +74,15 @@ class SystemTransaction < ApplicationRecord
 
   private
 
-  def system_total_sql
-    <<-SQL
+  def system_sum_to_zero
+    query = <<-SQL
       SELECT
         COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Liability'), 0) +
         COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Equity'), 0) -
         COALESCE((SELECT SUM(entry) FROM events WHERE events.type = 'Asset'), 0)
       AS total
     SQL
-  end
-
-  def system_sum_to_zero
-    result = Event.find_by_sql(system_total_sql).first.tap do |result|
+    result = Event.find_by_sql(query).first.tap do |result|
       # Ensure most recent additions still sum to 0 on top of previous events
       result.total += equity_events.sum { |e| e.equity } || 0
       result.total += liability_events.sum { |e| e.liability } || 0

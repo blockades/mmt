@@ -54,8 +54,10 @@ class Coin < ApplicationRecord
     !crypto_currency
   end
 
-  def as_system_total
-    SystemTotal.send("to_#{self.code.downcase}")
+  def system_total
+    Coin.sum do |coin|
+      Utils.to_decimal(coin.assets * coin.btc_rate, coin.subdivision) / btc_rate
+    end
   end
 
   def assets

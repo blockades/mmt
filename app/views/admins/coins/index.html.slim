@@ -3,7 +3,7 @@
     .total
       span System Total in
       = select_tag :coin_id, options_for_select(Coin.ordered.map {|coin| [ coin.code, coin.id ] }, Coin.btc.id ), class: "select2", id: "systemTotalSelect"
-      = number_field_tag :total, number_with_precision(SystemTotal.to_btc, precision: Coin::BTC_SUBDIVISION), step: :any, id: "systemTotalDisplay", readonly: true
+      = number_field_tag :total, number_with_precision(Coin.btc.system_total, precision: Coin::BTC_SUBDIVISION), step: :any, id: "systemTotalDisplay", readonly: true
 
 .row
   .twelve.columns

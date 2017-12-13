@@ -2,14 +2,11 @@
 
 class Event < ApplicationRecord
   include InheritanceNamespace
+  include ReadOnlyModel
 
   belongs_to :coin
   belongs_to :system_transaction
   belongs_to :member
-
-  def readonly?
-    ENV["READONLY_TRANSACTIONS"] == "false" ? false : !new_record?
-  end
 
   scope :forward, -> { order(created_at: :asc) }
   scope :backward, -> { order(created_at: :desc) }
@@ -24,6 +21,14 @@ class Event < ApplicationRecord
   scope :fiat, -> { with_coins.merge(Coin.fiat) }
 
   TYPES = %w[Equity Asset Liability].freeze
+
+  TYPES.each do |type|
+    scope type.underscore.to_sym, -> { where type: type }
+
+    define_method "#{type.underscore}?" do
+      type == self.type
+    end
+  end
 
   validates :type, presence: true,
                    inclusion: { in: TYPES }
