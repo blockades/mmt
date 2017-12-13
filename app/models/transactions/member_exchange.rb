@@ -27,13 +27,6 @@ module Transactions
         liability: -source_quantity,
         rate: source_rate
       )
-      # Credit source_coin equity and assign to source (member)
-      equity_events.build(
-        coin: source_coin,
-        member: source,
-        equity: source_quantity,
-        rate: source_rate
-      )
     end
 
     def publish_to_destination
@@ -42,13 +35,6 @@ module Transactions
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
-        rate: destination_rate
-      )
-      # Debit destination_coin equity and assign to destination (member)
-      equity_events.build(
-        coin: destination_coin,
-        member: destination,
-        equity: -destination_quantity,
         rate: destination_rate
       )
     end
