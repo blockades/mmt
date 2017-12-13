@@ -8,8 +8,7 @@ module Admins
     before_action :find_previous_transaction, only: [:new]
     before_action :check_previous_transaction, only: [:create]
 
-    def new
-    end
+    def new; end
 
     def create
       transaction = transaction_commiter(Transactions::SystemDeposit, deposit_params)

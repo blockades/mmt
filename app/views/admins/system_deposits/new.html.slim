@@ -3,8 +3,8 @@ h2 Deposit #{@coin.code}
 = form_for :deposit, url: admins_coin_deposit_path(@coin), method: :post do |f|
   .row
     = f.label :quantity
-    = number_field_tag :destination_quantity, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantity_display', required: true
-    = f.number_field :destination_quantity, value: number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantity', class: 'hidden', required: true
+    = f.number_field :destination_quantity, value: 0, id: 'quantity', required: true
+    = number_field_tag :destination_quantity_display, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantityDisplay'
   br
   .row
     label BTC Rate
@@ -15,4 +15,7 @@ h2 Deposit #{@coin.code}
     = f.submit :deposit, class: 'button button-primary', data: { disable_with: "Processing&hellip;".html_safe }
 
 javascript:
-  var subdivision = #{@coin.subdivision};
+  $(document).on("turbolinks:load", function () {
+    var attributes = { quantity: "#quantity", display: "#quantityDisplay", coin: #{raw @coin.to_json} };
+    new QuantityAsDecimal(attributes);
+  });

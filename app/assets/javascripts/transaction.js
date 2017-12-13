@@ -1,24 +1,11 @@
-$.fn.extend({
-  asInteger: function (attributes) {
-    var subdivision = attributes.subdivision;
-    var quantity_display = $(this);
-    var quantity = $(attributes.actual);
+var QuantityAsDecimal = function (attributes) {
+  var quantity = $(attributes.quantity);
+  var display = $(attributes.display);
+  var subdivision = attributes.coin.subdivision;
 
-    var updateQuantity = function () {
-      input_quantity = parseFloat($(this).val());
-      integer_value = input_quantity * Math.pow(10, subdivision);
-      quantity.val(integer_value);
-    }
-
-    quantity_display.on("change", updateQuantity);
+  var updateQuantityDisplay = function () {
+    display.val((quantity.val() / Math.pow(10, subdivision)).toFixed(subdivision));
   }
-});
 
-$(document).on('turbolinks:load', function () {
-  if (typeof subdivision !== 'undefined') {
-    $('#quantity_display').asInteger({
-      actual: '#quantity',
-      subdivision: subdivision
-    });
-  }
-});
+  quantity.on('change', updateQuantityDisplay);
+}

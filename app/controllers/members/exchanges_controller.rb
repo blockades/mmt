@@ -15,7 +15,7 @@ module Members
       @coin_as_json = @coin.as_json(
         only: [:id, :subdivision, :crypto_currency],
         methods: [:btc_rate]
-      ).merge(base_subdivision: Coin::BTC_SUBDIVISION).to_json
+      ).to_json
     end
 
     def create
