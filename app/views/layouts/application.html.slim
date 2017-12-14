@@ -15,6 +15,7 @@ html
         li= link_to 'Profile', member_path(current_member), class: 'button button-primary'
         li= link_to 'Portfolio', coins_path, class: 'button button-primary'
         li= link_to 'Exchange', exchanges_path, class: 'button button-primary'
+        li= link_to 'Withdrawls', withdrawl_requests_path, class: 'button button-primary'
       ul.right
         - if current_member&.admin?
           li= link_to 'Admin Dashboard', admins_root_path, class: "button button-primary"

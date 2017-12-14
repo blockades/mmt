@@ -1,0 +1,37 @@
+
+.row
+  .four.columns
+    table
+      strong State Key:
+      thead
+        tr
+          th Pending
+          th Cancelled
+          th Processing
+          th Completed
+      tbody
+        tr
+          th.withdrawl-request.pending
+          th.withdrawl-request.cancelled
+          th.withdrawl-request.processing
+          th.withdrawl-request.completed
+  .offset-by-four.four.columns
+    = link_to "Withdraw", new_withdrawl_request_path, title: "New Withdrawl", class: "button button-primary right"
+
+table width="100%"
+  thead
+    th Coin
+    th Quantity
+    th State
+    th Actions
+  tbody
+    - @withdrawl_requests.each do |withdrawl_request|
+      tr
+        td #{withdrawl_request.coin.name} (#{withdrawl_request.coin.code})
+        td= number_to_currency(withdrawl_request.withdrawl_quantity, precision: withdrawl_request.coin.subdivision, unit: "")
+        td.withdrawl-request class="#{withdrawl_request.state}"
+        td
+          .icons
+            - if withdrawl_request.can_cancel?
+              = link_to coin_cancel_withdrawl_request_path(coin_id: withdrawl_request.coin.id, id: withdrawl_request.id), method: :patch, title: "Cancel", class: "icon" do
+                i.fa.fa-times.fa-lg

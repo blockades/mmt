@@ -101,3 +101,19 @@ section.title {
 .icon {
   padding-left: 10px;
 }
+
+.withdrawl-request.pending {
+  background-color: orange;
+}
+
+.withdrawl-request.completed {
+  background-color: blue;
+}
+
+.withdrawl-request.processing {
+  background-color: green;
+}
+
+.withdrawl-request.cancelled {
+  background-color: red;
+}

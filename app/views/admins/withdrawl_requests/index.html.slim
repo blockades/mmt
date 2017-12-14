@@ -1,0 +1,43 @@
+table
+  strong State Key:
+  thead
+    tr
+      th Pending
+      th Cancelled
+      th Processing
+      th Completed
+  tbody
+    tr
+      th.withdrawl-request.pending
+      th.withdrawl-request.cancelled
+      th.withdrawl-request.processing
+      th.withdrawl-request.completed
+
+table width="100%"
+  thead
+    th Member
+    th Coin
+    th Quantity
+    th State
+    th Actions
+  tbody
+    - @withdrawl_requests.each do |withdrawl_request|
+      tr
+        td= withdrawl_request.member.username
+        td #{withdrawl_request.coin.name} (#{withdrawl_request.coin.code})
+        td= number_to_currency(withdrawl_request.withdrawl_quantity, precision: withdrawl_request.coin.subdivision, unit: "")
+        td.withdrawl-request class="#{withdrawl_request.state}"
+        td
+          .icons
+            - if withdrawl_request.can_process?
+              = link_to admins_process_withdrawl_request_path(withdrawl_request), method: :patch, title: "Process", class: "icon" do
+                i.fa.fa-spinner.fa-lg
+            - if withdrawl_request.can_confirm?
+              = link_to admins_confirm_withdrawl_request_path(withdrawl_request), method: :patch, title: "Confirm", class: "icon" do
+                i.fa.fa-btc.fa-lg
+            - if withdrawl_request.can_cancel?
+              = link_to admins_cancel_withdrawl_request_path(withdrawl_request), method: :patch, title: "Cancel", class: "icon" do
+                i.fa.fa-times.fa-lg
+            - unless withdrawl_request.system_transaction.blank?
+              = link_to admins_transaction_path(withdrawl_request.system_transaction), title: "Transaction", class: "icon" do
+                i.fa.fa-exchange.fa-lg
