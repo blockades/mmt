@@ -42,7 +42,7 @@ class Member < ApplicationRecord
   has_many :debits, -> { where("liability < 0") }, class_name: "MemberCoinEvent",
                                                    dependent: :restrict_with_error
 
-  has_many :coins, through: :member_coin_events
+  has_many :coins, -> { distinct }, through: :member_coin_events
 
   has_many :crypto_events, -> { crypto }, class_name: "MemberCoinEvent",
                                           dependent: :restrict_with_error
@@ -53,8 +53,18 @@ class Member < ApplicationRecord
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
+  has_many :withdrawl_requests do
+    def with_coin(coin)
+      for_coin(coin)
+    end
+  end
+
+  has_many :confirmed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :confirmed_by_id
+  has_many :processed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :processed_by_id
+
   scope :with_crypto, -> { joins(:crypto) }
   scope :with_fiat, -> { joins(:fiat) }
+  scope :with_withdrawl_requests, ->(coin) { where(coin: coin) }
 
   TWO_FACTOR_DELIVERY_METHODS = {
     sms: "Short message service (SMS)",
@@ -86,6 +96,10 @@ class Member < ApplicationRecord
 
   def coin_history(coin)
     member_coin_events.where(coin_id: coin.id)
+  end
+
+  def available_liability(coin)
+    liability(coin) - withdrawl_requests.for_coin(coin).outstanding.sum(:quantity)
   end
 
   def liability(coin)
