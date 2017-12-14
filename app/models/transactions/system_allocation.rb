@@ -25,7 +25,8 @@ module Transactions
       equity_events.build(
         member: source,
         equity: -destination_quantity,
-        coin: source_coin
+        coin: source_coin,
+        rate: destination_rate
       )
     end
 

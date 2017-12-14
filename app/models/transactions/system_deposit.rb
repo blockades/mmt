@@ -35,7 +35,8 @@ module Transactions
       asset_events.build(
         assets: destination_quantity,
         coin: destination,
-        member: source
+        member: source,
+        rate: destination_rate
       )
     end
   end

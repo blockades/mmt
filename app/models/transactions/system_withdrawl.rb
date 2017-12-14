@@ -8,7 +8,6 @@ module Transactions
 
     validates :destination_quantity,
               :destination_rate,
-              :source_rate,
               absence: true
 
     validates :source_type, inclusion: { in: ["Coin"] }
@@ -25,7 +24,8 @@ module Transactions
       asset_events.build(
         coin: source,
         assets: -source_quantity,
-        member: destination
+        member: destination,
+        rate: destination_coin.btc_rate
       )
     end
 
@@ -35,7 +35,7 @@ module Transactions
         member: destination,
         coin: destination_coin,
         equity: -source_quantity,
-        rate: nil
+        rate: destination_coin.btc_rate
       )
     end
   end

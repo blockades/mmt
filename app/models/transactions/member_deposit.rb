@@ -24,7 +24,8 @@ module Transactions
       asset_events.build(
         coin: source,
         member: destination,
-        assets: destination_quantity
+        assets: destination_quantity,
+        rate: destination_coin.btc_rate
       )
     end
 
@@ -34,7 +35,7 @@ module Transactions
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
-        rate: nil
+        rate: destination_coin.btc_rate
       )
     end
   end
