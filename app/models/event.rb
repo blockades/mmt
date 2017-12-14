@@ -8,11 +8,6 @@ class Event < ApplicationRecord
   belongs_to :system_transaction
   belongs_to :member
 
-  scope :forward, -> { order(created_at: :asc) }
-  scope :backward, -> { order(created_at: :desc) }
-  scope :forward_from, ->(event) { forward.where("created_at >= ?", event.created_at) }
-  scope :backward_from, ->(event) { backward.where("created_at <= ?", event.created_at) }
-
   scope :credit, -> { where("entry > 0") }
   scope :debit, -> { where("entry < 0") }
   scope :with_coin, ->(coin_id) { where coin_id: coin_id }
