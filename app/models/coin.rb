@@ -22,6 +22,7 @@ class Coin < ApplicationRecord
   scope :crypto, -> { where(crypto_currency: true) }
   scope :fiat, -> { where.not(crypto_currency: true) }
   scope :not_self, ->(coin_id) { where.not(id: coin_id) }
+  scope :btc, -> { find_by code: "BTC" }
 
   attr_readonly :code
 

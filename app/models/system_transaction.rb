@@ -19,10 +19,6 @@ class SystemTransaction < ApplicationRecord
 
   before_validation :publish_to_source, :publish_to_destination, on: :create
 
-  def error_message
-    errors.full_messages.to_sentence
-  end
-
   TYPES = %w[
     SystemDeposit SystemAllocation SystemWithdrawl
     MemberDeposit MemberAllocation MemberExchange MemberWithdrawl
