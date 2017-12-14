@@ -20,6 +20,10 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
+    resources :withdrawl_requests, only: [:index, :update]
+    patch "withdrawl_requests/:id/process" => "withdrawl_requests#mark_as_processing", as: :process_withdrawl_request
+    patch "withdrawl_requests/:id/cancel" => "withdrawl_requests#cancel", as: :cancel_withdrawl_request
+    patch "withdrawl_requests/:id/confirm" => "withdrawl_requests#confirm", as: :confirm_withdrawl_request
 
     scope path: :deposit do
       get "/:coin_id/new" => "system_deposits#new", as: :new_coin_deposit
@@ -54,19 +58,21 @@ Rails.application.routes.draw do
   scope module: :members do
     root to: "dashboard#index"
 
-    resources :coins, only: [:index]
+    resources :coins, only: [:index] do
+      resources :withdrawl_requests, only: [:create]
+      patch "withdrawl_requests/:id/cancel" => "withdrawl_requests#cancel", as: :cancel_withdrawl_request
+
+      resources :exchanges, only: [:index, :new, :create]
+    end
+
+    resources :withdrawl_requests, only: [:index, :new]
+
     resources :coins, only: [:show], format: :js
 
     scope path: :exchanges do
       root to: "exchanges#index", as: :exchanges
       get "/:coin_id/new" => "exchanges#new", as: :new_exchange
       post "/:coin_id" => "exchanges#create", as: :exchange
-    end
-
-    scope path: :withdraw do
-      root to: "withdrawls#index", as: :withdrawls
-      get "/:coin_id" => "withdrawls#new", as: :new_withdrawl
-      post "/:coin_id" => "withdrawls#create", as: :withdrawl
     end
 
     resources :members, path: "/", only: [:show, :update]
