@@ -2,10 +2,6 @@ var Exchange = function (coin) {
   var destinationRate = coin.btc_rate;
   var destinationSubdivision = coin.subdivision;
 
-  var getCoin = function (id, callback) {
-    $.ajax({ url: "/coins/" + id, type: "GET", dataType: "json", success: callback });
-  }
-
   var sourceCoinId = function () {
     return sourceCoinSelect.find("option:selected").val();
   }
@@ -22,7 +18,10 @@ var Exchange = function (coin) {
     var quantityInBtc = (destinationQuantity * destinationRate) * Math.pow(10, 8 - destinationSubdivision);
     var sourceQuantity = (quantityInBtc / sourceRate) / Math.pow(10, 8 - sourceSubdivision);
     var sourceQuantityDisplay = calculateDisplay(sourceQuantity, sourceSubdivision);
-    updateFields(sourceQuantity, destinationQuantity, sourceQuantityDisplay, destinationQuantityDisplay, sourceRate);
+
+    updateQuantity(sourceQuantity, destinationQuantity);
+    updateQuantityDisplay(sourceQuantityDisplay, destinationQuantityDisplay);
+    updateRate(sourceRate);
   }
 
   var calculateDestination = function (sourceCoin) {
@@ -33,15 +32,24 @@ var Exchange = function (coin) {
     var quantityInBtc = (sourceRate * sourceQuantity) * Math.pow(10, 8 - sourceSubdivision);
     var destinationQuantity = (quantityInBtc / destinationRate) / Math.pow(10, 8 - destinationSubdivision);
     var destinationQuantityDisplay = calculateDisplay(destinationQuantity, destinationSubdivision);
-    updateFields(sourceQuantity, destinationQuantity, sourceQuantityDisplay, destinationQuantityDisplay, sourceRate);
+
+    updateQuantity(sourceQuantity, destinationQuantity);
+    updateQuantityDisplay(sourceQuantityDisplay, destinationQuantityDisplay);
+    updateRate(sourceRate);
   }
 
-  var updateFields = function (sourceQuantity, destinationQuantity, sourceQuantityDisplay, destinationQuantityDisplay, sourceRate) {
+  var updateQuantity = function (sourceQuantity, destinationQuantity) {
     $("#sourceQuantity").val(sourceQuantity);
-    $("#sourceQuantityDisplay").val(sourceQuantityDisplay);
-    $("#sourceRate").val(sourceRate);
     $("#destinationQuantity").val(destinationQuantity);
+  }
+
+  var updateQuantityDisplay = function (sourceQuantityDisplay, destinationQuantityDisplay) {
+    $("#sourceQuantityDisplay").val(sourceQuantityDisplay);
     $("#destinationQuantityDisplay").val(destinationQuantityDisplay);
+  }
+
+  var updateRate = function (sourceRate) {
+    $("#sourceRate").val(sourceRate);
   }
 
   var sourceCoinSelect = $('#sourceCoinSelect');
@@ -52,7 +60,7 @@ var Exchange = function (coin) {
     $(this).on("change", function () {
       var sourceCoin = sourceCoinId();
       if (destinationQuantity.val() <= 0 || !sourceCoin || /^\s*$/.test(sourceCoin)) { return; }
-      getCoin(sourceCoin, calculateSource);
+      new getCoin(sourceCoin, calculateSource);
     });
   });
 
@@ -60,8 +68,7 @@ var Exchange = function (coin) {
     $(this).on("change", function () {
       var sourceCoin = sourceCoinId();
       if (sourceQuantity.val() <= 0 || !sourceCoin || /^\s*$/.test(sourceCoin)) { return; }
-      getCoin(sourceCoin, calculateDestination);
+      new getCoin(sourceCoin, calculateDestination);
     });
   });
 }
-

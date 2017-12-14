@@ -1,7 +1,11 @@
-var AdminsCoins = function () {
+var getAdminCoin = function (id, callback) {
+  $.ajax({ url: "/admins/coins/" + id, type: "GET", dataType: "json", success: callback })
+}
+
+var SystemTotal = function () {
   var changeTotalSelect = function () {
     var id = $(this).find("option:selected").val()
-    getCoin(id, changeTotal);
+    new getAdminCoin(id, changeTotal);
   }
 
   var changeTotal = function (coin) {
@@ -9,9 +13,9 @@ var AdminsCoins = function () {
     $("#systemTotalDisplay").val(systemTotal);
   }
 
-  var getCoin = function (id, callback) {
-    $.ajax({ url: "/admins/coins/" + id, type: "GET", dataType: "json", success: callback })
-  }
-
   $("#systemTotalSelect").on("change", changeTotalSelect)
 }
+
+$(document).on("turbolinks:load", function () {
+  new SystemTotal;
+});
