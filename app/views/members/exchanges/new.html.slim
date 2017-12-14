@@ -7,26 +7,29 @@ br
 br
 = form_for :exchange, url: exchange_path(@coin), method: :post do |f|
   .row
+    p
+      | Input values must be integers. The decimal equivalent is shown to the right.
     label
       | Debit
       span#debit
+      span
     - if @coin.fiat?
       = f.select :source_coin_id, Coin.crypto.all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'sourceCoinSelect'
     - else
       = f.select :source_coin_id, Coin.not_self(@coin.id).all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'sourceCoinSelect'
-    = number_field_tag :source_quantity_display, number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantityDisplay'
-    = f.number_field :source_quantity, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantity', class: 'hidden', required: true
+    = f.number_field :source_quantity, value: 0, id: 'sourceQuantity', required: true
+    = number_field_tag :source_quantity_display, number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantityDisplay', readonly: true
     = f.number_field :source_rate, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceRate', class: 'hidden', readonly: true, required: true
   .row
     label
       | Credit
     = text_field_tag :destination_coin, @coin.code, style: "width: 71px;"
-    = number_field_tag :destination_quantity_display, number_with_precision(0, precision: @coin.subdivision), step: :any, id: "destinationQuantityDisplay", required: true, readonly: true
-    = f.number_field :destination_quantity, value: number_with_precision(0, precision: @coin.subdivision), step: :any, id: "destinationQuantity", class: 'hidden', required: true
+    = f.number_field :destination_quantity, value: 0, id: 'destinationQuantity', required: true
+    = number_field_tag :destination_quantity_display, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'destinationQuantityDisplay'
   br
   .row
-    label
-      | Bitcoin (BTC) market rate
+    label Market Rate
+    p #{@coin.name} (#{@coin.code}) to Bitcoin (BTC)
     = f.number_field :destination_rate, value: @coin.btc_rate, step: :any, id: "destinationRate", readonly: true
   br
   .row
