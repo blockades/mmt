@@ -75,9 +75,10 @@ class SystemTransaction < ApplicationRecord
   private
 
   def system_sum_to_zero
-    total = equity_events.sum { |e| e.equity * e.coin.btc_rate } +
-            liability_events.sum { |e| e.liability * e.coin.btc_rate } -
-            asset_events.sum { |e| e.assets * e.coin.btc_rate }
+    # Can we go about this any other way? We must divide integer values by subdivision to account for storing multiplied by subdivision
+    total = equity_events.sum { |e| Utils.to_decimal(e.equity * e.rate, e.coin.subdivision).round(Coin::BTC_SUBDIVISION) } +
+            liability_events.sum { |e| Utils.to_decimal(e.liability * e.rate, e.coin.subdivision).round(Coin::BTC_SUBDIVISION) } -
+            asset_events.sum { |e| Utils.to_decimal(e.assets * e.rate, e.coin.subdivision).round(Coin::BTC_SUBDIVISION) }
     return true if total.zero?
     self.errors.add :system_sum_to_zero, "Invalid transaction"
   end
