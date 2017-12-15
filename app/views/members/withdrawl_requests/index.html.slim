@@ -1,7 +1,6 @@
 .row
   .four.columns
     table
-      strong State Key:
       thead
         tr
           th Pending
@@ -22,13 +21,16 @@
 
 table width="100%"
   thead
+    th Created at
     th Coin
     th Quantity
     th State
-    th Actions
+    th.right
+      span Actions
   tbody
     - @withdrawl_requests.each do |withdrawl_request|
       tr
+        th= withdrawl_request.created_at.strftime("%d/%m/%Y")
         td #{withdrawl_request.coin.name} (#{withdrawl_request.coin.code})
         td= number_to_currency(withdrawl_request.withdrawl_quantity, precision: withdrawl_request.coin.subdivision, unit: "")
         td.withdrawl-request class="#{withdrawl_request.state}"

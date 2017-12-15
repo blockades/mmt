@@ -55,7 +55,7 @@ class Member < ApplicationRecord
 
   has_many :withdrawl_requests
   has_many :cancelled_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :cancelled_by_id
-  has_many :confirmed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :confirmed_by_id
+  has_many :completed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :completed_by_id
   has_many :processed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :processed_by_id
 
   scope :with_crypto, -> { joins(:crypto) }
@@ -94,7 +94,11 @@ class Member < ApplicationRecord
   end
 
   def available_liability(coin)
-    liability(coin) - withdrawl_requests.for_coin(coin).outstanding.sum(:quantity)
+    liability(coin) - outstanding_withdrawl_liability(coin)
+  end
+
+  def outstanding_withdrawl_liability(coin)
+    withdrawl_requests.for_coin(coin).outstanding.sum(:quantity)
   end
 
   def liability(coin)

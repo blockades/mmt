@@ -1,5 +1,4 @@
 table
-  strong State Key:
   thead
     tr
       th Pending
@@ -15,18 +14,31 @@ table
 
 table width="100%"
   thead
+    th Created at
     th Member
     th Coin
     th Quantity
-    th State
-    th Actions
+    th Current State
+    th Updated at
+    th Updated by
+    th Processed by
+    th Cancelled by
+    th Completed by
+    th.right
+      span Actions
   tbody
     - @withdrawl_requests.each do |withdrawl_request|
       tr
+        th= withdrawl_request.created_at.strftime("%d/%m/%Y")
         td= withdrawl_request.member.username
         td #{withdrawl_request.coin.name} (#{withdrawl_request.coin.code})
         td= number_to_currency(withdrawl_request.withdrawl_quantity, precision: withdrawl_request.coin.subdivision, unit: "")
         td.withdrawl-request class="#{withdrawl_request.state}"
+        th= withdrawl_request.updated_at.strftime("%d/%m/%Y")
+        th= withdrawl_request.last_touched_by.username
+        th= withdrawl_request.processed_by&.username || "-"
+        th= withdrawl_request.cancelled_by&.username || "-"
+        th= withdrawl_request.completed_by&.username || "-"
         td
           .icons
             - if withdrawl_request.can_process?

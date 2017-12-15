@@ -3,11 +3,15 @@
 class MemberDecorator < Draper::Decorator
   delegate_all
 
-  def coin_liability(coin)
+  def read_liability(coin)
     Utils.to_decimal(liability(coin), coin.subdivision)
   end
 
-  def available(coin)
+  def read_outstanding_withdrawl_liability(coin)
+    Utils.to_decimal(outstanding_withdrawl_liability(coin), coin.subdivision)
+  end
+
+  def read_available(coin)
     Utils.to_decimal(available_liability(coin), coin.subdivision)
   end
 

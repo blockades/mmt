@@ -10,6 +10,8 @@
           tr
             th Name
             th Code
+            th Liability
+            th Withdrawls outstanding
             th Available
             th
               span.right Actions
@@ -18,7 +20,9 @@
             tr
               td= coin.name
               td= coin.code
-              td= number_to_currency(@member.available(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.read_liability(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.read_outstanding_withdrawl_liability(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.read_available(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
@@ -38,6 +42,8 @@
           tr
             th Name
             th Code
+            th Liability
+            th Withdrawls outstanding
             th Available
             th
               span.right Actions
@@ -46,7 +52,9 @@
             tr
               td= coin.name
               td= coin.code
-              td= number_to_currency(@member.available(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.read_liability(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.read_outstanding_withdrawl_liability(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.read_available(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
