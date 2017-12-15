@@ -20,7 +20,7 @@ module Members
       if withdrawl_request.persisted?
         redirect_to withdrawl_requests_path, notice: "Withdrawl Request lodged"
       else
-        redirect_to new_withdrawl_path, error: withdrawl_request.error_message
+        redirect_to new_coin_withdrawl_request_path(@coin), alert: withdrawl_request.error_message
       end
     end
 

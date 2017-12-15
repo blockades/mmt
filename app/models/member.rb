@@ -64,7 +64,6 @@ class Member < ApplicationRecord
 
   scope :with_crypto, -> { joins(:crypto) }
   scope :with_fiat, -> { joins(:fiat) }
-  scope :with_withdrawl_requests, ->(coin) { where(coin: coin) }
 
   TWO_FACTOR_DELIVERY_METHODS = {
     sms: "Short message service (SMS)",

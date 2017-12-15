@@ -2,11 +2,15 @@
 
 class WithdrawlRequest < ApplicationRecord
   belongs_to :member
+  belongs_to :last_touched_by, class_name: "Member", foreign_key: :last_touched_by_id
   belongs_to :coin
   belongs_to :system_transaction, optional: true
 
-  [:last_touched_by, :processed_by, :confirmed_by, :completed_by, :cancelled_by].each do |reference|
-    belongs_to reference, class_name: 'Member', foreign_key: "#{reference}_id".to_sym
+  [:processed, :confirmed, :completed, :cancelled].each do |reference|
+    belongs_to "#{reference}_by".to_sym, class_name: 'Member',
+                                         foreign_key: "#{reference}_by_id".to_sym,
+                                         inverse_of: "#{reference}_withdrawl_requests",
+                                         optional: true
   end
 
   STATES = %w[pending processing completed cancelled failed].freeze
@@ -14,6 +18,8 @@ class WithdrawlRequest < ApplicationRecord
   validates :quantity, :rate, presence: true, numericality: { greater_than: 0 }
 
   validates :state, presence: true, inclusion: { in: STATES }
+
+  validate :liability_available
 
   scope :for_coin, ->(coin) { where coin: coin }
   scope :for_member, ->(member) { where member: member }
@@ -32,15 +38,18 @@ class WithdrawlRequest < ApplicationRecord
     event(:retry)    { transition failed: :process }
 
     state :processing do
-      validates_presence_of :processed_by, :last_touched_by
+      validates :processed_by, :last_touched_by, presence: true
+      validates_associated :processed_by, :last_touched_by, if: proc { error.empty? }
     end
 
     state :cancelled do
-      validates_presence_of :cancelled_by, :last_touched_by
+      validates :cancelled_by, :last_touched_by, presence: true
+      validates_associated :cancelled_by, :last_touched_by, if: proc { error.empty? }
     end
 
     state :completed do
-      validates_presence_of :completed_by, :last_touched_by, :system_transaction
+      validates :completed_by, :last_touched_by, :system_transaction, presence: true
+      validates_associated :completed_by, :last_touched_by, :system_transaction, if: proc { error.empty? }
     end
 
     def initialize
@@ -60,5 +69,13 @@ class WithdrawlRequest < ApplicationRecord
       destination: coin,
       destination_coin: coin
     }
+  end
+
+  private
+
+  def liability_available
+    liability = member.available_liability(coin) - quantity
+    return true if liability.positive? || liability.zero?
+    self.errors.add :quantity, "Insufficient funds"
   end
 end

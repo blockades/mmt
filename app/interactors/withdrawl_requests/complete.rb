@@ -7,7 +7,6 @@ module WithdrawlRequests
 
       completed = withdrawl_request_commiter do
         transaction_commiter(Transactions::MemberWithdrawl, transaction_params)
-        withdrawl_request.last_touched_by = member
         withdrawl_request.completed_by = member
         withdrawl_request.complete!
       end

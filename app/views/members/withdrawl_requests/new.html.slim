@@ -1,5 +1,7 @@
 h2 Withdraw #{@coin&.code}
 
+p Your current balance in #{@coin.name} is #{@coin.member_liability}
+
 = form_for [:coin, @withdrawl_request], method: :post do |f|
   .row
     = f.label :quantity

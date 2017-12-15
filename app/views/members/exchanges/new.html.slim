@@ -1,4 +1,4 @@
-| Your current balance in #{@coin.name} is #{@coin.member_liability}
+p Your current balance in #{@coin.name} is #{@coin.member_liability}
 
 = form_for :exchange, url: exchange_path(@coin), method: :post do |f|
   .row
