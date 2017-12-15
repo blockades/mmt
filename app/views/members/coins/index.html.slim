@@ -10,7 +10,7 @@
           tr
             th Name
             th Code
-            th Balance
+            th Available
             th
               span.right Actions
         tbody
@@ -23,7 +23,7 @@
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
                     i.fa.fa-shopping-cart.fa-lg
-                  = link_to new_withdrawl_request_path(coin_id: coin.id), class: 'icon', title: "Withdraw #{coin.code}" do
+                  = link_to new_coin_withdrawl_request_path(coin_id: coin.id), class: 'icon', title: "Withdraw #{coin.code}" do
                     i.fa.fa-level-down.fa-lg
 
 - if @fiat.any?
@@ -38,7 +38,7 @@
           tr
             th Name
             th Code
-            th Balance
+            th Available
             th
               span.right Actions
         tbody
@@ -46,10 +46,10 @@
             tr
               td= coin.name
               td= coin.code
-              td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
+              td= number_to_currency(@member.available(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
                   = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
                     i.fa.fa-shopping-cart.fa-lg
-                  = link_to new_withdrawl_request_path(coin_id: coin.id), class: 'icon', title: "Withdraw #{coin.code}" do
+                  = link_to new_coin_withdrawl_request_path(coin_id: coin.id), class: 'icon', title: "Withdraw #{coin.code}" do
                     i.fa.fa-level-down.fa-lg

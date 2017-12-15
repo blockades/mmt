@@ -1,10 +1,6 @@
 h2 Withdraw #{@coin&.code}
 
-= form_for @withdrawl_request, method: :post do |f|
-  - if @coin.blank?
-    .row
-      = label_tag :coin
-      = select_tag :coin_id, options_for_select(current_member.coins.all.map {|coin| [ coin.code, coin.id ] }, selected: Coin.btc.id), class: "select2", id: 'coinSelect'
+= form_for [:coin, @withdrawl_request], method: :post do |f|
   .row
     = f.label :quantity
     = number_field_tag :quantity, number_with_precision(0, precision: @coin&.subdivision || Coin::BTC_SUBDIVISION, unit: ''), step: :any, id: 'quantityDisplay', required: true
@@ -17,5 +13,6 @@ h2 Withdraw #{@coin&.code}
 
 javascript:
   $(document).on("turbolinks:load", function () {
-    new WithdrawlRequest;
+    var coin = JSON.parse('#{raw @coin.as_json(methods: [:btc_rate]).to_json}');
+    new NewWithdrawlRequest(coin);
   });

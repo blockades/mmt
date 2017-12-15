@@ -58,16 +58,14 @@ Rails.application.routes.draw do
   scope module: :members do
     root to: "dashboard#index"
 
+    resources :coins, only: [:show], format: :js
     resources :coins, only: [:index] do
-      resources :withdrawl_requests, only: [:create]
-      patch "withdrawl_requests/:id/cancel" => "withdrawl_requests#cancel", as: :cancel_withdrawl_request
-
       resources :exchanges, only: [:index, :new, :create]
+      resources :withdrawl_requests, only: [:new, :create]
+      patch "withdrawl_requests/:id/cancel" => "withdrawl_requests#cancel", as: :cancel_withdrawl_request
     end
 
-    resources :withdrawl_requests, only: [:index, :new]
-
-    resources :coins, only: [:show], format: :js
+    resources :withdrawl_requests, only: [:index]
 
     scope path: :exchanges do
       root to: "exchanges#index", as: :exchanges
