@@ -23,6 +23,7 @@ class WithdrawlRequest < ApplicationRecord
 
   scope :for_coin, ->(coin) { where coin: coin }
   scope :for_member, ->(member) { where member: member }
+  scope :not_self, ->(member) { where.not member: member }
   scope :pending, -> { where state: :pending }
   scope :processing, -> { where state: :processing }
   scope :completed, -> { where state: :completed }

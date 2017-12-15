@@ -53,12 +53,8 @@ class Member < ApplicationRecord
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
-  has_many :withdrawl_requests do
-    def with_coin(coin)
-      for_coin(coin)
-    end
-  end
-
+  has_many :withdrawl_requests
+  has_many :cancelled_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :cancelled_by_id
   has_many :confirmed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :confirmed_by_id
   has_many :processed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :processed_by_id
 
