@@ -1,3 +1,5 @@
+# frozen_string_literal: true
+
 class WithdrawlRequest < ApplicationRecord
   belongs_to :member
   belongs_to :coin
@@ -35,6 +37,10 @@ class WithdrawlRequest < ApplicationRecord
     def initialize
       super
     end
+  end
+
+  def previous_transaction
+    Transactions::MemberWithdrawl.ordered.for_source(member).last
   end
 
   def confirm!(last_changed_by:)
