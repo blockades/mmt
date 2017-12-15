@@ -2,6 +2,7 @@
 
 module Members
   class WithdrawlRequestsController < ApplicationController
+
     before_action :find_coin, except: [:index]
     before_action :find_withdrawl_request, only: [:cancel]
 
@@ -17,19 +18,22 @@ module Members
       withdrawl_request = WithdrawlRequest.create(withdrawl_request_params)
 
       if withdrawl_request.persisted?
-        redirect_to coins_path, notice: "Success"
+        redirect_to withdrawl_requests_path, notice: "Withdrawl Request lodged"
       else
         redirect_to new_withdrawl_path, error: withdrawl_request.error_message
       end
     end
 
     def cancel
-      return unless @withdrawl_request.can_cancel?
+      result = ::WithdrawlRequests::Cancel.call(
+        member: current_member,
+        withdrawl_request: @withdrawl_request
+      )
 
-      if @withdrawl_request.cancel
-        redirect_to withdrawl_requests_path, notice: "Success"
+      if result.success?
+        redirect_to withdrawl_requests_path, notice: result.message
       else
-        redirect_to withdrawl_request_path(@withdrawl_request), alert: "Fail"
+        redirect_to withdrawl_requests_path, alert: result.message
       end
     end
 

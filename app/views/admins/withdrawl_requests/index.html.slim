@@ -32,11 +32,14 @@ table width="100%"
             - if withdrawl_request.can_process?
               = link_to admins_process_withdrawl_request_path(withdrawl_request), method: :patch, title: "Process", class: "icon" do
                 i.fa.fa-spinner.fa-lg
-            - if withdrawl_request.can_confirm?
-              = link_to admins_confirm_withdrawl_request_path(id: withdrawl_request.id, withdrawl_request: { previous_transaction_id: withdrawl_request.previous_transaction }), method: :patch, title: "Confirm", class: "icon" do
+            - if withdrawl_request.can_complete?
+              = link_to admins_complete_withdrawl_request_path(id: withdrawl_request.id, withdrawl_request: { previous_transaction_id: withdrawl_request.previous_transaction }), method: :patch, title: "Complete", class: "icon" do
                 i.fa.fa-btc.fa-lg
             - if withdrawl_request.can_cancel?
               = link_to admins_cancel_withdrawl_request_path(withdrawl_request), method: :patch, title: "Cancel", class: "icon" do
+                i.fa.fa-times.fa-lg
+            - if withdrawl_request.can_revert?
+              = link_to admins_revert_withdrawl_request_path(withdrawl_request), method: :patch, title: "Revert", class: "icon" do
                 i.fa.fa-times.fa-lg
             - unless withdrawl_request.system_transaction.blank?
               = link_to admins_transaction_path(withdrawl_request.system_transaction), title: "Transaction", class: "icon" do

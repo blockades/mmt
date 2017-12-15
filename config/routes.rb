@@ -23,7 +23,8 @@ Rails.application.routes.draw do
     resources :withdrawl_requests, only: [:index, :update]
     patch "withdrawl_requests/:id/process" => "withdrawl_requests#processing", as: :process_withdrawl_request
     patch "withdrawl_requests/:id/cancel" => "withdrawl_requests#cancel", as: :cancel_withdrawl_request
-    patch "withdrawl_requests/:id/confirm" => "withdrawl_requests#confirm", as: :confirm_withdrawl_request
+    patch "withdrawl_requests/:id/revert" => "withdrawl_requests#revert", as: :revert_withdrawl_request
+    patch "withdrawl_requests/:id/complete" => "withdrawl_requests#complete", as: :complete_withdrawl_request
 
     scope path: :deposit do
       get "/:coin_id/new" => "system_deposits#new", as: :new_coin_deposit
