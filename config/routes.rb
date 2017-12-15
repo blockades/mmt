@@ -21,7 +21,7 @@ Rails.application.routes.draw do
     resources :coins, only: [:index, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
     resources :withdrawl_requests, only: [:index, :update]
-    patch "withdrawl_requests/:id/process" => "withdrawl_requests#mark_as_processing", as: :process_withdrawl_request
+    patch "withdrawl_requests/:id/process" => "withdrawl_requests#processing", as: :process_withdrawl_request
     patch "withdrawl_requests/:id/cancel" => "withdrawl_requests#cancel", as: :cancel_withdrawl_request
     patch "withdrawl_requests/:id/confirm" => "withdrawl_requests#confirm", as: :confirm_withdrawl_request
 

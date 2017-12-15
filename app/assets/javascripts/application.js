@@ -16,4 +16,11 @@
 //= require select2-full
 //= require exchanges
 //= require transaction
+//= require ./members/coins
+//= require ./members/withdrawl_requests
 //= require_self
+
+var Params = (function () {
+  var params = (new URL(document.location)).searchParams;
+  return params;
+}());

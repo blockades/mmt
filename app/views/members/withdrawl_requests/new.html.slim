@@ -8,31 +8,14 @@ h2 Withdraw #{@coin&.code}
   .row
     = f.label :quantity
     = number_field_tag :quantity, number_with_precision(0, precision: @coin&.subdivision || Coin::BTC_SUBDIVISION, unit: ''), step: :any, id: 'quantityDisplay', required: true
-    = f.number_field :quantity, value: number_with_precision(1, precision: @coin&.subdivision || Coin::BTC_SUBDIVISION, unit: ''), step: :any, id: 'quantity', class: 'hidden', required: true
+    = f.number_field :quantity, value: 0, step: :any, id: 'quantity', class: "hidden", required: true
   br
   .row
     = f.hidden_field :rate, value: @coin&.btc_rate, id: "rate"
     = f.submit :withdraw, class: 'button button-primary', data: { disable_with: "Processing&hellip;".html_safe }
   br
 
-- if @coin.blank?
-  javascript:
-    $(document).on("turbolinks:load", function () {
-      var getCoin = function (id, callback) {
-        $.ajax({ url: "/coins/" + id, type: "GET", dataType: "json", success: callback });
-      };
-
-      var updateFields = function (coin) {
-        $("#rate").val(coin.btc_rate);
-        var quantityDisplay = $("#quantityDisplay");
-        var currentQuantity = quantityDisplay.val();
-        quantityDisplay.val(parseFloat(currentQuantity).toPrecision(coin.subdivision + 1));
-        quantity = quantityDisplay * Math.pow(10, coin.subdivision);
-        $("#quantity").val(quantity);
-      }
-
-      $("#coinSelect").on("change", function () {
-        var coinId = $(this).find("option:selected").val();
-        getCoin(coinId, updateFields);
-      });
-    });
+javascript:
+  $(document).on("turbolinks:load", function () {
+    new WithdrawlRequest;
+  });

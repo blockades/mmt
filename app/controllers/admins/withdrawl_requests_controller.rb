@@ -4,7 +4,7 @@ module Admins
   class WithdrawlRequestsController < AdminsController
     include TransactionHelper
 
-    before_action :find_withdrawl_request, only: [:mark_as_processing, :cancel, :confirm]
+    before_action :find_withdrawl_request, only: [:processing, :cancel, :confirm]
     before_action :find_previous_transaction, only: [:new, :confirm]
 
     def index
@@ -19,7 +19,7 @@ module Admins
       end
     end
 
-    def mark_as_processing
+    def processing
       return unless @withdrawl_request.can_process?
 
       if @withdrawl_request.process
