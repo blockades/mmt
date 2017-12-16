@@ -19,7 +19,7 @@ class WithdrawlRequest < ApplicationRecord
 
   validates :state, presence: true, inclusion: { in: STATES }
 
-  validate :liability_available
+  validate :liability_available, if: proc { errors.empty? }
 
   scope :for_coin, ->(coin) { where coin: coin }
   scope :for_member, ->(member) { where member: member }
@@ -40,17 +40,17 @@ class WithdrawlRequest < ApplicationRecord
 
     state :processing do
       validates :processed_by, :last_touched_by, presence: true
-      validates_associated :processed_by, :last_touched_by, if: proc { error.empty? }
+      validates_associated :processed_by, :last_touched_by
     end
 
     state :cancelled do
       validates :cancelled_by, :last_touched_by, presence: true
-      validates_associated :cancelled_by, :last_touched_by, if: proc { error.empty? }
+      validates_associated :cancelled_by, :last_touched_by
     end
 
     state :completed do
       validates :completed_by, :last_touched_by, :system_transaction, presence: true
-      validates_associated :completed_by, :last_touched_by, :system_transaction, if: proc { error.empty? }
+      validates_associated :completed_by, :last_touched_by, :system_transaction
     end
 
     def initialize
