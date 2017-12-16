@@ -16,7 +16,7 @@
   .offset-by-four.four.columns
     - unless current_member.coins.blank?
       = label_tag :select_coin_to_withdraw
-      = select_tag :coin_id, options_for_select(current_member.coins.all.map {|coin| [ coin.code, coin.id ] }, selected: current_member.coins.first.id), class: "select2", id: 'coinSelect'
+      = select_tag :coin_id, options_for_select(current_member.liable_coins.all.map {|coin| [ coin.code, coin.id ] }, selected: current_member.coins.first.id), class: "select2", id: 'coinSelect'
       = link_to "Withdraw", new_coin_withdrawl_request_path(current_member.coins.first), title: "New Withdrawl", class: "button button-primary right", id: "withdrawLink"
 
 table width="100%"

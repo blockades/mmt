@@ -23,6 +23,8 @@ class Coin < ApplicationRecord
   scope :fiat, -> { where.not(crypto_currency: true) }
   scope :not_self, ->(coin_id) { where.not(id: coin_id) }
   scope :btc, -> { find_by code: "BTC" }
+  scope :with_liability, -> { joins(:member_coin_events).having("SUM(member_coin_events.liability) > 0").group(:id) }
+  scope :with_assets, -> { joins(:coin_events).having("SUM(coin_events.assets) > 0").group(:id) }
 
   attr_readonly :code
 
@@ -90,8 +92,6 @@ class Coin < ApplicationRecord
 
   def crypto_btc_rate
     return 1.0 if code == "BTC"
-    # %%TODO%% We need a way to deal with missing codes so it doesn't cascade through and break the system
-    # raise BittrexError, "Bittrex does not supply rates for #{code}" unless coins_by_bittrex.include? code
     bittrex_rates["result"].compact.find do |market|
       market["MarketName"] == "BTC-#{code}"
     end["Bid"]

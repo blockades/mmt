@@ -6,8 +6,8 @@ module Members
 
     def index
       @member = current_member.decorate
-      @crypto = current_member.crypto
-      @fiat = current_member.fiat
+      @crypto = current_member.crypto.with_liability
+      @fiat = current_member.fiat.with_liability
     end
 
     def show

@@ -36,13 +36,14 @@ class Member < ApplicationRecord
 
   has_many :member_coin_events, dependent: :restrict_with_error
 
-  has_many :credits, -> { where("liability > 0") }, class_name: "MemberCoinEvent",
-                                                    dependent: :restrict_with_error
+  has_many :credits, -> { credit }, class_name: "MemberCoinEvent",
+                                    dependent: :restrict_with_error
 
-  has_many :debits, -> { where("liability < 0") }, class_name: "MemberCoinEvent",
-                                                   dependent: :restrict_with_error
+  has_many :debits, -> { debit }, class_name: "MemberCoinEvent",
+                                  dependent: :restrict_with_error
 
   has_many :coins, -> { distinct }, through: :member_coin_events
+  has_many :liable_coins, -> { distinct.with_liability }, through: :member_coin_events, source: :coin
 
   has_many :crypto_events, -> { crypto }, class_name: "MemberCoinEvent",
                                           dependent: :restrict_with_error
