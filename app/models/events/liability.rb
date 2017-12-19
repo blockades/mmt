@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class Liability < Event
+  class Liability < Events::Base
     alias_attribute :liability, :entry
 
     validates :liability, presence: true,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class MemberAllocation < SystemTransaction
+  class MemberAllocation < Transactions::Base
     validates :destination_quantity,
               :source_rate,
               presence: true

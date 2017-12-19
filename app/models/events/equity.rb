@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class Equity < Event
+  class Equity < Events::Base
     alias_attribute :equity, :entry
 
     validates :equity,

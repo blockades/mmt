@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class MemberWithdrawl < SystemTransaction
+  class MemberWithdrawl < Transactions::Base
     validates :source_quantity,
               presence: true,
               numericality: { greater_than: 0 }

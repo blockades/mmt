@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class MemberDeposit < SystemTransaction
+  class MemberDeposit < Transactions::Base
     validates :destination_quantity,
               presence: true,
               numericality: { greater_than: 0 }

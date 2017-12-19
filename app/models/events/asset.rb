@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Events
-  class Asset < Event
+  class Asset < Events::Base
     alias_attribute :assets, :entry
 
     validates :assets,
