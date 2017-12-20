@@ -2,10 +2,10 @@
 
 module Transactions
   class Base < ApplicationRecord
-    include InheritanceNamespace
     include ReadOnlyModel
 
     self.table_name = "system_transactions"
+    self.store_full_sti_class = false
 
     belongs_to :previous_transaction, class_name: self.name,
                           foreign_key: :previous_transaction_id,

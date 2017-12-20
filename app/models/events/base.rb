@@ -2,10 +2,10 @@
 
 module Events
   class Base < ApplicationRecord
-    include InheritanceNamespace
     include ReadOnlyModel
 
     self.table_name = "events"
+    self.store_full_sti_class = false
 
     belongs_to :coin
     belongs_to :member
