@@ -13,7 +13,7 @@ var SystemTotal = function () {
     $("#systemTotalDisplay").val(systemTotal);
   }
 
-  $("#systemTotalSelect").on("change", changeTotalSelect)
+  $("#systemTotalSelect").on("propertychange change click keyup input paste", changeTotalSelect)
 }
 
 $(document).on("turbolinks:load", function () {

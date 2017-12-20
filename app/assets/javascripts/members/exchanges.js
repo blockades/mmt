@@ -57,7 +57,7 @@ var Exchange = function (coin) {
   var destinationQuantity = $('#destinationQuantity');
 
   $.each([destinationQuantity], function () {
-    $(this).on("change", function () {
+    $(this).on("propertychange change click keyup input paste", function () {
       var sourceCoin = sourceCoinId();
       if (destinationQuantity.val() <= 0 || !sourceCoin || /^\s*$/.test(sourceCoin)) { return; }
       new getCoin(sourceCoin, calculateSource);
@@ -65,7 +65,7 @@ var Exchange = function (coin) {
   });
 
   $.each([sourceCoinSelect, sourceQuantity], function () {
-    $(this).on("change", function () {
+    $(this).on("propertychange change click keyup input paste", function () {
       var sourceCoin = sourceCoinId();
       if (sourceQuantity.val() <= 0 || !sourceCoin || /^\s*$/.test(sourceCoin)) { return; }
       new getCoin(sourceCoin, calculateDestination);

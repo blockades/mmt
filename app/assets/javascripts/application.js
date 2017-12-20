@@ -26,5 +26,5 @@ var QuantityAsDecimal = function (attributes) {
     display.val((quantity.val() / Math.pow(10, subdivision)).toFixed(subdivision));
   }
 
-  quantity.on('change', updateQuantityDisplay);
+  quantity.on('propertychange change click keyup input paste', updateQuantityDisplay);
 }
