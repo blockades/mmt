@@ -124,7 +124,11 @@ class Member < ApplicationRecord
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if (login = conditions.delete(:login))
-        where(conditions.to_h).find_by(["LOWER(username) = :value OR LOWER(email) = :value", { value: login.downcase }])
+        where(conditions.to_h).find_by(
+          arel_table[:username].lower.eq(login.downcase).or(
+            arel_table[:email].lower.eq(login.downcase)
+          )
+        )
       elsif conditions.key?(:username) || conditions.key?(:email)
         find_by(conditions.to_h)
       end
