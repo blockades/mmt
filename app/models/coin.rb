@@ -31,7 +31,6 @@ class Coin < ApplicationRecord
   scope :crypto, -> { where(crypto_currency: true) }
   scope :fiat, -> { where.not(crypto_currency: true) }
   scope :not_self, ->(coin_id) { where.not(id: coin_id) }
-  scope :btc, -> { find_by(code: "BTC") }
   scope :not_btc, -> { where.not(code: "BTC") }
 
   attr_readonly :code
@@ -54,7 +53,7 @@ class Coin < ApplicationRecord
     !crypto_currency
   end
 
-  def system_total
+  def system_total_display
     Coin.sum do |coin|
       Utils.to_decimal(coin.assets * coin.btc_rate, coin.subdivision) / btc_rate
     end
@@ -81,6 +80,10 @@ class Coin < ApplicationRecord
   # @return The amount of this currency that buys one BTC
   def btc_rate
     crypto_currency ? crypto_btc_rate : fiat_btc_rate
+  end
+
+  def self.btc
+    find_by(code: "BTC")
   end
 
   private

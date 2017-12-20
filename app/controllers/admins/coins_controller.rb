@@ -10,7 +10,7 @@ module Admins
 
     def show
       respond_to do |format|
-        format.json { render json: @coin.as_json(methods: [:btc_rate, :system_total]) }
+        format.json { render json: @coin.as_json(methods: [:btc_rate, :system_total_display]) }
       end
     end
 

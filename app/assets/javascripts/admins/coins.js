@@ -9,7 +9,7 @@ var SystemTotal = function () {
   }
 
   var changeTotal = function (coin) {
-    systemTotal = parseFloat(coin.system_total).toFixed(coin.subdivision);
+    systemTotal = parseFloat(coin.system_total_display).toFixed(coin.subdivision);
     $("#systemTotalDisplay").val(systemTotal);
   }
 
