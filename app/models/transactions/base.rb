@@ -29,19 +29,25 @@ module Transactions
                                foreign_key: :authorized_by_id,
                                inverse_of: :authorized_transactions
 
-    has_many :events, autosave: true, dependent: :restrict_with_error
+    has_many :events, class_name: "Events::Base",
+                      foreign_key: :system_transaction_id,
+                      autosave: true,
+                      dependent: :restrict_with_error
 
     has_many :asset_events, class_name: "Events::Asset",
-                           autosave: true,
-                           dependent: :restrict_with_error
+                            foreign_key: :system_transaction_id,
+                            autosave: true,
+                            dependent: :restrict_with_error
 
     has_many :liability_events, class_name: "Events::Liability",
-                                  autosave: true,
-                                  dependent: :restrict_with_error
-
-    has_many :equity_events, class_name: "Events::Equity",
+                                foreign_key: :system_transaction_id,
                                 autosave: true,
                                 dependent: :restrict_with_error
+
+    has_many :equity_events, class_name: "Events::Equity",
+                             foreign_key: :system_transaction_id,
+                             autosave: true,
+                             dependent: :restrict_with_error
 
     before_validation :publish_to_source, :publish_to_destination, on: :create
 
@@ -79,9 +85,10 @@ module Transactions
 
     def system_sum_to_zero
       # Can we go about this any other way? We must divide integer values by subdivision to account for storing multiplied by subdivision
-      total = equity_events.sum { |e| Utils.to_decimal(e.equity * e.rate, e.coin.subdivision).round(Coin::BTC_SUBDIVISION) } +
-              liability_events.sum { |e| Utils.to_decimal(e.liability * e.rate, e.coin.subdivision).round(Coin::BTC_SUBDIVISION) } -
-              asset_events.sum { |e| Utils.to_decimal(e.assets * e.rate, e.coin.subdivision).round(Coin::BTC_SUBDIVISION) }
+      total = events.inject(0) do |total, event|
+        entry = Utils.to_decimal(event.entry * event.rate, event.coin.subdivision).round(Coin::BTC_SUBDIVISION)
+        event.type == "Asset" ? total -= entry : total += entry
+      end
       return true if total.zero?
       self.errors.add :system_sum_to_zero, "Invalid transaction"
     end
