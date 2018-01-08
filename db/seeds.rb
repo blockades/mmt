@@ -55,7 +55,7 @@ class Member
   end
 end
 
-data = CSV.read('mmt_sample.csv')
+data = CSV.read('data/mmt_sample.csv')
 
 # get column names and then remove them
 columns = data.first
