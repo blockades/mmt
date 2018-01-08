@@ -29,18 +29,22 @@ services:
       DATABASE_URL: db
     ports:
       - "3000:80"
+    env_file:
+      ".env"
 
-  # sidekiq:
-  #   build: .
-  #   command: ["sidekiq", "-C", "config/sidekiq.yml"]
-  #   links:
-  #     - db
-  #     - redis
-  #   volumes:
-  #     - .:/mmt
-  #     - bundle:/usr/local/bundle
-  #   environment:
-  #     DATABASE_URL: db
+  sidekiq:
+    build: .
+    command: ["sidekiq", "-C", "config/sidekiq.yml"]
+    depends_on:
+      - db
+      - redis
+    volumes:
+      - .:/mmt
+      - bundle:/usr/local/bundle
+    environment:
+      DATABASE_URL: db
+    env_file:
+      ".env"
 
 volumes:
   mmt-postgres:
