@@ -1,36 +1,24 @@
 
-# keiran:  for sure this wont run, but it should give a gist of how i thought to do it
-# comments very welcome!
-
-# should this be moved to gemfile?
-require 'csv'
-
-
-#require 'pry'
-
-
 
 namespace :parse_spreadsheet do
   task add_data: do
 
-    # how are members uniquely referred to in transactions?  username?
-    def add_transaction(transaction_params,coin_type,username)
+    def add_transaction(transaction_params,coin_type,member)
       current_coin = Coin.find_by(code: coin_type)
       transaction_params = {
         source: current_coin,
         destination: member,
         source_coin, current_coin,
         destination_coin: current_coin,
-        destination_quantity: transaction_params["amount"],
-        destination_rate: transaction_params["rate"],
+        destination_quantity: Utils.to_integer(transaction_params["amount"].to_f,current_coin.subdivision),
+        destination_rate: transaction_params["rate"].to_f,
         initiated_by: admin
       }
       transaction = Transactions::MemberDeposit.create!(transaction_params)
     end
 
     # read in our data  
-    data = CSV.read('../../data/db/mmt_sample.csv')
-
+    data = CSV.read(Rails.root.join("db", "data", "mmt_sample.csv"))
 
     # get column names and then remove them
     columns = data.first
@@ -53,7 +41,7 @@ namespace :parse_spreadsheet do
       params = member_columns.zip(select_params).to_h
     
       Member.find_or_initialize_by(email: params["email"]) do |member|
-        member.update!(admin: false, password: "password", username: params["name"])
+        member.update!(admin: false, password: "password", member)
         # can add more member details here
         
         add_transaction(btc_columns.zip(row[btc_range]).to_h, "BTC", params["name"])
