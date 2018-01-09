@@ -7,6 +7,7 @@ git_source(:github) do |repo_name|
   "https://github.com/#{repo_name}.git"
 end
 
+gem "aasm"
 gem "blockchain-api"
 gem "coinbase"
 gem "devise"
@@ -27,7 +28,6 @@ gem "sass-rails", "~> 5.0"
 gem "select2-rails"
 gem "sidekiq"
 gem "slim-rails"
-gem "state_machine"
 gem "turbolinks", "~> 5"
 gem "twilio-ruby", "~> 5.4.3"
 gem "two_factor_authentication"
