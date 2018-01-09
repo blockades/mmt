@@ -25,15 +25,10 @@ module Members
     end
 
     def cancel
-      result = ::WithdrawlRequests::Cancel.call(
-        member: current_member,
-        withdrawl_request: @withdrawl_request
-      )
-
-      if result.success?
-        redirect_to withdrawl_requests_path, notice: result.message
+      if @withdrawl_request.cancel!(member: current_member)
+        redirect_to withdrawl_requests_path, notice: "Success"
       else
-        redirect_to withdrawl_requests_path, alert: result.message
+        redirect_to withdrawl_requests_path, alert: "Failed"
       end
     end
 
@@ -55,7 +50,7 @@ module Members
       permitted_params.merge(
         member_id: current_member.id,
         coin_id: @coin.id,
-        last_touched_by_id: current_member.id
+        last_changed_by_id: current_member.id
       )
     end
   end

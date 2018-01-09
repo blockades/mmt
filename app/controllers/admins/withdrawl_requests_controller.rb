@@ -12,41 +12,18 @@ module Admins
     end
 
     def processing
-      result = ::WithdrawlRequests::Process.call(
-        member: current_member,
-        withdrawl_request: @withdrawl_request
-      )
-
-      if result.success?
-        redirect_to admins_withdrawl_requests_path, notice: result.message
+      if @withdrawl_request.process!(withdrawl_request_params)
+        redirect_to admins_withdrawl_requests_path, notice: "Success"
       else
-        redirect_to admins_withdrawl_requests_path, alert: result.message
-      end
-    end
-
-    def revert
-      result = ::WithdrawlRequests::Revert.call(
-        member: current_member,
-        withdrawl_request: @withdrawl_request
-      )
-
-      if result.success?
-        redirect_to admins_withdrawl_requests_path, notice: result.message
-      else
-        redirect_to admins_withdrawl_requests_path, alert: result.message
+        redirect_to admins_withdrawl_requests_path, alert: "Failed"
       end
     end
 
     def cancel
-      result = ::WithdrawlRequests::Cancel.call(
-        member: current_member,
-        withdrawl_request: @withdrawl_request
-      )
-
-      if result.success?
-        redirect_to admins_withdrawl_requests_path, notice: result.message
+      if @withdrawl_request.cancel!(withdrawl_request_params)
+        redirect_to admins_withdrawl_requests_path, notice: "Success"
       else
-        redirect_to admins_withdrawl_requests_path, alert: result.message
+        redirect_to admins_withdrawl_requests_path, alert: "Failed"
       end
     end
 
@@ -55,16 +32,10 @@ module Admins
         return redirect_back fallback_location: admins_withdrawl_request_path(@withdrawl_request), alert: "Invalid previous transaction"
       end
 
-      result = ::WithdrawlRequests::Complete.call(
-        member: current_member,
-        withdrawl_request: @withdrawl_request,
-        previous_transaction: @previous_transaction
-      )
-
-      if result.success?
-        redirect_to admins_withdrawl_requests_path, notice: result.message
+      if @withdrawl_request.complete!(complete_params)
+        redirect_to admins_withdrawl_requests_path, notice: "Success"
       else
-        redirect_to admins_withdrawl_requests_path, alert: result.message
+        redirect_to admins_withdrawl_requests_path, alert: "Failed"
       end
     end
 
@@ -80,6 +51,14 @@ module Admins
 
     def permitted_params
       params.require(:withdrawl_request).permit(:previous_transaction_id)
+    end
+
+    def withdrawl_request_params
+      { member: current_member }
+    end
+
+    def complete_params
+      withdrawl_request_params.merge(previous_transaction: @previous_transaction)
     end
   end
 end
