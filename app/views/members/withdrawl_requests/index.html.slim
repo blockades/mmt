@@ -36,7 +36,7 @@ table width="100%"
         td.withdrawl-request class="#{withdrawl_request.state}"
         td
           .icons
-            - if withdrawl_request.can_cancel?
+            - if withdrawl_request.may_cancel?
               = link_to coin_cancel_withdrawl_request_path(coin_id: withdrawl_request.coin.id, id: withdrawl_request.id), method: :patch, title: "Cancel", class: "icon" do
                 i.fa.fa-times.fa-lg
 
