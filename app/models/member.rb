@@ -55,9 +55,10 @@ class Member < ApplicationRecord
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
   has_many :withdrawl_requests
-  has_many :cancelled_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :cancelled_by_id
-  has_many :completed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :completed_by_id
-  has_many :processed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :processed_by_id
+  # has_many :cancelled_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :cancelled_by_id
+  # has_many :completed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :completed_by_id
+  # has_many :processed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :processed_by_id
+  # has_many :failed_withdrawl_requests, class_name: "WithdrawlRequest", foreign_key: :failed_by_id
 
   scope :with_crypto, -> { joins(:crypto) }
   scope :with_fiat, -> { joins(:fiat) }

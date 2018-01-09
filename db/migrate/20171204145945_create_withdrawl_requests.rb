@@ -6,11 +6,11 @@ class CreateWithdrawlRequests < ActiveRecord::Migration[5.1]
       t.references :coin, type: :uuid, foreign_key: true, null: false
       t.references :system_transaction, type: :uuid, foreign_key: true
 
-      t.references :last_touched_by, type: :uuid, foreign_key: { to_table: :members }, null: false
-      t.references :processed_by, type: :uuid, foreign_key: { to_table: :members }
-      t.references :confirmed_by, type: :uuid, foreign_key: { to_table: :members }
+      t.references :last_changed_by, type: :uuid, foreign_key: { to_table: :members }, null: false
+      t.references :processing_by, type: :uuid, foreign_key: { to_table: :members }
       t.references :completed_by, type: :uuid, foreign_key: { to_table: :members }
       t.references :cancelled_by, type: :uuid, foreign_key: { to_table: :members }
+      t.references :failed_by, type: :uuid, foreign_key: { to_table: :members }
 
       t.string :state, default: :pending, null: false
 
