@@ -7,15 +7,38 @@
 #   Character.create(name: 'Luke', movie: movies.first)
 #
 
+
+# should this be moved to gemfile?
 require 'csv'
+
+
 require 'pry'
 
-class Transaction
+# probably it is unnessecary to create this class and could just 
+# directly add transactions as row data is parsed
+
+class Spreadsheet_transaction
   def initialize(args = {})
     args.each do |k,v|
       instance_variable_set(:"@#{k}", v)
     end
   end
+
+  def add_transaction
+    current_coin = Coin.find_by(code: @type)
+    transaction_params = {
+      source: current_coin,
+      destination: member,
+      source_coin, current_coin,
+      destination_coin: current_coin,
+      destination_quantity: @amount,
+      destination_rate: @rate,
+      initiated_by: admin
+    }
+    transaction = Transactions::MemberDeposit.create!(transaction_params)
+  end
+
+  # can delete this
   def display_transaction
     puts "------------------- #@member_number"
     puts "type: #@type"
@@ -55,6 +78,7 @@ class Member
   end
 end
 
+# read in our data
 data = CSV.read('data/mmt_sample.csv')
 
 # get column names and then remove them
@@ -83,19 +107,19 @@ data.each do |row|
   btcparams = btc_columns.zip(row[13..17]).to_h
   btcparams[:member_number] = member_count 
   btcparams[:type] = "BTC"
-  transactions.push(Transaction.new(btcparams))
+  transactions.push(Spreadsheet_transaction.new(btcparams))
   
   # repeat for eth and neo
 
   ethparams = btc_columns.zip(row[19..23]).to_h
   ethparams[:member_number] = member_count 
   ethparams[:type] = "ETH"
-  transactions.push(Transaction.new(ethparams))
+  transactions.push(Spreadsheet_transaction.new(ethparams))
 
   neoparams = btc_columns.zip(row[25..29]).to_h
   neoparams[:member_number] = member_count 
   neoparams[:type] = "NEO"
-  transactions.push(Transaction.new(ethparams))
+  transactions.push(Spreadsheet_transaction.new(ethparams))
 end
 
 members[0].display_member()
