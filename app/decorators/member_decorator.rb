@@ -4,7 +4,7 @@ class MemberDecorator < Draper::Decorator
   delegate_all
 
   def coin_liability(coin)
-    ::Utils.to_decimal(liability(coin), coin.subdivision)
+    Utils.to_decimal(liability(coin), coin.subdivision)
   end
 
   def two_factor_delivery_method
