@@ -1,14 +1,14 @@
 
 
 namespace :parse_spreadsheet do
-  task add_data: do
+  task :add_data do
 
     def add_transaction(transaction_params,coin_type,member)
       current_coin = Coin.find_by(code: coin_type)
       transaction_params = {
         source: current_coin,
         destination: member,
-        source_coin, current_coin,
+        source_coin: current_coin,
         destination_coin: current_coin,
         destination_quantity: Utils.to_integer(transaction_params["amount"].to_f,current_coin.subdivision),
         destination_rate: transaction_params["rate"].to_f,
@@ -41,12 +41,12 @@ namespace :parse_spreadsheet do
       params = member_columns.zip(select_params).to_h
     
       Member.find_or_initialize_by(email: params["email"]) do |member|
-        member.update!(admin: false, password: "password", member)
+        member.update!(admin: false, password: "password",username: params["name"])
         # can add more member details here
         
-        add_transaction(btc_columns.zip(row[btc_range]).to_h, "BTC", params["name"])
-        add_transaction(eth_columns.zip(row[eth_range]).to_h, "ETH", params["name"])
-        add_transaction(neo_columns.zip(row[neo_range]).to_h, "NEO", params["name"])
+        add_transaction(btc_columns.zip(row[btc_range]).to_h, "BTC", member)
+        add_transaction(eth_columns.zip(row[eth_range]).to_h, "ETH", member)
+        add_transaction(neo_columns.zip(row[neo_range]).to_h, "NEO", member)
   
       end
     end
