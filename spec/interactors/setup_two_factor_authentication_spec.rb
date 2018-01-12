@@ -2,13 +2,13 @@
 
 require "rails_helper"
 
-describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
+describe TwoFactor::Setup, type: :interactor, two_factor: true do
   let(:member) { create :member }
 
   describe "#call" do
     context "authentication by application" do
       let(:context) do
-        SetupTwoFactorAuthentication.call(
+        TwoFactor::Setup.call(
           member: member,
           setup_params: { otp_delivery_method: "app" }
         )
@@ -50,7 +50,7 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
 
     context "authentication by phone" do
       let(:context) do
-        SetupTwoFactorAuthentication.call(
+        TwoFactor::Setup.call(
           member: member,
           setup_params: { otp_delivery_method: "sms", phone_number: "1234567890", country_code: "44" }
         )
@@ -96,7 +96,7 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
 
     context "with invalid authentication method" do
       let(:context) do
-        SetupTwoFactorAuthentication.call(
+        TwoFactor::Setup.call(
           member: member,
           setup_params: { otp_delivery_method: "some random thing" }
         )

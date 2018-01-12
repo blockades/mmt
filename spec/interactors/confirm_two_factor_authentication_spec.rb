@@ -2,9 +2,9 @@
 
 require "rails_helper"
 
-describe ConfirmTwoFactorAuthentication, type: :interactor, two_factor: true do
+describe TwoFactor::Confirm, type: :interactor, two_factor: true do
   let(:member) { create :member, otp_delivery_method: "app" }
-  let(:context) { ConfirmTwoFactorAuthentication.call(member: member, authentication_code: "123456") }
+  let(:context) { TwoFactor::Confirm.call(member: member, authentication_code: "123456") }
 
   describe "#call" do
     context "with a valid authentication code" do

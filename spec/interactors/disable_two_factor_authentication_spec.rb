@@ -1,8 +1,8 @@
 # frozen_string_literal: true
 
-describe DisableTwoFactorAuthentication, type: :interactor, two_factor: true do
+describe TwoFactor::Disable, type: :interactor, two_factor: true do
   let(:member) { create :member }
-  let(:context) { DisableTwoFactorAuthentication.call(member: member) }
+  let(:context) { TwoFactor::Disable.call(member: member) }
 
   describe "#call" do
     context "with a valid member" do

@@ -30,7 +30,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
   describe "GET new" do
     let(:get_new) { get :new }
 
-    context "before ConfirmTwoFactorAuthentication" do
+    context "before TwoFactor::Confirm" do
       it "returns a 200" do
         get_new
         expect(response.status).to eq 200
@@ -47,7 +47,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
   end
 
   describe "POST create" do
-    context "successful SetupTwoFactorAuthentication" do
+    context "successful TwoFactor::Setup" do
       let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: "app" } } }
 
       it "redirects to the edit page" do
@@ -55,7 +55,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
       end
     end
 
-    context "failed SetupTwoFactorAuthentication" do
+    context "failed TwoFactor::Setup" do
       let(:post_create) { post :create, params: { two_factor: { otp_delivery_method: "bob" } } }
 
       it "redirects to the index page" do
@@ -67,7 +67,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
   describe "GET edit" do
     let(:get_edit) { get :edit }
 
-    context "after SetupTwoFactorAuthentication" do
+    context "after TwoFactor::Setup" do
       before do
         member.update otp_secret_key: member.generate_totp_secret,
                       otp_recovery_codes: member.generate_otp_recovery_codes
@@ -87,7 +87,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
       end
     end
 
-    context "before SetupTwoFactorAuthentication" do
+    context "before TwoFactor::Setup" do
       before do
         allow(member).to receive(:otp_secret_key).and_return(nil)
       end
@@ -97,7 +97,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
       end
     end
 
-    context "after ConfirmTwoFactorAuthentication" do
+    context "after TwoFactor::Confirm" do
       before do
         allow(member).to receive(:two_factor_enabled?).and_return(true)
       end
@@ -109,7 +109,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
   end
 
   describe "PATCH update" do
-    context "successful ConfirmTwoFactorAuthentication" do
+    context "successful TwoFactor::Confirm" do
       let(:patch_update) { patch :update, params: { two_factor: { code: member.direct_otp } } }
 
       before do
@@ -122,7 +122,7 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
       end
     end
 
-    context "failed ConfirmTwoFactorAuthentication" do
+    context "failed TwoFactor::Confirm" do
       let(:patch_update) { patch :update, params: { two_factor: { code: "123456" } } }
 
       before { allow(member).to receive(:authenticate_otp).and_return(false) }
