@@ -6,7 +6,7 @@ module TwoFactor
 
     def call
       if member.authenticate_otp(authentication_code)
-        if member.update!(two_factor_enabled: true)
+        if member.update(two_factor_enabled: true)
           context.message = "You have enabled two factor authentication"
         else
           context.fail!(message: "Failed to enable two factor authentication")
