@@ -41,6 +41,7 @@ services:
       - bundle:/usr/local/bundle
     environment:
       DATABASE_URL: db
+      REDIS_HOST: redis
 
 volumes:
   mmt-postgres:
