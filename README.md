@@ -72,10 +72,10 @@ Development Environment
 docker-compose build
 # this bundle step shouldn't be needed but it is...
 docker-compose run --rm mmt bundle
-docker-compose run --rm rake db:create db:migrate setup
+docker-compose run --rm mmt rake db:create db:migrate setup
 ```
 
-Then to run simple use
+Then to run simply use:
 
 ```sh
 docker-compose up
