@@ -14,7 +14,7 @@ namespace :parse_spreadsheet do
     def add_transaction(transaction_params,coin_type,member)
       current_coin = Coin.find_by(code: coin_type)
       # check we have an amount (not all members have a transaction for all types of coin)
-      if ! (transaction_params["amount"].nil? || transaction_params["amount"] == 0)
+      unless transaction_params["amount"].nil? || transaction_params["amount"] == 0
         transaction_params = {
           source: current_coin,
           destination: member,
@@ -52,7 +52,7 @@ namespace :parse_spreadsheet do
       params = member_columns.zip(select_params).to_h
       
       # check there is a member (some spreadsheet lines at the end have averages etc)
-      if ! (params["name"].nil? && params["email"].nil?)
+      if (params["name"] && params["email"])
         Member.find_or_initialize_by(email: params["email"]) do |member|
           member.update!(admin: false, password: "password",username: params["name"])
           # can add more member details here
