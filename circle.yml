@@ -1,0 +1,13 @@
+database:
+  override:
+    - bundle exec rake db:create db:migrate
+
+machine:
+  ruby:
+    version: 2.4.0
+  services:
+    - redis
+
+test:
+  override:
+    - bundle exec rspec
