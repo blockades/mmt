@@ -29,8 +29,6 @@ services:
       DATABASE_URL: db
     ports:
       - "3000:80"
-    env_file:
-      ".env"
 
   sidekiq:
     build: .
@@ -43,8 +41,6 @@ services:
       - bundle:/usr/local/bundle
     environment:
       DATABASE_URL: db
-    env_file:
-      ".env"
 
 volumes:
   mmt-postgres:
