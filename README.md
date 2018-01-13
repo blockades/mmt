@@ -47,7 +47,7 @@ In the future scenario where the 'value' of cryptocurrencies is much [higher](ht
 
 - MMT seeks to provide the community infrastructure to aid in the complete experience and journey of someone going from zero knowledge to owning and managing their own private keys.
 
-- MMT seeks to support those 'teachers' who are teaching new people, to make the experience of doing so as fluid as possible.  
+- MMT seeks to support those 'teachers' who are teaching new people, to make the experience of doing so as fluid as possible.
 
 - MMT will be a community centered cryptocurrency exchange enabling the purchase of a pre-selected subset of cryptocurrencies (enabling community oriented folks to be able to access crypto from like minded folks rather than simply going to corporate platforms).
 
@@ -69,9 +69,16 @@ Development Environment
 -----------------------
 
 ```
-docker-compose up --build
-docker exec CONTAINER_ID bundle exec rake db:migrate
-docker exec CONTAINER_ID bundle exec rake setup
+docker-compose build
+# this bundle step shouldn't be needed but it is...
+docker-compose run --rm mmt bundle
+docker-compose run --rm rake db:create db:migrate setup
+```
+
+Then to run simple use
+
+```sh
+docker-compose up
 ```
 
 Install [mailcatcher](https://mailcatcher.me/)
