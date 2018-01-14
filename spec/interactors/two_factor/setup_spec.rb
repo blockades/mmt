@@ -36,14 +36,14 @@ describe TwoFactor::Setup, type: :interactor, two_factor: true do
       end
 
       context "with an invalid member" do
-        before { allow(member).to receive(:update!).and_return(false) }
+        before { allow(member).to receive(:update).and_return(false) }
 
         it "fails" do
           expect(context).to be_a_failure
         end
 
         it "renders a message" do
-          expect(context.message).to eq "Failed to setup two factor authentication. Please try again"
+          expect(context.message).to eq member.errors.full_messages.to_sentence
         end
       end
     end
@@ -82,14 +82,14 @@ describe TwoFactor::Setup, type: :interactor, two_factor: true do
       end
 
       context "with an invalid member" do
-        before { allow(member).to receive(:update!).and_return(false) }
+        before { allow(member).to receive(:update).and_return(false) }
 
         it "fails" do
           expect(context).to be_a_failure
         end
 
         it "renders a message" do
-          expect(context.message).to eq "Failed to setup two factor authentication. Please try again"
+          expect(context.message).to eq member.errors.full_messages.to_sentence
         end
       end
     end

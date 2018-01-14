@@ -3,5 +3,5 @@
 class ChangePassword
   include Interactor::Organizer
 
-  organize Authentication::Password, Authentication::TwoFactor, UpdatePassword
+  organize Authentication::VerifyPassword, Authentication::VerifyTwoFactor, UpdatePassword
 end

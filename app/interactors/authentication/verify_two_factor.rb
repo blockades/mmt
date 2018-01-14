@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Authentication
-  class TwoFactor
+  class VerifyTwoFactor
     include Interactor
 
     def call

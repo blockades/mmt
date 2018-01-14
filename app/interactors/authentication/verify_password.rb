@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Authentication
-  class Password
+  class VerifyPassword
     include Interactor
 
     def call

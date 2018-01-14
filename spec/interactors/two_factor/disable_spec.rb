@@ -17,7 +17,7 @@ describe TwoFactor::Disable, type: :interactor, two_factor: true do
 
     context "with an invalid member" do
       before do
-        allow(member).to receive(:update!).and_return(false)
+        allow(member).to receive(:update).and_return(false)
       end
 
       it "fails" do
