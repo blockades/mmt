@@ -2,9 +2,9 @@
 
 require "rails_helper"
 
-describe AuthenticateTwoFactor, type: :interactor do
+describe Authentication::TwoFactor, type: :interactor do
   let(:member) { create :member, otp_delivery_method: "sms", two_factor_enabled: true }
-  let(:context) { AuthenticateTwoFactor.call(member: member, password_params: password_params) }
+  let(:context) { Authentication::TwoFactor.call(member: member, password_params: password_params) }
 
   describe "#call" do
     context "with two factor disabled" do
