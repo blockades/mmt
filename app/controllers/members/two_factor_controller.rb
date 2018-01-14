@@ -17,11 +17,11 @@ module Members
 
     def create
       return unless setup_params[:otp_delivery_method]
-      result = SetupTwoFactorAuthentication.call(member: current_member, setup_params: setup_params)
+      result = TwoFactor::Setup.call(member: current_member, setup_params: setup_params)
       if result.success?
         redirect_to edit_member_settings_two_factor_path, notice: result.message
       else
-        redirect_back fallback_location: member_settings_two_factor_path, error: result.message
+        redirect_back fallback_location: member_settings_two_factor_path, alert: result.message
       end
     end
 
@@ -30,16 +30,16 @@ module Members
 
     def update
       return unless confirmation_params[:code]
-      result = ConfirmTwoFactorAuthentication.call(member: current_member, authentication_code: confirmation_params[:code])
+      result = TwoFactor::Confirm.call(member: current_member, authentication_code: confirmation_params[:code])
       if result.success?
         redirect_to member_settings_two_factor_path, notice: result.message
       else
-        redirect_to new_member_settings_two_factor_path, error: result.message
+        redirect_to new_member_settings_two_factor_path, alert: result.message
       end
     end
 
     def destroy
-      result = DisableTwoFactorAuthentication.call(member: current_member)
+      result = TwoFactor::Disable.call(member: current_member)
       redirect_to member_settings_two_factor_path, notice: result.message
     end
 

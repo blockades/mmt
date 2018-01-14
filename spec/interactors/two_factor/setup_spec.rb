@@ -2,13 +2,13 @@
 
 require "rails_helper"
 
-describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
+describe TwoFactor::Setup, type: :interactor, two_factor: true do
   let(:member) { create :member }
 
   describe "#call" do
     context "authentication by application" do
       let(:context) do
-        SetupTwoFactorAuthentication.call(
+        TwoFactor::Setup.call(
           member: member,
           setup_params: { otp_delivery_method: "app" }
         )
@@ -36,21 +36,21 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
       end
 
       context "with an invalid member" do
-        before { allow(member).to receive(:update!).and_return(false) }
+        before { allow(member).to receive(:update).and_return(false) }
 
         it "fails" do
           expect(context).to be_a_failure
         end
 
         it "renders a message" do
-          expect(context.message).to eq "Failed to setup two factor authentication. Please try again"
+          expect(context.message).to eq member.errors.full_messages.to_sentence
         end
       end
     end
 
     context "authentication by phone" do
       let(:context) do
-        SetupTwoFactorAuthentication.call(
+        TwoFactor::Setup.call(
           member: member,
           setup_params: { otp_delivery_method: "sms", phone_number: "1234567890", country_code: "44" }
         )
@@ -82,21 +82,21 @@ describe SetupTwoFactorAuthentication, type: :interactor, two_factor: true do
       end
 
       context "with an invalid member" do
-        before { allow(member).to receive(:update!).and_return(false) }
+        before { allow(member).to receive(:update).and_return(false) }
 
         it "fails" do
           expect(context).to be_a_failure
         end
 
         it "renders a message" do
-          expect(context.message).to eq "Failed to setup two factor authentication. Please try again"
+          expect(context.message).to eq member.errors.full_messages.to_sentence
         end
       end
     end
 
     context "with invalid authentication method" do
       let(:context) do
-        SetupTwoFactorAuthentication.call(
+        TwoFactor::Setup.call(
           member: member,
           setup_params: { otp_delivery_method: "some random thing" }
         )

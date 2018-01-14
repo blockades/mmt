@@ -48,7 +48,7 @@ Rails.application.routes.draw do
     resource :two_factor_authentication, only: [:new, :create, :edit, :update],
                                          as: :two_factor,
                                          controller: :two_factor,
-                                         path_names: { edit: "confirm" }
+                                         path_names: { new: "setup", edit: "confirm" }
   end
 
   scope module: :members do
