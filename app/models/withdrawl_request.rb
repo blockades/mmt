@@ -65,6 +65,20 @@ class WithdrawlRequest < ApplicationRecord
         self.last_changed_by = params[:member]
         self.completed_by = params[:member]
       }
+      after do
+        transaction = Transactions::MemberWithdrawl.new(
+          withdrawl_request: self,
+          source: member,
+          source_coin: coin,
+          source_quantity: quantity,
+          destination: coin,
+          destination_coin: coin,
+          previous_transaction: previous_transaction,
+          initiated_by: member,
+          authorized_by: completed_by
+        )
+        transaction.save!
+      end
     end
 
     event :fail do
@@ -77,19 +91,6 @@ class WithdrawlRequest < ApplicationRecord
 
   def previous_transaction
     Transactions::MemberWithdrawl.ordered.for_source(member).last
-  end
-
-  def transaction_params
-    {
-      source: member,
-      source_coin: coin,
-      source_quantity: quantity,
-      destination: coin,
-      destination_coin: coin,
-      previous_transaction: previous_transaction,
-      initiated_by: member,
-      authorized_by: completed_by
-    }
   end
 
   private

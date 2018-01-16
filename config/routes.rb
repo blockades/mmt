@@ -26,6 +26,8 @@ Rails.application.routes.draw do
     patch "withdrawl_requests/:id/revert" => "withdrawl_requests#revert", as: :revert_withdrawl_request
     patch "withdrawl_requests/:id/complete" => "withdrawl_requests#complete", as: :complete_withdrawl_request
 
+    resources :transactions, only: [:show]
+
     scope path: :deposit do
       get "/:coin_id/new" => "system_deposits#new", as: :new_coin_deposit
       post "/:coin_id/" => "system_deposits#create", as: :coin_deposit

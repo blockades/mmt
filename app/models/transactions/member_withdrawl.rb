@@ -2,6 +2,8 @@
 
 module Transactions
   class MemberWithdrawl < SystemTransaction
+    has_one :withdrawl_request, foreign_key: :system_transaction_id
+
     validates :source_quantity,
               presence: true,
               numericality: { greater_than: 0 }

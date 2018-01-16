@@ -5,6 +5,8 @@ module Admins
     include TransactionHelper
 
     before_action :find_withdrawl_request, only: [:processing, :cancel, :complete, :revert]
+    before_action :find_previous_transaction, only: [:complete]
+    before_action :check_previous_transaction, only: [:complete]
 
     def index
       @withdrawl_requests = WithdrawlRequest.all.decorate
@@ -27,18 +29,8 @@ module Admins
     end
 
     def complete
-      unless previous_transaction?
-        return redirect_back fallback_location: admins_withdrawl_request_path(@withdrawl_request), alert: "Invalid previous transaction"
-      end
-
       if @withdrawl_request.complete!(withdrawl_request_params)
-        transaction = transaction_commiter(Transactions::MemberWithdrawl, @withdrawl_request.transaction_params)
-        if transaction.persisted?
-          redirect_to admins_withdrawl_requests_path, notice: "Success"
-        else
-          @withdrawl_request.fail!(withdrawl_request_params)
-          redirect_to admins_withdrawl_requests_path, alert: "Failed"
-        end
+        redirect_to admins_withdrawl_requests_path, notice: "Success"
       else
         redirect_to admins_withdrawl_requests_path, alert: "Failed"
       end
@@ -46,12 +38,22 @@ module Admins
 
     private
 
+    def check_previous_transaction
+      return if previous_transaction?
+      return redirect_back fallback_location: new_exchange_path,
+                           alert: "Invalid previous transaction"
+    end
+
     def find_withdrawl_request
       @withdrawl_request = WithdrawlRequest.find(params[:id])
     end
 
     def permitted_params
       params.require(:withdrawl_request).permit(:previous_transaction_id)
+    end
+
+    def find_previous_transaction
+      @previous_transaction = @withdrawl_request.previous_transaction
     end
 
     def withdrawl_request_params
