@@ -45,7 +45,7 @@ table width="100%"
               = link_to admins_process_withdrawl_request_path(withdrawl_request), method: :patch, title: "Process", class: "icon" do
                 i.fa.fa-spinner.fa-lg
             - if withdrawl_request.may_complete?
-              = link_to admins_complete_withdrawl_request_path(id: withdrawl_request.id, withdrawl_request: { previous_transaction_id: withdrawl_request.previous_transaction }), method: :patch, title: "Complete", class: "icon" do
+              = link_to admins_complete_withdrawl_request_path(id: withdrawl_request.id, withdrawl_request: { previous_transaction_id: withdrawl_request.previous_transaction&.id }), method: :patch, title: "Complete", class: "icon" do
                 i.fa.fa-btc.fa-lg
             - if withdrawl_request.may_cancel?
               = link_to admins_cancel_withdrawl_request_path(withdrawl_request), method: :patch, title: "Cancel", class: "icon" do

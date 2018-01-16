@@ -7,6 +7,10 @@ class CoinDecorator < Draper::Decorator
     Utils.to_decimal(h.current_member.liability(self), subdivision)
   end
 
+  def available_member_liability_display
+    Utils.to_decimal(h.current_member.available_liability(self), subdivision)
+  end
+
   def system_assets
     Utils.to_decimal(assets, subdivision)
   end

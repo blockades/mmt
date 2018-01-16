@@ -1,6 +1,6 @@
 h2 Withdraw #{@coin&.code}
 
-p Your current balance in #{@coin.name} is #{@coin.member_liability}
+p Your current balance in #{@coin.name} is #{@coin.available_member_liability_display}
 
 = form_for [:coin, @withdrawl_request], method: :post do |f|
   .row
