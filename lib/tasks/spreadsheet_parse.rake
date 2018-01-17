@@ -67,17 +67,17 @@ namespace :db do
               "initiated_by" => admin
             }
             # Create the relevant transaction
-            transaction_klass.new(params).tap do |transaction|
+            transaction = transaction_klass.new(params).tap do |transaction|
               transaction.created_at = date
               transaction.save!
             end
             puts <<-STR
-#{transaction_klass} no. #{i} =>  {
-  coin: #{coin.code},
-  member: #{member.email},
-  quantity: #{data[:hash]},
-  rate: #{btc_rate},
-  date: #{date}
+#{transaction.class} no. #{i} =>  {
+  coin: #{transaction.send(transaction_coin).code},
+  member: #{transaction.send(transaction_member).email},
+  quantity: #{transaction.send("#{transaction_member}_quantity")},
+  rate: #{transaction.send("#{transaction_member}_rate")},
+  date: #{transaction.created_at}
 }
             STR
           end
@@ -86,3 +86,5 @@ namespace :db do
     end
   end
 end
+
+task "db:seed:spreadsheet" => "setup:coins"
