@@ -66,7 +66,7 @@ class WithdrawlRequest < ApplicationRecord
         self.completed_by = params[:member]
       }
       after do
-        transaction = Transactions::MemberWithdrawl.new(
+        Transactions::MemberWithdrawl.create!(
           withdrawl_request: self,
           source: member,
           source_coin: coin,
@@ -77,7 +77,6 @@ class WithdrawlRequest < ApplicationRecord
           initiated_by: member,
           authorized_by: completed_by
         )
-        transaction.save!
       end
     end
 

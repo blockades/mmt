@@ -2,6 +2,7 @@
 
 require "simplecov"
 require "webmock/rspec"
+require "aasm/rspec"
 require "securerandom"
 
 SimpleCov.start "rails" do

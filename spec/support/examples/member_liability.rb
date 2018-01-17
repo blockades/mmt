@@ -3,6 +3,7 @@
 RSpec.shared_examples "member with bitcoin" do |options|
   include_examples "with admin"
   include_examples "with member"
+  include_examples "with bitcoin"
 
   before do
     create :system_allocation, source: bitcoin,
