@@ -37,8 +37,8 @@ describe Transactions::MemberAllocation, transactions: true do
       end
 
       describe "#publish_to_source" do
-        it "creates member coin event" do
-          expect { subject.save }.to change { member.member_coin_events.count }.by(1)
+        it "creates liability event" do
+          expect { subject.save }.to change { member.liability_events.count }.by(1)
         end
 
         it "debits source (member) source_coin" do
@@ -47,8 +47,8 @@ describe Transactions::MemberAllocation, transactions: true do
       end
 
       describe "#publish_to_destination" do
-        it "creates member coin event" do
-          expect { subject.save }.to change { destination.member_coin_events.count }.by(1)
+        it "creates liability event" do
+          expect { subject.save }.to change { destination.liability_events.count }.by(1)
         end
 
         it "credits destination (member) destination_coin" do
@@ -58,7 +58,7 @@ describe Transactions::MemberAllocation, transactions: true do
     end
 
     context "invalid" do
-      before { allow_any_instance_of(MemberCoinEvent).to receive(:save).and_return(false) }
+      before { allow_any_instance_of(Events::Liability).to receive(:save).and_return(false) }
 
       describe "#publish_to_source" do
         it "fails to save" do

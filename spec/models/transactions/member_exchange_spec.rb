@@ -32,8 +32,8 @@ describe Transactions::MemberExchange, transactions: true do
       }
     end
 
-    it "creates member coin event" do
-      expect { exchange.save }.to change { member.member_coin_events.count }.by(2)
+    it "creates liability event" do
+      expect { exchange.save }.to change { member.liability_events.count }.by(2)
     end
 
     describe "#publish_to_source" do

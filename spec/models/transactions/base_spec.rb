@@ -1,8 +1,9 @@
+
 # frozen_string_literal: true
 
 require "rails_helper"
 
-describe SystemTransaction, transactions: true, mocked_rates: true do
+describe Transactions::Base, transactions: true, mocked_rates: true do
   let(:transaction) { create :system_deposit }
   let(:admin) { transaction.source }
 

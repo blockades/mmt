@@ -2,12 +2,12 @@
 
 require "rails_helper"
 
-describe CoinEvent, type: :model, transactions: true do
-  let(:coin_event) { build :coin_event }
-  let(:bitcoin) { coin_event.coin }
+describe Events::Asset, type: :model, transactions: true do
+  let(:asset_event) { build :asset_event }
+  let(:bitcoin) { asset_event.coin }
 
   describe "#coin_assets" do
-    let(:coin_assets) { coin_event.send(:coin_assets) }
+    let(:coin_assets) { asset_event.send(:coin_assets) }
 
     context "assets positive" do
       it "returns true" do
@@ -16,7 +16,7 @@ describe CoinEvent, type: :model, transactions: true do
     end
 
     context "assets negative" do
-      before { coin_event.assets = Utils.to_integer(-10, bitcoin.subdivision) }
+      before { asset_event.entry = Utils.to_integer(-10, bitcoin.subdivision) }
 
       context "sufficient system assets" do
         it "returns true" do
@@ -34,12 +34,12 @@ describe CoinEvent, type: :model, transactions: true do
 
   describe "readonly" do
     before do
-      allow(coin_event).to receive(:new_record?).and_return(false)
+      allow(asset_event).to receive(:new_record?).and_return(false)
     end
 
     context "update" do
       it "returns false" do
-        expect(coin_event.send(:readonly?)).to be_truthy
+        expect(asset_event.send(:readonly?)).to be_truthy
       end
     end
   end

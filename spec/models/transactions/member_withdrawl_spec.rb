@@ -28,8 +28,8 @@ describe Transactions::MemberWithdrawl, transactions: true do
       end
 
       describe "#publish_to_source" do
-        it "creates member coin event" do
-          expect { subject.save }.to change { member.member_coin_events.count }.by(1)
+        it "creates liability event" do
+          expect { subject.save }.to change { member.liability_events.count }.by(1)
         end
 
         it "debits destination (member) destination_coin liability" do
@@ -41,8 +41,8 @@ describe Transactions::MemberWithdrawl, transactions: true do
       end
 
       describe "#publish_to_destination" do
-        it "creates coin event" do
-          expect { subject.save }.to change { bitcoin.coin_events.count }.by(1)
+        it "creates asset event" do
+          expect { subject.save }.to change { bitcoin.asset_events.count }.by(1)
         end
 
         it "debits source (coin) assets" do
@@ -56,7 +56,7 @@ describe Transactions::MemberWithdrawl, transactions: true do
 
     context "invalid" do
       describe "#publish_to_source" do
-        before { allow_any_instance_of(MemberCoinEvent).to receive(:save).and_return(false) }
+        before { allow_any_instance_of(Events::Liability).to receive(:save).and_return(false) }
 
         it "fails to save" do
           expect(subject.save).to be_falsey
@@ -64,7 +64,7 @@ describe Transactions::MemberWithdrawl, transactions: true do
       end
 
       describe "#publish_to_destination" do
-        before { allow_any_instance_of(CoinEvent).to receive(:save).and_return(false) }
+        before { allow_any_instance_of(Events::Asset).to receive(:save).and_return(false) }
 
         it "fails to save" do
           expect(subject.save).to be_falsey

@@ -2,13 +2,13 @@
 
 require "rails_helper"
 
-describe MemberCoinEvent, type: :model, transactions: true do
-  let(:member_coin_event) { build :member_coin_event }
-  let(:bitcoin) { member_coin_event.coin }
-  let(:member) { member_coin_event.member }
+describe Events::Liability, type: :model, transactions: true do
+  let(:liability_event) { build :liability_event }
+  let(:bitcoin) { liability_event.coin }
+  let(:member) { liability_event.member }
 
   describe "#member_coin_liability" do
-    let(:member_coin_liability) { member_coin_event.send(:member_coin_liability) }
+    let(:member_coin_liability) { liability_event.send(:member_coin_liability) }
 
     context "liability positive" do
       it "returns true" do
@@ -17,7 +17,7 @@ describe MemberCoinEvent, type: :model, transactions: true do
     end
 
     context "liability negative" do
-      before { member_coin_event.liability = Utils.to_integer(-10, bitcoin.subdivision) }
+      before { liability_event.entry = Utils.to_integer(-10, bitcoin.subdivision) }
 
       context "sufficient member liability" do
         it "returns true" do
@@ -35,12 +35,12 @@ describe MemberCoinEvent, type: :model, transactions: true do
 
   describe "readonly" do
     before do
-      allow(member_coin_event).to receive(:new_record?).and_return(false)
+      allow(liability_event).to receive(:new_record?).and_return(false)
     end
 
     context "update" do
       it "returns false" do
-        expect(member_coin_event.send(:readonly?)).to be_truthy
+        expect(liability_event.send(:readonly?)).to be_truthy
       end
     end
   end

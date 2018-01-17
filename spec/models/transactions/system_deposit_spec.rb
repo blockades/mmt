@@ -9,13 +9,13 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
   describe "hooks", mocked_rates: true do
     # describe "#publish_to_source" do
     #   context "valid" do
-    #     it "creates admin coin event" do
-    #       expect { subject.save }.to change { admin.admin_coin_events.count }.by(1)
+    #     it "creates equity event" do
+    #       expect { subject.save }.to change { admin.equity_events.count }.by(1)
     #     end
     #   end
 
     #   context "invalid" do
-    #     before { allow_any_instance_of(AdminCoinEvent).to receive(:save).and_return(false) }
+    #     before { allow_any_instance_of(Events::Equity).to receive(:save).and_return(false) }
     #
     #     it "fails to save" do
     #       expect(subject.save).to be_falsey
@@ -25,8 +25,8 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
 
     describe "#publish_to_destination" do
       context "valid" do
-        it "creates coin event" do
-          expect { subject.save }.to change { bitcoin.coin_events.count }.by(1)
+        it "creates asset event" do
+          expect { subject.save }.to change { bitcoin.asset_events.count }.by(1)
         end
 
         it "credits source (coin) assets" do
@@ -41,7 +41,7 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
       end
 
       context "invalid" do
-        before { allow_any_instance_of(CoinEvent).to receive(:save).and_return(false) }
+        before { allow_any_instance_of(Events::Asset).to receive(:save).and_return(false) }
 
         it "fails to save" do
           expect(subject.save).to be_falsey

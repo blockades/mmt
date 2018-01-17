@@ -18,8 +18,8 @@ describe Transactions::SystemWithdrawl, transactions: true do
       end
 
       describe "#publish_to_source" do
-        it "creates coin event" do
-          expect { subject.save }.to change { bitcoin.coin_events.count }.by(1)
+        it "creates asset event" do
+          expect { subject.save }.to change { bitcoin.asset_events.count }.by(1)
         end
 
         it "debits source (coin) assets" do
@@ -34,15 +34,15 @@ describe Transactions::SystemWithdrawl, transactions: true do
       end
 
       # describe "#publish_to_destination" do
-      #   it "creates admin coin event" do
-      #     expect { subject.save }.to change { admin.admin_coin_events.count }.by(1)
+      #   it "creates equity event" do
+      #     expect { subject.save }.to change { admin.equit_events.count }.by(1)
       #   end
       # end
     end
 
     context "invalid" do
       describe "#publish_to_source" do
-        before { allow_any_instance_of(CoinEvent).to receive(:save).and_return(false) }
+        before { allow_any_instance_of(Events::Asset).to receive(:save).and_return(false) }
 
         it "fails to save" do
           expect(subject.save).to be_falsey
