@@ -7,6 +7,15 @@ class CoinDecorator < Draper::Decorator
     Utils.to_decimal(h.current_member.liability(self), subdivision)
   end
 
+  def member_total_display
+    h.current_member.coins.sum do |coin|
+      Utils.to_decimal(
+       h.current_member.liability(coin) * coin.btc_rate,
+        coin.subdivision
+      ) / self.btc_rate
+    end
+  end
+
   def system_assets
     Utils.to_decimal(assets, subdivision)
   end
