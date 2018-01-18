@@ -33,12 +33,9 @@ hr
       - if @member.phone_number?
         p
           | Your fallback phone number is: 
-          strong= @member.full_phone_number
+          strong= @member.full_phone_number || "Unknown"
     .two.columns
-      - if @member.phone_number?
-        = link_to 'Change phone number', member_settings_path(@member), class: 'button'
-      - else
-        = link_to 'Add SMS number', member_settings_new_two_factor_fallback_sms_path, class: 'button'
+      = link_to 'Change phone number', member_settings_path(@member), class: 'button'
 
   hr
   .row
