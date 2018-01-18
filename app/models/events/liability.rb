@@ -10,9 +10,12 @@ module Events
     validate :coin_assets, :member_coin_liability
 
     private
-
+    
     def coin_assets
-      return true if (coin.assets - liability.abs).positive?
+      assets = coin.assets + system_transaction.coin_events.to_a.sum(&:assets)
+      liabilities = system_transaction.member_coin_events.to_a.sum(&:liability)
+      assets_after = assets - liabilities.abs
+      return true if assets_after.positive? || assets_after.zero?
       self.errors.add :assets, "Insufficient assets"
     end
 
