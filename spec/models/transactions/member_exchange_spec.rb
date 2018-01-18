@@ -46,13 +46,12 @@ describe Transactions::MemberExchange, transactions: true do
       end
 
       it "source_coin equity increases" do
-        equity = bitcoin.equity
-        expect { exchange.save }.to change { bitcoin.equity }.from(equity).to(equity + exchange.source_quantity)
+        expect { exchange.save }.to_not change { bitcoin.equity }
       end
     end
 
     describe "#publish_to_destination" do
-      it "credits source (member) destination_coin" do
+      it "credits destination (member) destination_coin" do
         expect { exchange.save }.to change { member.liability(sterling) }.by exchange.destination_quantity
       end
 
@@ -60,9 +59,8 @@ describe Transactions::MemberExchange, transactions: true do
         expect { exchange.save }.to_not change { sterling.assets }
       end
 
-      it "destination_coin equity decreases" do
-        equity = sterling.equity
-        expect { exchange.save }.to change { sterling.equity }.from(equity).to(equity - exchange.destination_quantity)
+      it "destination_coin equity stay same" do
+        expect { exchange.save }.to_not change { sterling.equity }
       end
     end
   end

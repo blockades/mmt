@@ -90,6 +90,10 @@ class Member < ApplicationRecord
     coin_history(coin).sum(:liability)
   end
 
+  def equity(coin)
+    equity_events.where(coin_id: coin.id).sum(:equity)
+  end
+
   def full_phone_number
     "+#{country_code}#{phone_number}"
   end

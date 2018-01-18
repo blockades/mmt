@@ -4,8 +4,9 @@ require "rails_helper"
 
 describe Transactions::SystemAllocation, transactions: true do
   let(:subject) { build :system_allocation }
+  let(:admin) { subject.source }
   let(:member) { subject.destination }
-  let(:bitcoin) { subject.source }
+  let(:bitcoin) { subject.source_coin }
 
   describe "hooks", mocked_rates: true do
     context "valid" do
@@ -18,12 +19,15 @@ describe Transactions::SystemAllocation, transactions: true do
       end
 
       describe "#publish_to_source" do
-        it "creates asset event" do
-          expect { subject.save }.to change { bitcoin.asset_events.count }.by(1)
+        it "creates equity event" do
+          expect { subject.save }.to change { admin.equity_events.count }.by(1)
         end
 
-        it "credit source (coin) assets" do
-          expect { subject.save }.to_not change { bitcoin.assets }
+        it "debit source (admin) equity" do
+          equity = admin.equity(bitcoin)
+          expect { subject.save }.to change { admin.equity(bitcoin) }.from(equity).to(
+            equity - subject.destination_quantity
+          )
         end
       end
 
@@ -42,7 +46,10 @@ describe Transactions::SystemAllocation, transactions: true do
     end
 
     context "invalid" do
-      before { allow_any_instance_of(Events::Liability).to receive(:save).and_return(false) }
+      before do
+        allow_any_instance_of(Events::Liability).to receive(:save).and_return(false)
+        allow_any_instance_of(Events::Equity).to receive(:save).and_return(false)
+      end
 
       describe "#publish_to_source" do
         it "fails to save" do

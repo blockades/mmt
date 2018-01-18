@@ -12,10 +12,10 @@ FactoryBot.define do
      end
 
      trait :system_allocation do
-       association :source, factory: :bitcoin
+       association :source, factory: :admin
        association :destination, factory: :member
-       source_coin { source }
-       destination_coin { source }
+       association :source_coin, factory: :bitcoin
+       destination_coin { source_coin }
        destination_rate { destination_coin.btc_rate }
        destination_quantity { Utils.to_integer(1, destination_coin.subdivision) }
        association :initiated_by, factory: :admin
