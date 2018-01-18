@@ -24,7 +24,7 @@ module MMT
     config.autoload_paths += Dir["#{config.root}/app/**/", "#{config.root}/lib/**/"]
 
     config.before_initialize do
-      require config.root.join "config", "initializers", "magic_money_tree"
+      require config.root.join "config", "initializers", "mmt"
     end
   end
 end

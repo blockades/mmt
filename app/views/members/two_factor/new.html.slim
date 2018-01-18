@@ -7,7 +7,7 @@
         p Please enter a phone number for authentication
         .field.inline-block
           = f.label :country_code
-          = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, selected: MagicMoneyTree::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
+          = f.select :country_code, options_for_select(MMT::MobileCountryCodes.for_select, selected: MMT::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
         .field.inline-block
           = f.label :phone_number
           = f.text_field :phone_number, value: current_member.phone_number, autofocus: true

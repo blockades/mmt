@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
-module MagicMoneyTree
-  module InaccessibleWords
+module MMT
+  module ReservedWords
     class << self
       def all
         [tables, reserved, blocked].reduce([], :concat).uniq.sort
