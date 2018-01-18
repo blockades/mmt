@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Members
-  class TwoFactorController < ApplicationController
+  class TwoFactorAuthenticationsController < ApplicationController
     include QrCodesHelper
 
     before_action :reauthenticate_member!, except: [:code]
@@ -19,9 +19,9 @@ module Members
       return unless setup_params[:otp_delivery_method]
       result = TwoFactor::Setup.call(member: current_member, setup_params: setup_params)
       if result.success?
-        redirect_to edit_member_settings_two_factor_path, notice: result.message
+        redirect_to edit_member_settings_two_factor_authentication_path, notice: result.message
       else
-        redirect_back fallback_location: member_settings_two_factor_path, alert: result.message
+        redirect_back fallback_location: member_settings_two_factor_authentication_path, alert: result.message
       end
     end
 
@@ -32,15 +32,15 @@ module Members
       return unless confirmation_params[:code]
       result = TwoFactor::Confirm.call(member: current_member, authentication_code: confirmation_params[:code])
       if result.success?
-        redirect_to member_settings_two_factor_path, notice: result.message
+        redirect_to member_settings_two_factor_authentication_path, notice: result.message
       else
-        redirect_to new_member_settings_two_factor_path, alert: result.message
+        redirect_to new_member_settings_two_factor_authentication_path, alert: result.message
       end
     end
 
     def destroy
       result = TwoFactor::Disable.call(member: current_member)
-      redirect_to member_settings_two_factor_path, notice: result.message
+      redirect_to member_settings_two_factor_authentication_path, notice: result.message
     end
 
     def code
@@ -59,7 +59,7 @@ module Members
 
     def return_to_index
       notice = "You must disable two factor authentication before setting up again"
-      redirect_to member_settings_two_factor_path, notice: notice
+      redirect_to member_settings_two_factor_authentication_path, notice: notice
     end
 
     def confirmation_params
