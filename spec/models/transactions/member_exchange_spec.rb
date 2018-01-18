@@ -67,7 +67,7 @@ describe Transactions::MemberExchange, transactions: true do
     end
   end
 
-  describe "invalid" do
+  describe "invalid", mocked_rates: true do
     context "insufficient coin assets" do
       before do
         create :system_deposit, {

@@ -6,7 +6,7 @@ describe Transactions::SystemDeposit, type: :model, transactions: true do
   let(:subject) { build :system_deposit }
   let(:bitcoin) { subject.destination }
 
-  describe "hooks" do
+  describe "hooks", mocked_rates: true do
     # describe "#publish_to_source" do
     #   context "valid" do
     #     it "creates admin coin event" do
