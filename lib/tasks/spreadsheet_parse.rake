@@ -9,8 +9,8 @@ namespace :db do
 
       ActiveRecord::Base.transaction do
         # Initialize an admin
-        admin = Member.find_or_initialize_by(email: "admin@blockades.org").tap do |admin|
-          admin.update!(username: "core_admin", password: "adminpass", admin: true)
+        admin = Member.find_or_initialize_by(email: "develop@blockades.dev").tap do |admin|
+          admin.update!(username: "develop", password: "password", admin: true)
         end
 
         # Load CSV
@@ -87,4 +87,4 @@ namespace :db do
   end
 end
 
-task "db:seed:spreadsheet" => "setup:coins"
+task "db:seed:spreadsheet" => "setup"
