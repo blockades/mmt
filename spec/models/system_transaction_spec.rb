@@ -6,8 +6,6 @@ describe SystemTransaction, transactions: true do
   let(:admin) { create :admin }
   let(:transaction) { create :system_deposit, source: admin }
 
-  include_examples "market rates"
-
   describe "readonly?" do
     context "update" do
       it "raises error" do

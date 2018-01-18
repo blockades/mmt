@@ -3,7 +3,7 @@
 require "rails_helper"
 
 describe Members::TwoFactorController, type: :controller, two_factor: true do
-  include_examples "with member"
+  let(:member) { create :member }
 
   before do
     sign_in member
@@ -141,25 +141,14 @@ describe Members::TwoFactorController, type: :controller, two_factor: true do
     end
   end
 
-  describe "GET resend_code" do
-    let(:get_resend_code) { get :resend_code, xhr: true }
+  describe "POST resend_code" do
+    let(:post_send_code) { post :code, xhr: true }
     let(:json_response) { JSON.parse(response.body) }
 
     context "outside nonce timestamp" do
       it "renders a JSON response" do
-        get_resend_code
+        post_send_code
         expect(json_response).to eq("success" => true, "message" => "Two factor code sent")
-      end
-    end
-
-    context "within nonce timestamp" do
-      before do
-        @request.session[:resend_two_factor_code] = nonce(Time.current)
-      end
-
-      it "renders a JSON response" do
-        get_resend_code
-        expect(json_response).to eq("success" => false, "message" => "Wait 5 minutes before requesting another code")
       end
     end
   end

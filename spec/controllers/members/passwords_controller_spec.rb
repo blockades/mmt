@@ -3,7 +3,7 @@
 require "rails_helper"
 
 describe Members::PasswordsController, type: :controller, two_factor: true do
-  include_examples "with member"
+  let(:member) { create :member }
 
   before do
     sign_in member

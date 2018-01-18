@@ -3,7 +3,7 @@
 require "rails_helper"
 
 describe Members::RecoveryCodesController, type: :controller do
-  include_examples "with member"
+  let(:member) { create :member }
 
   before do
     sign_in member

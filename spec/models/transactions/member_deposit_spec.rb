@@ -3,17 +3,29 @@
 require "rails_helper"
 
 describe Transactions::MemberDeposit, transactions: true do
-  include_examples "with bitcoin"
-  include_examples "with member"
+  let(:admin) { create :member, :admin }
+  let(:subject) { build :member_deposit }
+  let(:bitcoin) { subject.source }
+  let(:member) { subject.destination }
 
-  let(:subject) { build :member_deposit, source: bitcoin, destination: member }
-
-  include_examples "market rates"
-
-  describe "hooks" do
+  describe "hooks", mocked_rates: true do
     context "valid" do
-      include_examples "system with bitcoin", assets: 5
-      include_examples "member with bitcoin", liability: 2
+      before do
+        create :system_deposit, {
+          source: admin,
+          destination: bitcoin,
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+        }
+        create :system_allocation, {
+          source: bitcoin,
+          destination: member,
+          source_coin: bitcoin,
+          destination_coin: bitcoin,
+          destination_quantity: Utils.to_integer(2, bitcoin.subdivision),
+          destination_rate: bitcoin.btc_rate,
+          initiated_by: admin
+        }
+      end
 
       it "source_coin equity stays the same" do
         expect { subject.save }.to_not change { bitcoin.equity }

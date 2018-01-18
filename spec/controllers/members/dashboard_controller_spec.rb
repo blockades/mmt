@@ -3,7 +3,7 @@
 require "./spec/rails_helper"
 
 describe Members::DashboardController do
-  include_examples "with member"
+  let(:member) { create :member }
 
   before { sign_in member }
 

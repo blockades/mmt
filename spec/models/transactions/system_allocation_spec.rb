@@ -3,16 +3,19 @@
 require "rails_helper"
 
 describe Transactions::SystemAllocation, transactions: true do
-  include_examples "with member"
-  include_examples "with bitcoin"
+  let(:subject) { build :system_allocation }
+  let(:member) { subject.destination }
+  let(:bitcoin) { subject.source }
 
-  let(:subject) { build :system_allocation, source: bitcoin, destination: member }
-
-  describe "hooks" do
-    include_examples "market rates"
-
+  describe "hooks", mocked_rates: true do
     context "valid" do
-      include_examples "system with bitcoin", assets: 5
+      before do
+        create :system_deposit, {
+          source: member,
+          destination: bitcoin,
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+        }
+      end
 
       describe "#publish_to_source" do
         it "creates coin event" do

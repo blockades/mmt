@@ -3,8 +3,8 @@
 require "rails_helper"
 
 describe ApplicationController, type: :controller do
-  include_examples "with member"
-  include_examples "with admin"
+  let(:member) { create :member }
+  let(:admin) { create :member, :admin }
 
   describe "#verify_admin" do
     context "with admin privilege" do
