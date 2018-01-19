@@ -26,7 +26,7 @@ module Transactions
         member: source,
         liability: -destination_quantity,
         rate: source_rate
-      ).valid?
+      )
     end
 
     def publish_to_destination
@@ -35,7 +35,7 @@ module Transactions
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
-        rate: destination_rate
+        rate: source_rate
       )
     end
   end
