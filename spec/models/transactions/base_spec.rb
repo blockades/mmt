@@ -16,7 +16,7 @@ describe Transactions::Base, transactions: true, mocked_rates: true do
           tx.liability_events.build(entry: 4, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
           tx.equity_events.build(entry: 1, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
           tx.asset_events.build(entry: 2, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
-          expect(tx.send(:events_sum)).to be_truthy
+          expect(tx.send(:events_sum_display)).to be_truthy
         end
       end
 
@@ -25,7 +25,22 @@ describe Transactions::Base, transactions: true, mocked_rates: true do
           tx.liability_events.build(entry: 2, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
           tx.equity_events.build(entry: 1, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
           tx.asset_events.build(entry: 2, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
-          expect(tx.send(:events_sum)).to be_truthy
+          expect(tx.send(:events_sum_display)).to be_truthy
+        end
+      end
+    end
+
+    describe "#system_sum_to_zero" do
+      context "valid" do
+        it "returns true" do
+          expect(transaction).to be_valid
+        end
+      end
+
+      context "invalid" do
+        it "returns false" do
+          transaction.liability_events.build(entry: 2, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
+          expect(transaction).to_not be_valid
         end
       end
     end
@@ -33,14 +48,16 @@ describe Transactions::Base, transactions: true, mocked_rates: true do
 
   describe "readonly?" do
     context "update" do
+      before { allow(transaction).to receive(:new_record?).and_return(false) }
+
       it "raises error" do
-        transaction.source_id = SecureRandom.uuid
-        expect { transaction.save }.to raise_error ActiveRecord::ReadOnlyRecord
+        expect(transaction.send(:readonly?)).to be_truthy
       end
     end
   end
 
   describe "#correct_previous_transaction" do
+    before { transaction.save }
     let(:next_transaction) { build :system_deposit, source: admin, previous_transaction: transaction }
 
     context "matches referring transaction" do
