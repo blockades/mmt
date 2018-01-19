@@ -4,8 +4,30 @@
 require "rails_helper"
 
 describe Transactions::Base, transactions: true, mocked_rates: true do
-  let(:transaction) { create :system_deposit }
+  let(:transaction) { build :system_deposit }
   let(:admin) { transaction.source }
+
+  describe "#events_sum" do
+    let(:tx) { build :system_transaction }
+
+    context "valid events" do
+      it "returns true" do
+        tx.liability_events.build(entry: 4, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
+        tx.equity_events.build(entry: 1, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
+        tx.asset_events.build(entry: 2, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
+        expect(tx.send(:events_sum)).to be_truthy
+      end
+    end
+
+    context "invalid events" do
+      it "returns false" do
+        tx.liability_events.build(entry: 2, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
+        tx.equity_events.build(entry: 1, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
+        tx.asset_events.build(entry: 2, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
+        expect(tx.send(:events_sum)).to be_truthy
+      end
+    end
+  end
 
   describe "readonly?" do
     context "update" do

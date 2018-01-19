@@ -1,10 +1,10 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :system_transaction do
+  factory :system_transaction, class: Transactions::Base do
      trait :system_deposit do
        association :source, factory: :admin
-       association :destination, factory: :coin
+       association :destination, factory: :bitcoin
        source_coin { destination }
        destination_coin { destination }
        destination_rate { destination_coin.btc_rate }

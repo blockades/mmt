@@ -8,8 +8,8 @@ module Transactions
     self.store_full_sti_class = false
 
     belongs_to :previous_transaction, class_name: self.name,
-                          foreign_key: :previous_transaction_id,
-                          optional: true
+                                      foreign_key: :previous_transaction_id,
+                                      optional: true
 
     belongs_to :source, polymorphic: true
 
@@ -81,15 +81,17 @@ module Transactions
     validate :correct_previous_transaction,
              :system_sum_to_zero
 
-    private
-
-    def system_sum_to_zero
-      # Can we go about this any other way? We must divide integer values by subdivision to account for storing multiplied by subdivision
-      total = events.inject(0) do |total, event|
+    def events_sum
+      [equity_events, liability_events, asset_events].flatten.inject(0) do |total, event|
         entry = Utils.to_decimal(event.entry * event.rate, event.coin.subdivision).round(Coin::BTC_SUBDIVISION)
         event.type == "Asset" ? total -= entry : total += entry
       end
-      return true if total.zero?
+    end
+
+    private
+
+    def system_sum_to_zero
+      return true if events_sum.zero?
       self.errors.add :system_sum_to_zero, "Invalid transaction"
     end
 
