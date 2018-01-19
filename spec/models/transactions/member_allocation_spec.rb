@@ -4,9 +4,8 @@ require "rails_helper"
 
 describe Transactions::MemberAllocation, transactions: true do
   let(:admin) { create :member, :admin }
-  let(:subject) { build :member_allocation }
+  let(:subject) { build :member_allocation, destination: admin }
   let(:member) { subject.source }
-  let(:destination) { subject.destination }
   let(:bitcoin) { subject.source_coin }
 
   describe "hooks", mocked_rates: true do
@@ -15,10 +14,11 @@ describe Transactions::MemberAllocation, transactions: true do
         create :system_deposit, {
           source: admin,
           destination: bitcoin,
-          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision),
+          initiated_by: admin
         }
         create :system_allocation, {
-          source: bitcoin,
+          source: admin,
           destination: member,
           source_coin: bitcoin,
           destination_coin: bitcoin,
@@ -48,11 +48,11 @@ describe Transactions::MemberAllocation, transactions: true do
 
       describe "#publish_to_destination" do
         it "creates liability event" do
-          expect { subject.save }.to change { destination.liability_events.count }.by(1)
+          expect { subject.save }.to change { admin.liability_events.count }.by(1)
         end
 
         it "credits destination (member) destination_coin" do
-          expect { subject.save }.to change { destination.liability(bitcoin) }.by subject.destination_quantity
+          expect { subject.save }.to change { admin.liability(bitcoin) }.by subject.destination_quantity
         end
       end
     end

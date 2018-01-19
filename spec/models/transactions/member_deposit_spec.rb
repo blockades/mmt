@@ -14,10 +14,11 @@ describe Transactions::MemberDeposit, transactions: true do
         create :system_deposit, {
           source: admin,
           destination: bitcoin,
-          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision),
+          initiated_by: admin
         }
         create :system_allocation, {
-          source: bitcoin,
+          source: admin,
           destination: member,
           source_coin: bitcoin,
           destination_coin: bitcoin,

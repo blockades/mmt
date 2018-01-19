@@ -12,5 +12,9 @@ FactoryBot.define do
     liability { Utils.to_integer(10, coin.subdivision) }
   end
 
-  factory :equity_event, class: Events::Equity
+  factory :equity_event, class: Events::Equity do
+    association :coin, factory: :bitcoin
+    association :member, factory: :member
+    equity { Utils.to_integer(10, coin.subdivision) }
+  end
 end

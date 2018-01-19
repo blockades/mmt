@@ -14,7 +14,8 @@ describe Transactions::SystemAllocation, transactions: true do
         create :system_deposit, {
           source: member,
           destination: bitcoin,
-          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision),
+          initiated_by: admin
         }
       end
 
@@ -46,18 +47,17 @@ describe Transactions::SystemAllocation, transactions: true do
     end
 
     context "invalid" do
-      before do
-        allow_any_instance_of(Events::Liability).to receive(:save).and_return(false)
-        allow_any_instance_of(Events::Equity).to receive(:save).and_return(false)
-      end
-
       describe "#publish_to_source" do
+        before { allow_any_instance_of(Events::Equity).to receive(:save).and_return(false) }
+
         it "fails to save" do
           expect(subject.save).to be_falsey
         end
       end
 
       describe "#publish_to_destination" do
+        before { allow_any_instance_of(Events::Liability).to receive(:save).and_return(false) }
+
         it "fails to save" do
           expect(subject.save).to be_falsey
         end
