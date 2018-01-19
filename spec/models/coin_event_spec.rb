@@ -3,12 +3,8 @@
 require "rails_helper"
 
 describe CoinEvent, type: :model, transactions: true do
-  include_examples "with bitcoin"
-
-  let(:coin_event) do
-    build :coin_event, coin: bitcoin,
-                       assets: Utils.to_integer(10, bitcoin.subdivision)
-  end
+  let(:coin_event) { build :coin_event }
+  let(:bitcoin) { coin_event.coin }
 
   describe "#coin_assets" do
     let(:coin_assets) { coin_event.send(:coin_assets) }
@@ -37,12 +33,13 @@ describe CoinEvent, type: :model, transactions: true do
   end
 
   describe "readonly" do
-    include_examples "system with bitcoin", assets: 5
-    let(:event) { CoinEvent.last }
+    before do
+      allow(coin_event).to receive(:new_record?).and_return(false)
+    end
 
     context "update" do
       it "returns false" do
-        expect(event.send(:readonly?)).to be_truthy
+        expect(coin_event.send(:readonly?)).to be_truthy
       end
     end
   end

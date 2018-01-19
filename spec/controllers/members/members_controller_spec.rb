@@ -3,7 +3,7 @@
 require "rails_helper"
 
 describe Members::MembersController do
-  include_examples "with member"
+  let(:member) { create :member }
 
   let(:json) { JSON.parse(response.body) }
 

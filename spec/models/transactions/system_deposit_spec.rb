@@ -3,11 +3,10 @@
 require "rails_helper"
 
 describe Transactions::SystemDeposit, type: :model, transactions: true do
-  include_examples "with bitcoin"
+  let(:subject) { build :system_deposit }
+  let(:bitcoin) { subject.destination }
 
-  let(:subject) { build :system_deposit, destination: bitcoin, destination_quantity: Utils.to_integer(1, bitcoin.subdivision) }
-
-  describe "hooks" do
+  describe "hooks", mocked_rates: true do
     # describe "#publish_to_source" do
     #   context "valid" do
     #     it "creates admin coin event" do

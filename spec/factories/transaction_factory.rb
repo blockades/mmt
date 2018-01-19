@@ -22,7 +22,7 @@ FactoryBot.define do
      end
 
     trait :system_withdrawl do
-      association :source, factory: :coin
+      association :source, factory: :bitcoin
       association :destination, factory: :admin
       source_coin { source }
       destination_coin { source }

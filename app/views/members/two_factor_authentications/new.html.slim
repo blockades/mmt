@@ -1,13 +1,13 @@
 .row
   .twelve.columns
-    = form_for :two_factor, url: member_settings_two_factor_path , method: :post do |f|
+    = form_for :two_factor, url: member_settings_two_factor_authentication_path, method: :post do |f|
       = f.label 'Choose your delivery method'
       = f.select :otp_delivery_method, Member::TWO_FACTOR_DELIVERY_METHODS.map { |value, message| [message, value] }, { include_blank: '-- Select --' }, required: true, id: 'deliverySelect'
       .phonedetails.hidden
         p Please enter a phone number for authentication
         .field.inline-block
           = f.label :country_code
-          = f.select :country_code, options_for_select(MagicMoneyTree::MobileCountryCodes.for_select, selected: MagicMoneyTree::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
+          = f.select :country_code, options_for_select(MMT::MobileCountryCodes.for_select, selected: MMT::MobileCountryCodes.with_code_only.detect { |code| code == current_member.country_code }), include_blank: true
         .field.inline-block
           = f.label :phone_number
           = f.text_field :phone_number, value: current_member.phone_number, autofocus: true

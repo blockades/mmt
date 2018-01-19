@@ -63,7 +63,6 @@ class Member < ApplicationRecord
 
   validates :username, uniqueness: { case_sensitive: true },
                        format: { with: /\A[a-zA-Z0-9_\.]*\Z/, multiline: true },
-                       exclusion: { in: MagicMoneyTree::InaccessibleWords.all },
                        presence: true
 
   validate :username_against_email
@@ -77,7 +76,7 @@ class Member < ApplicationRecord
                            if: :country_code?
 
   validates :country_code, presence: true,
-                           inclusion: { in: MagicMoneyTree::MobileCountryCodes.with_code_only },
+                           inclusion: { in: MMT::MobileCountryCodes.with_code_only },
                            if: :phone_number?
 
   before_validation :adjust_slug, on: :update, if: :username_changed?

@@ -24,7 +24,7 @@ describe ReauthenticationController, type: :controller do
     before do
       Timecop.freeze(Time.current)
       allow(request).to receive(:referer).and_return new_reauthentication_path
-      @request.session[:return_paths] = [member_settings_two_factor_path]
+      @request.session[:return_paths] = [member_settings_two_factor_authentication_path]
     end
 
     after { Timecop.return }
@@ -33,7 +33,7 @@ describe ReauthenticationController, type: :controller do
       let(:post_create) { post :create, params: { member: { password: member.password } } }
 
       it "redirects to previous path" do
-        expect(post_create).to redirect_to member_settings_two_factor_path
+        expect(post_create).to redirect_to member_settings_two_factor_authentication_path
       end
 
       it "sets time of reauthentication to session" do

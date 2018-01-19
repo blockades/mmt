@@ -8,9 +8,9 @@
         .white DISABLED
   .offset-by-eight.two.columns
     - if @member.two_factor_enabled?
-      = link_to 'Disable two-factor', member_settings_disable_two_factor_path, method: :post, class: 'button button-primary'
+      = link_to 'Disable two-factor', member_settings_two_factor_authentication_path, method: :delete, class: 'button button-primary'
     - else
-      = link_to 'Setup two-factor', new_member_settings_two_factor_path, class: 'button button-primary'
+      = link_to 'Setup two-factor', new_member_settings_two_factor_authentication_path, class: 'button button-primary'
 
 hr
 - if @member.two_factor_enabled?
@@ -21,7 +21,7 @@ hr
       p Recovery codes can be used to access your account in the event you lose access to your device and cannot receive two-factor authentication codes. 
       p MMT cannot restore access to accounts with two-factor authentication enabled for security reasons, saving your recovery codes in a safe place can help keep you from being locked out of your account.
     .two.columns
-      = link_to 'View', member_settings_two_factor_recovery_codes_path, class: 'button'
+      = link_to 'View', recovery_codes_member_settings_two_factor_authentication_path, class: 'button'
 
   hr
   .row
@@ -33,12 +33,9 @@ hr
       - if @member.phone_number?
         p
           | Your fallback phone number is: 
-          strong= @member.full_phone_number
+          strong= @member.full_phone_number || "Unknown"
     .two.columns
-      - if @member.phone_number?
-        = link_to 'Change phone number', member_settings_path(@member), class: 'button'
-      - else
-        = link_to 'Add SMS number', member_settings_new_two_factor_fallback_sms_path, class: 'button'
+      = link_to 'Change phone number', member_settings_path(@member), class: 'button'
 
   hr
   .row

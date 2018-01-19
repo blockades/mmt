@@ -3,14 +3,9 @@
 require "rails_helper"
 
 describe MemberCoinEvent, type: :model, transactions: true do
-  include_examples "with member"
-  include_examples "with bitcoin"
-
-  let(:member_coin_event) do
-    build :member_coin_event, member: member,
-                              coin: bitcoin,
-                              liability: Utils.to_integer(10, bitcoin.subdivision)
-  end
+  let(:member_coin_event) { build :member_coin_event }
+  let(:bitcoin) { member_coin_event.coin }
+  let(:member) { member_coin_event.member }
 
   describe "#member_coin_liability" do
     let(:member_coin_liability) { member_coin_event.send(:member_coin_liability) }
@@ -39,13 +34,13 @@ describe MemberCoinEvent, type: :model, transactions: true do
   end
 
   describe "readonly" do
-    include_examples "system with bitcoin", assets: 5
-    include_examples "member with bitcoin", liability: 2
-    let(:event) { MemberCoinEvent.last }
+    before do
+      allow(member_coin_event).to receive(:new_record?).and_return(false)
+    end
 
     context "update" do
       it "returns false" do
-        expect(event.send(:readonly?)).to be_truthy
+        expect(member_coin_event.send(:readonly?)).to be_truthy
       end
     end
   end

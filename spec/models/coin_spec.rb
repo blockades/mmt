@@ -3,17 +3,9 @@
 require "rails_helper"
 
 describe Coin, type: :model do
-  it "#live_holdings_quantity" do
-  end
-
-  it "#central_reserve" do
-  end
-
-  describe "#btc_rate" do
+  describe "#btc_rate", mocked_rates: true do
     let(:coin) { create :coin, crypto_currency: crypto_currency, code: code }
     let(:crypto_currency) { true }
-
-    include_examples "market rates"
 
     context "for a fiat currency" do
       let(:crypto_currency) { false }

@@ -36,19 +36,12 @@ Rails.application.routes.draw do
     get "/" => "settings#index"
     resource :password, only: [:new, :update]
 
-    # ==> Two Factor Authentication
-    get "two_factor_authentication" => "two_factor#index", as: :two_factor
-    get "two_factor_authentication/resend_code" => "two_factor#resend_code", as: :resend_two_factor_code
-    get "two_factor_authentication/recovery_codes" => "recovery_codes#show", as: :two_factor_recovery_codes
-    get "two_factor_authentication/fallback_sms" => "fallback_sms#new", as: :new_two_factor_fallback_sms
-
-    post "two_factor_authentication/fallback_sms" => "fallback_sms#create", as: :two_factor_fallback_sms
-    post "two_factor_authentication/disable" => "two_factor#destroy", as: :disable_two_factor
-
-    resource :two_factor_authentication, only: [:new, :create, :edit, :update],
-                                         as: :two_factor,
-                                         controller: :two_factor,
-                                         path_names: { new: "setup", edit: "confirm" }
+    resource :two_factor_authentication, only: [:new, :create, :edit, :update, :destroy],
+                                         path_names: { new: "setup", edit: "confirm", destroy: "disable" } do
+      get "/" => "two_factor_authentications#index"
+      get "recovery_codes" => "recovery_codes#show", as: :recovery_codes
+      post "code" => "two_factor_authentications#code", as: :send_code
+    end
   end
 
   scope module: :members do

@@ -2,11 +2,9 @@
 
 require "rails_helper"
 
-describe SystemTransaction, transactions: true do
-  let(:admin) { create :admin }
-  let(:transaction) { create :system_deposit, source: admin }
-
-  include_examples "market rates"
+describe SystemTransaction, transactions: true, mocked_rates: true do
+  let(:transaction) { create :system_deposit }
+  let(:admin) { transaction.source }
 
   describe "readonly?" do
     context "update" do

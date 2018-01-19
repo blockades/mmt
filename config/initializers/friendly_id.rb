@@ -18,7 +18,7 @@ FriendlyId.defaults do |config|
   # undesirable to allow as slugs. Edit this list as needed for your app.
   config.use :reserved
 
-  config.reserved_words = MagicMoneyTree::InaccessibleWords.all
+  config.reserved_words = MMT::ReservedWords.all
 
   #  ## Friendly Finders
   #

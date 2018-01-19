@@ -3,30 +3,34 @@
 require "rails_helper"
 
 describe Transactions::MemberExchange, transactions: true do
-  include_examples "with bitcoin"
-  include_examples "with member"
-  include_examples "with sterling"
+  let(:admin) { create :member, :admin }
+  let(:exchange) { build :member_exchange }
+  let(:member) { exchange.source }
+  let(:bitcoin) { exchange.source_coin }
+  let(:sterling) { exchange.destination_coin }
 
-  let(:build_exchange) do
-    lambda do |attributes = {}|
-      build(
-        :member_exchange, {
-          source: member,
-          source_coin: bitcoin,
-          destination_coin: sterling
-        }.merge(attributes)
-      )
+  describe "hooks", mocked_rates: true do
+    before do
+      create :system_deposit, {
+        source: admin,
+        destination: bitcoin,
+        destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+      }
+      create :system_deposit, {
+        source: admin,
+        destination: sterling,
+        destination_quantity: Utils.to_integer(10_000, sterling.subdivision)
+      }
+      create :system_allocation, {
+        source: bitcoin,
+        destination: member,
+        source_coin: bitcoin,
+        destination_coin: bitcoin,
+        destination_quantity: Utils.to_integer(2, bitcoin.subdivision),
+        destination_rate: bitcoin.btc_rate,
+        initiated_by: admin
+      }
     end
-  end
-
-  describe "hooks" do
-    include_examples "market rates"
-
-    include_examples "system with bitcoin", assets: 5
-    include_examples "system with sterling", assets: 10_000
-    include_examples "member with bitcoin", liability: 2
-
-    let(:exchange) { build_exchange.call }
 
     it "creates member coin event" do
       expect { exchange.save }.to change { member.member_coin_events.count }.by(2)
@@ -63,16 +67,31 @@ describe Transactions::MemberExchange, transactions: true do
     end
   end
 
-  describe "invalid" do
-    let(:exchange) { build_exchange.call(source_quantity: source_quantity, destination_quantity: destination_quantity) }
-
+  describe "invalid", mocked_rates: true do
     context "insufficient coin assets" do
-      include_examples "system with bitcoin", assets: 5
-      include_examples "system with sterling", assets: 5_000
-      include_examples "member with bitcoin", liability: 2
-
-      let(:source_quantity) { Utils.to_integer(1, bitcoin.subdivision) }
-      let(:destination_quantity) { Utils.to_integer(5000, sterling.subdivision) }
+      before do
+        create :system_deposit, {
+          source: admin,
+          destination: bitcoin,
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+        }
+        create :system_deposit, {
+          source: admin,
+          destination: sterling,
+          destination_quantity: Utils.to_integer(5_000, sterling.subdivision)
+        }
+        create :system_allocation, {
+          source: bitcoin,
+          destination: member,
+          source_coin: bitcoin,
+          destination_coin: bitcoin,
+          destination_quantity: Utils.to_integer(2, bitcoin.subdivision),
+          destination_rate: bitcoin.btc_rate,
+          initiated_by: admin
+        }
+        exchange.source_quantity = Utils.to_integer(1, bitcoin.subdivision)
+        exchange.destination_quantity = Utils.to_integer(5_000, sterling.subdivision)
+      end
 
       it "is invalid" do
         expect(exchange.save).to be_falsey
@@ -80,11 +99,20 @@ describe Transactions::MemberExchange, transactions: true do
     end
 
     context "insufficient member liability" do
-      include_examples "system with bitcoin", assets: 5
-      include_examples "system with sterling", assets: 10000
-
-      let(:source_quantity) { Utils.to_integer(10, bitcoin.subdivision) }
-      let(:destination_quantity) { Utils.to_integer(50000, sterling.subdivision) }
+      before do
+        create :system_deposit, {
+          source: admin,
+          destination: bitcoin,
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+        }
+        create :system_deposit, {
+          source: admin,
+          destination: sterling,
+          destination_quantity: Utils.to_integer(10_000, sterling.subdivision)
+        }
+        exchange.source_quantity = Utils.to_integer(10, bitcoin.subdivision)
+        exchange.destination_quantity = Utils.to_integer(50_000, sterling.subdivision)
+      end
 
       it "is invalid" do
         expect(exchange.save).to be_falsey
