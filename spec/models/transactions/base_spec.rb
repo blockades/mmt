@@ -16,7 +16,7 @@ describe Transactions::Base, transactions: true, mocked_rates: true do
           tx.liability_events.build(entry: 4, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
           tx.equity_events.build(entry: 1, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
           tx.asset_events.build(entry: 2, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
-          expect(tx.send(:events_sum_display)).to be_truthy
+          expect(tx.send(:events_sum)).to eq(0)
         end
       end
 
@@ -25,7 +25,7 @@ describe Transactions::Base, transactions: true, mocked_rates: true do
           tx.liability_events.build(entry: 2, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
           tx.equity_events.build(entry: 1, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
           tx.asset_events.build(entry: 2, rate: 2, coin: build(:coin, subdivision: 0), member: admin)
-          expect(tx.send(:events_sum_display)).to be_truthy
+          expect(tx.send(:events_sum)).to eq(-1)
         end
       end
     end
@@ -41,6 +41,7 @@ describe Transactions::Base, transactions: true, mocked_rates: true do
         it "returns false" do
           transaction.liability_events.build(entry: 2, rate: 0.5, coin: build(:coin, subdivision: 0), member: admin)
           expect(transaction).to_not be_valid
+          expect(transaction.errors[:base][0]).to match(/unbalanced, system sums to 1.0 but it should be zero/)
         end
       end
     end

@@ -81,35 +81,40 @@ module Transactions
     validate :correct_previous_transaction,
              :system_sum_to_zero
 
-    def events_sum_display
-      [equity_events, liability_events, asset_events].flatten.compact.inject(0) do |total, event|
-        entry = Utils.to_decimal(event.entry * event.rate, event.coin.subdivision).round(Coin::BTC_SUBDIVISION)
-        event.type == "Asset" ? total -= entry : total += entry
+    def events_sum
+      sum = 0
+      [equity_events, liability_events].flatten.compact.each do |event|
+        sum += event.btc_value_display
       end
+      asset_events.each do |event|
+        sum -= event.btc_value_display
+      end
+      sum
     end
 
     private
 
     def system_sum_to_zero
-      return true if events_sum_display.zero?
-      self.errors.add :system_sum_to_zero, "Invalid transaction"
+      sum = events_sum
+      return true if sum.zero?
+      self.errors.add :base, "unbalanced, system sums to #{sum} but it should be zero"
     end
 
     def correct_previous_transaction
       return true if previous_transaction.blank? || (previous_transaction.id == referring_transaction.id)
-      self.errors.add :previous_transaction, "Invalid previous transaction"
+      self.errors.add :previous_transaction, "invalid"
     end
 
     def not_fiat_to_fiat
       return true unless source_coin.fiat? && destination_coin.fiat?
-      self.errors.add :not_fiat_to_fiat, "Fiat to fiat not valid"
+      self.errors.add :base, "cannot transfer fiat to fiat"
     end
 
     def rates_match
       source_rate_matches = source_rate.to_d.round(Coin::BTC_SUBDIVISION) == source_coin.btc_rate.round(Coin::BTC_SUBDIVISION)
       destination_rate_matches = destination_rate.to_d.round(Coin::BTC_SUBDIVISION) == destination_coin.btc_rate.round(Coin::BTC_SUBDIVISION)
       return true if source_rate_matches && destination_rate_matches
-      self.errors.add :rates_match, "Rate has changed. Please resubmit purchase order after checking the new rate"
+      self.errors.add :rate, "changed, resubmit with updated rate"
     end
 
     def values_match
@@ -125,7 +130,7 @@ module Transactions
         destination_subdivision
       )
       return true if (source_value - destination_value).zero?
-      self.errors.add :values_match, "Invalid purchase"
+      self.errors.add :value, "unbalanced, source value: #{source_value} does not match destination value: #{destination_value}"
     end
 
     def referring_transaction_to_destination
