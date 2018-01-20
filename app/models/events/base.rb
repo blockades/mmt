@@ -21,10 +21,17 @@ module Events
 
     TYPES = %w[Equity Asset Liability].freeze
 
-    validates :type, presence: true,
-                     inclusion: { in: TYPES }
+    validates :type, presence: true, inclusion: { in: TYPES }
 
     validates_associated :coin, :member
+
+    def btc_value
+      entry * rate
+    end
+
+    def btc_value_display
+      Utils.to_decimal(btc_value, coin.subdivision).round(Coin::BTC_SUBDIVISION)
+    end
 
     def self.total
       sum(:entry)
