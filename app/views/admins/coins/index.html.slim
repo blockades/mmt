@@ -1,7 +1,7 @@
 .row
   .offset-by-eight.four.columns
     .system-total
-      span System Total in 
+      span System Total in
       = select_tag :coin_id, options_for_select(Coin.ordered.map {|coin| [ coin.code, coin.id ] }, Coin.btc.id ), class: "select2", id: "systemTotalSelect"
       = number_field_tag :total, number_with_precision(Coin.btc.system_total_display, precision: Coin::BTC_SUBDIVISION), step: :any, id: "systemTotalDisplay", readonly: true
 
@@ -20,7 +20,7 @@
       tbody
         - @coins.each do |coin|
           tr
-            td= coin.name
+            td= link_to coin.name, admins_coin_path(coin)
             td= coin.code
             td= number_to_currency(coin.system_liability, precision: coin.subdivision, unit: "")
             td= number_to_currency(coin.system_equity, precision: coin.subdivision, unit: "")
@@ -34,4 +34,3 @@
                   i.fa.fa-user-plus.fa-lg
                 = link_to admins_new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
                   i.fa.fa-level-down.fa-lg
-

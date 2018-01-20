@@ -26,6 +26,10 @@ module Admins
       end
     end
 
+    def show
+      @coin = Coin.includes(coin_events: { system_transaction: :initiated_by }).friendly.find(params[:id])
+    end
+
     private
 
     def find_coin

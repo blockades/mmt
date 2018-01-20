@@ -18,6 +18,7 @@ module Events
     scope :with_coins, -> { joins(:coin) }
     scope :crypto, -> { with_coins.merge(Coin.crypto) }
     scope :fiat, -> { with_coins.merge(Coin.fiat) }
+    scope :ordered, -> { order(created_at: :desc) }
 
     TYPES = %w[Equity Asset Liability].freeze
 
