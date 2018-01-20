@@ -1,6 +1,16 @@
 # frozen_string_literal: true
 
 module ApplicationHelper
+  def self.feature_modules
+    ["WITHDRAWL", "EXCHANGE"]
+  end
+
+  feature_modules.each do |feature_module|
+    define_method "#{feature_module.downcase.pluralize}_enabled?" do
+      (ENV.send(:[], feature_module) == "true") || false
+    end
+  end
+
   def flash_notices
     raw([:notice, :error, :alert].map do |type|
       content_tag("div", flash[type], id: type, class: "flash") if flash[type].present?

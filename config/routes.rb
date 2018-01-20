@@ -55,16 +55,20 @@ Rails.application.routes.draw do
     resources :coins, only: [:index]
     resources :coins, only: [:show], format: :js
 
-    scope path: :exchanges do
-      root to: "exchanges#index", as: :exchanges
-      get "/:coin_id/new" => "exchanges#new", as: :new_exchange
-      post "/:coin_id" => "exchanges#create", as: :exchange
+    if ENV["EXCHANGE"]
+      scope path: :exchanges do
+        root to: "exchanges#index", as: :exchanges
+        get "/:coin_id/new" => "exchanges#new", as: :new_exchange
+        post "/:coin_id" => "exchanges#create", as: :exchange
+      end
     end
 
-    scope path: :withdraw do
-      root to: "withdrawls#index", as: :withdrawls
-      get "/:coin_id/new" => "withdrawls#new", as: :new_withdrawl
-      post "/:coin_id" => "withdrawls#create", as: :withdrawl
+    if ENV["WITHDRAWL"]
+      scope path: :withdraw do
+        root to: "withdrawls#index", as: :withdrawls
+        get "/:coin_id/new" => "withdrawls#new", as: :new_withdrawl
+        post "/:coin_id" => "withdrawls#create", as: :withdrawl
+      end
     end
 
     resources :members, path: "/", only: [:show, :update]
