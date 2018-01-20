@@ -10,7 +10,6 @@ SimpleCov.start "rails" do
 end
 
 ENV["OTP_SECRET_ENCRYPTION_KEY"] = Digest::SHA2.hexdigest "SUPER_DUPER_SECRET_KEY"
-ENV["NONCE_SECRET"] = SecureRandom.hex
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

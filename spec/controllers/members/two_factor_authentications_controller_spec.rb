@@ -145,11 +145,9 @@ describe Members::TwoFactorAuthenticationsController, type: :controller, two_fac
     let(:post_send_code) { post :code, xhr: true }
     let(:json_response) { JSON.parse(response.body) }
 
-    context "outside nonce timestamp" do
-      it "renders a JSON response" do
-        post_send_code
-        expect(json_response).to eq("success" => true, "message" => "Two factor code sent")
-      end
+    it "renders a JSON response" do
+      post_send_code
+      expect(json_response).to eq("success" => true, "message" => "Two factor code sent")
     end
   end
 end
