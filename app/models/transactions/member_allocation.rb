@@ -3,11 +3,11 @@
 module Transactions
   class MemberAllocation < Transactions::Base
     validates :destination_quantity,
+              :destination_rate,
               :source_rate,
               presence: true
 
-    validates :destination_rate,
-              :source_quantity,
+    validates :source_quantity,
               absence: true
 
     validates :source_type, inclusion: { in: ["Member"] }
@@ -35,7 +35,7 @@ module Transactions
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
-        rate: source_rate
+        rate: destination_rate
       )
     end
   end
