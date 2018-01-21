@@ -20,6 +20,7 @@ var Exchange = function (coin) {
     destinationQuantity = (cost * sourceRate) / destinationRate;
     $('#destinationQuantityDisplay').val(destinationQuantity);
     $('#destinationQuantity').val(cost * Math.pow(10, destinationSubdivision));
+    $('.balance').text(sourceCoin.assets / Math.pow(10, sourceSubdivision) + " " + sourceCoin.code);
 
     $('#sourceQuantityDisplay').val(cost);
     $('#sourceQuantity').val(cost * Math.pow(10, sourceSubdivision));
