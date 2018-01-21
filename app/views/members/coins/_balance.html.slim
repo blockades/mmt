@@ -1,0 +1,10 @@
+tr
+  td= coin.name
+  td= coin.code
+  td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
+  td
+    .icons
+      = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
+        i.fa.fa-shopping-cart.fa-lg
+      = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
+        i.fa.fa-level-down.fa-lg
