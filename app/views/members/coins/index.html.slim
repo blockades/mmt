@@ -22,19 +22,7 @@
             th
               span.right Actions
         tbody
-          - @crypto.each do |coin|
-            tr
-              td= coin.name
-              td= coin.code
-              td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
-              td
-                .icons
-                  - if exchanges_enabled?
-                    = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
-                      i.fa.fa-shopping-cart.fa-lg
-                  - if withdrawls_enabled?
-                    = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
-                      i.fa.fa-level-down.fa-lg
+          = render partial: "balance", collection: @crypto, as: :coin
 
 - if @fiat.any?
   .row
@@ -52,16 +40,4 @@
             th
               span.right Actions
         tbody
-          - @fiat.each do |coin|
-            tr
-              td= coin.name
-              td= coin.code
-              td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
-              td
-                .icons
-                  - if exchanges_enabled?
-                    = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
-                      i.fa.fa-shopping-cart.fa-lg
-                  - if withdrawls_enabled?
-                    = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
-                      i.fa.fa-level-down.fa-lg
+          = render partial: "balance", collection: @fiat, as: :coin
