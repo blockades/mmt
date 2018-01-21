@@ -1,4 +1,4 @@
-h1 Coin history
+h1= "Events for #{@coin.name}"
 
 table
   thead
@@ -7,16 +7,16 @@ table
     th= Event::Base.human_attribute_name(:assets)
     th BTC Rate (at deposit time)
     th= Member.human_attribute_name(:username)
-    th Balance
+    th Total Assets (after event)
   tbody
-    - balance = 0
-    - @coin.coin_events.each do |event|
+    - total_assets = @coin.assets_display
+    - @coin_events.each do |event|
       tr
         - tx = event.system_transaction
         td= tx.type
         td= event.created_at
         td= event.assets_display
-        td= tx.destination_coin_id == @coin.id ? tx.destination_rate : tx.source_rate
+        td= tx.destination_coin_id == event.coin_id ? tx.destination_rate : tx.source_rate
         td= tx.initiated_by.username
-        - balance += event.assets_display
-        td= balance
+        td= total_assets
+        - total_assets -= event.assets_display
