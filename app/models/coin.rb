@@ -75,6 +75,10 @@ class Coin < ApplicationRecord
     liability_events.sum(:liability)
   end
 
+  def liability_display
+    Utils.to_decimal(liability, subdivision)
+  end
+
   def equity
     equity_events.sum(:equity)
   end

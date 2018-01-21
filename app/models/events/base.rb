@@ -34,6 +34,10 @@ module Events
       Utils.to_decimal(btc_value, coin.subdivision).round(Coin::BTC_SUBDIVISION)
     end
 
+    def liability_display
+      Utils.to_decimal(liability, coin.subdivision).round(Coin::BTC_SUBDIVISION)
+    end
+
     def self.total
       sum(:entry)
     end
