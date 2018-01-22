@@ -13,7 +13,7 @@ module Admins
     private
 
     def find_transactions
-      @transactions = SystemTransaction.where(type: params[:type])
+      @transactions = Transactions::Base.where(type: params[:type])
     end
   end
 end

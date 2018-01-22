@@ -76,6 +76,6 @@
         p.inline-block
           | Select a transaction type:
         = form_for :transactions, url: admins_transactions_path, method: :get, remote: true, html: { class: "inline-block" } do |f|
-          = select_tag :type, options_for_select(SystemTransaction::TYPES.map { |type| [type, type] }, selected: params[:type]), id: "transactionsSelect"
+          = select_tag :type, options_for_select(Transactions::Base::TYPES.map { |type| [type, type] }, selected: params[:type]), id: "transactionsSelect"
       .transaction-list
         = render partial: "admins/system_transactions/index", locals: { transactions: Transactions::SystemDeposit.all }
