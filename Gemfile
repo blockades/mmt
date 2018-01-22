@@ -35,7 +35,7 @@ gem "uglifier", ">= 1.3.0"
 
 group :development, :test do
   gem "awesome_print"
-  gem "pry-byebug", platform: :mri
+  gem "pry-remote"
 end
 
 group :development do
