@@ -15,5 +15,3 @@ var Dashboard = function () {
     });
   });
 }
-
-$(document).on("turbolinks:load", Dashboard);
