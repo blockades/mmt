@@ -1,28 +1,35 @@
 .six.columns
   .block.transaction.inline-block
     h4 ID
-    p= transaction.id
+    p.strip= transaction.id
 
     h4 Hash
-    p= transaction.hash
+    p.strip= transaction.hash
 
     - if transaction.previous_transaction
       h4 Previous Transaction
       h5 ID
-      p= transaction.previous_transaction.id
+      p.strip= transaction.previous_transaction.id
       h5 Hash
-      p= transaction.previous_transaction.hash
+      p.strip= transaction.previous_transaction.hash
 
-    h4 Source
-    p Coin: #{transaction.source_coin.name}
-    p Quantity: #{number_with_precision(transaction.source_quantity_display, precision: transaction.source_coin.subdivision)}
-
-    h4 Destination
-    p Coin: #{transaction.destination_coin.name}
-    p Quantity: #{number_with_precision(transaction.destination_quantity_display, precision: transaction.destination_coin.subdivision)}
-
-    h4 Initiated by
-    p= transaction.initiated_by.username
-
-    h4 Authorized by
-    p= transaction.authorized_by&.username
+    .row
+      .six.columns
+        h4 From
+        p.strip Source: #{transaction.source.display_name}
+        p.strip Type: #{transaction.source_type}
+        p.strip Coin: #{transaction.source_coin.code}
+        p.strip Quantity: #{number_with_precision(transaction.source_quantity_display, precision: transaction.source_coin.subdivision)}
+      .six.columns
+        h4 To
+        p.strip Destination: #{transaction.destination.display_name}
+        p.strip Type: #{transaction.destination_type}
+        p.strip Coin: #{transaction.destination_coin.code}
+        p.strip Quantity: #{number_with_precision(transaction.destination_quantity_display, precision: transaction.destination_coin.subdivision)}
+    .row
+      .six.columns
+        h4 Initiated by
+        p.strip= transaction.initiated_by.username
+      .six.columns
+        h4 Authorized by
+        p.strip= transaction.authorized_by&.username

@@ -45,6 +45,10 @@ class Coin < ApplicationRecord
 
   validates :assets, numericality: { greater_than_or_equal_to: 0 }
 
+  def display_name
+    name
+  end
+
   def crypto?
     crypto_currency
   end

@@ -7,8 +7,12 @@ var Dashboard = function () {
     $("section[data-selector=" + selector + "]").removeClass("hidden");
   });
 
-  $("#transactionsSelect").on("propertychange change keyup", function (e) {
-    $(this).closest("form").submit();
+  var transactionSelect = $("#transactionSelect");
+  var memberSelect = $("#memberSelect");
+  $.each([transactionSelect, memberSelect], function () {
+    $(this).on("propertychange change keyup", function (e) {
+      $(this).closest("form").submit();
+    });
   });
 }
 

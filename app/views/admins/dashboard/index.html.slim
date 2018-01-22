@@ -72,9 +72,12 @@
     .twelve.columns
       h2 Transaction History
       .transactions-select
-        p.inline-block
-          | Select a transaction type:
-        = form_for :transactions, url: admins_transactions_path, method: :get, remote: true, html: { class: "inline-block" } do |f|
-          = select_tag :type, options_for_select(Transactions::Base::TYPES.map { |type| [type, type] }, selected: params[:type]), id: "transactionsSelect"
+        = form_for :system_transactions, url: admins_transactions_path, method: :get, remote: true, html: { class: "inline-block" } do |f|
+          div
+            p.inline-block style="padding: 10px" Select a transaction type:
+            = f.select :type, options_for_select(Transactions::Base::TYPES.map { |type| [type, type] }), { prompt: "---" }, id: "transactionSelect"
+          div
+            p.inline-block style="padding: 10px" Select a member:
+            = f.select :member_id, options_for_select(Member.all.map { |member| [ member.username, member.id ]}), { prompt: "---" }, id: "memberSelect"
       .transaction-list
         = render partial: "admins/system_transactions/index", locals: { transactions: Transactions::SystemDeposit.all }

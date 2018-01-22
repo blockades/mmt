@@ -82,6 +82,10 @@ class Member < ApplicationRecord
 
   attr_accessor :login
 
+  def display_name
+    username
+  end
+
   def coin_history(coin)
     liability_events.where(coin_id: coin.id)
   end
