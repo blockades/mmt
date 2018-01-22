@@ -1,4 +1,3 @@
-
 .dashboard-tabs
   .tab.inline-block.active data-selector="wallet"
     p Wallet
@@ -8,12 +7,39 @@
 .dashboard-widgets
   section.row data-selector="wallet"
     .twelve.columns
-      h2 Wallet
+      h4 Total
       .row
         - @coins.each do |coin|
           .two.columns
-            label #{coin.code} total
-            = number_field_tag :total, number_with_precision(coin.member_total_display, precision: Coin::BTC_SUBDIVISION), step: :any, id: "totalDisplay", readonly: true
+            .row
+              .twelve.columns
+                label #{coin.code} total
+                = number_field_tag :total, number_with_precision(coin.member_total_display, precision: Coin::BTC_SUBDIVISION), step: :any, id: "totalDisplay", readonly: true
+      br
+      h4 Balance
+      .row
+        table width="100%"
+          thead
+            tr
+              th Name
+              th Code
+              th Balance
+              th
+                span.right Actions
+          tbody
+            - @coins.each do |coin|
+              tr
+                td= coin.name
+                td= coin.code
+                td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
+                td
+                  .icons
+                    - if exchanges_enabled?
+                      = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
+                        i.fa.fa-shopping-cart.fa-lg
+                    - if withdrawls_enabled?
+                      = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
+                        i.fa.fa-level-down.fa-lg
 
   section.row.hidden data-selector="transactionHistory"
     .twelve.columns

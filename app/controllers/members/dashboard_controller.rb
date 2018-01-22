@@ -3,6 +3,7 @@
 module Members
   class DashboardController < ApplicationController
     def index
+      @member = current_member.decorate
       @coins = Coin.all.decorate
       @transactions = [
         current_member.source_transactions.system_deposit,
