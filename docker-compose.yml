@@ -26,7 +26,8 @@ services:
       - bundle:/usr/local/bundle
     command: docker/entrypoint.sh
     environment:
-      DATABASE_URL: db
+      DB_HOST: db
+      DB_USER: postgres
     ports:
       - "3000:80"
 
@@ -40,7 +41,8 @@ services:
       - .:/mmt
       - bundle:/usr/local/bundle
     environment:
-      DATABASE_URL: db
+      DB_HOST: db
+      DB_USER: postgres
       REDIS_HOST: redis
 
 volumes:
