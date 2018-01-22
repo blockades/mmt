@@ -10,7 +10,7 @@ module Events
     validate :coin_assets, :member_coin_liability
 
     private
-    
+
     def coin_assets
       assets = coin.assets + system_transaction.asset_events.to_a.sum(&:assets)
       liabilities = system_transaction.liability_events.to_a.sum(&:liability)
