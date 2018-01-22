@@ -15,7 +15,7 @@ module Events
 
     scope :credit, -> { where(arel_table[:entry].gt(0)) }
     scope :debit, -> { where(arel_table[:entry].lt(0)) }
-    scope :with_coin, ->(coin_id) { where coin_id: coin_id }
+    scope :for_coin, ->(coin_id) { where coin_id: coin_id }
     scope :with_coins, -> { joins(:coin) }
     scope :crypto, -> { with_coins.merge(Coin.crypto) }
     scope :fiat, -> { with_coins.merge(Coin.fiat) }

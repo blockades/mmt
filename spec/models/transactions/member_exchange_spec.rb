@@ -91,8 +91,8 @@ describe Transactions::MemberExchange, transactions: true do
           destination_rate: bitcoin.btc_rate,
           initiated_by: admin
         }
-        exchange.source_quantity = Utils.to_integer(1, bitcoin.subdivision)
-        exchange.destination_quantity = Utils.to_integer(5_000, sterling.subdivision)
+        exchange.source_quantity = Utils.to_integer(2, bitcoin.subdivision)
+        exchange.destination_quantity = Utils.to_integer(10_000, sterling.subdivision)
       end
 
       it "is invalid" do
