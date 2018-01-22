@@ -1,0 +1,28 @@
+.six.columns
+  .block.transaction.inline-block
+    h4 ID
+    p= transaction.id
+
+    h4 Hash
+    p= transaction.hash
+
+    - if transaction.previous_transaction
+      h4 Previous Transaction
+      h5 ID
+      p= transaction.previous_transaction.id
+      h5 Hash
+      p= transaction.previous_transaction.hash
+
+    h4 Source
+    p Coin: #{transaction.source_coin.name}
+    p Quantity: #{number_with_precision(transaction.source_quantity_display, precision: transaction.source_coin.subdivision)}
+
+    h4 Destination
+    p Coin: #{transaction.destination_coin.name}
+    p Quantity: #{number_with_precision(transaction.destination_quantity_display, precision: transaction.destination_coin.subdivision)}
+
+    h4 Initiated by
+    p= transaction.initiated_by.username
+
+    h4 Authorized by
+    p= transaction.authorized_by&.username

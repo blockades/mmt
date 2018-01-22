@@ -18,17 +18,22 @@ Rails.application.routes.draw do
 
   namespace :admins do
     root to: "dashboard#index"
-    resources :coins, only: [:index, :show, :edit, :update]
-    resources :members, only: [:index, :new, :create, :edit]
+    resources :coins, only: [:index, :edit, :update]
+    resources :members, only: [:index, :new, :create]
+    resources :members, only: [:show], format: :js
+
+    resources :system_transactions, as: :transactions, only: [:index], format: :js
 
     scope path: :deposit do
       get "/:coin_id/new" => "system_deposits#new", as: :new_coin_deposit
       post "/:coin_id/" => "system_deposits#create", as: :coin_deposit
+      get "/:coin_id/prev" => "system_allocations#prev", as: :previous_deposit, format: :js
     end
 
     scope path: :allocate do
       get "/:coin_id/new" => "system_allocations#new", as: :new_coin_allocation
       post "/:coin_id/" => "system_allocations#create", as: :coin_allocation
+      get "/:coin_id/prev" => "system_allocations#prev", as: :previous_allocation, format: :js
     end
 
     scope path: :withdraw do
@@ -54,17 +59,22 @@ Rails.application.routes.draw do
 
     resources :coins, only: [:index]
     resources :coins, only: [:show], format: :js
+    resources :system_transactions, as: :transactions, only: [:index], format: :js
 
-    scope path: :exchanges do
-      root to: "exchanges#index", as: :exchanges
-      get "/:coin_id/new" => "exchanges#new", as: :new_exchange
-      post "/:coin_id" => "exchanges#create", as: :exchange
+    if ENV["EXCHANGE"]
+      scope path: :exchanges do
+        root to: "exchanges#index", as: :exchanges
+        get "/:coin_id/new" => "exchanges#new", as: :new_exchange
+        post "/:coin_id" => "exchanges#create", as: :exchange
+      end
     end
 
-    scope path: :withdraw do
-      root to: "withdrawls#index", as: :withdrawls
-      get "/:coin_id/new" => "withdrawls#new", as: :new_withdrawl
-      post "/:coin_id" => "withdrawls#create", as: :withdrawl
+    if ENV["WITHDRAWL"]
+      scope path: :withdraw do
+        root to: "withdrawls#index", as: :withdrawls
+        get "/:coin_id/new" => "withdrawls#new", as: :new_withdrawl
+        post "/:coin_id" => "withdrawls#create", as: :withdrawl
+      end
     end
 
     resources :members, path: "/", only: [:show, :update]

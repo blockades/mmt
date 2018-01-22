@@ -18,5 +18,13 @@ describe Members::DashboardController do
     it "renders the index template" do
       expect(get_index).to render_template :index
     end
+
+    it "assigns @coins" do
+      expect { get_index }.to change { assigns :coins }
+    end
+
+    it "assigns @transactions" do
+      expect { get_index }.to change { assigns :transactions }
+    end
   end
 end

@@ -17,19 +17,19 @@ class Member < ApplicationRecord
   friendly_id :username, use: :slugged
 
   has_many :source_transactions, as: :source,
-                                 class_name: "SystemTransaction",
+                                 class_name: "Transactions::Base",
                                  dependent: :restrict_with_error
 
   has_many :destination_transactions, as: :destination,
-                                      class_name: "SystemTransaction",
+                                      class_name: "Transactions::Base",
                                       dependent: :restrict_with_error
 
-  has_many :initiated_transactions, class_name: "SystemTransaction",
+  has_many :initiated_transactions, class_name: "Transactions::Base",
                                     foreign_key: :initiated_by_id,
                                     inverse_of: :initiated_by,
                                     dependent: :restrict_with_error
 
-  has_many :authorized_transactions, class_name: "SystemTransaction",
+  has_many :authorized_transactions, class_name: "Transactions::Base",
                                      foreign_key: :authorized_by_id,
                                      inverse_of: :authorized_by,
                                      dependent: :restrict_with_error

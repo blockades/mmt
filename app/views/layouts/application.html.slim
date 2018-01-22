@@ -11,13 +11,18 @@ html
       = flash_notices
     nav.primary
       ul.left
-        li= link_to 'Dashboard', root_path, class: 'button button-primary'
-        li= link_to 'Profile', member_path(current_member), class: 'button button-primary'
-        li= link_to 'Portfolio', coins_path, class: 'button button-primary'
-        li= link_to 'Exchange', exchanges_path, class: 'button button-primary'
+        = link_to root_path do
+          li Dashboard
+        - if exchanges_enabled?
+          = link_to exchanges_path do
+          li Exchange
       ul.right
         - if current_member&.admin?
-          li= link_to 'Admin Dashboard', admins_root_path, class: "button button-primary"
-        li= link_to 'Log out', destroy_member_session_path, method: :delete, authenticity_token: true, class: "button button-primary"
+          = link_to admins_root_path do
+            li Switch to Admin Mode
+        = link_to member_path(current_member) do
+          li Settings
+        = link_to destroy_member_session_path, method: :delete, authenticity_token: true do
+          li Log Out
     .container
       = yield

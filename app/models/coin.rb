@@ -7,11 +7,11 @@ class Coin < ApplicationRecord
   BTC_SUBDIVISION = 8
 
   has_many :source_transactions, as: :source,
-                                 class_name: "SystemTransaction",
+                                 class_name: "Transactions::Base",
                                  dependent: :restrict_with_error
 
   has_many :destination_transactions, as: :destination,
-                                      class_name: "SystemTransaction",
+                                      class_name: "Transactions::Base",
                                       dependent: :restrict_with_error
 
   has_many :asset_events, class_name: "Events::Asset",

@@ -1,3 +1,5 @@
+h2 Withdraw #{@coin.code}
+
 = form_for :withdrawl, url: withdrawl_path(@coin.id), method: :post do |f|
   .row
     = f.label :quantity

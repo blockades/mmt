@@ -2,6 +2,8 @@
 
 module Admins
   class MembersController < AdminsController
+    before_action :find_member, only: [:show]
+
     def index
       @members = Member.all
     end
@@ -10,8 +12,10 @@ module Admins
       @member = Member.new
     end
 
-    def edit
-
+    def show
+      respond_to do |format|
+        format.json { render json: @member.as_json(only: [:id]) }
+      end
     end
 
     def create
