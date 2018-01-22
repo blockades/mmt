@@ -81,6 +81,18 @@ module Transactions
     validate :correct_previous_transaction,
              :system_sum_to_zero
 
+    def source_quantity_display
+      source_quantity.nil? ? nil : Utils.to_decimal(source_quantity, source_coin.subdivision)
+    end
+
+    def destination_quantity_display
+      destination_quantity.nil? ? nil : Utils.to_decimal(destination_quantity, destination_coin.subdivision)
+    end
+
+    def hash
+      Digest::SHA2.hexdigest(attributes.to_s)
+    end
+
     def events_sum
       sum = 0
       [equity_events, liability_events].flatten.compact.each do |event|
