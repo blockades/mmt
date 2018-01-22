@@ -18,11 +18,12 @@ Rails.application.routes.draw do
 
   namespace :admins do
     root to: "dashboard#index"
-    resources :coins, only: [:index, :edit, :update]
+    resources :coins, only: [:index, :edit, :update] do
+      resources :assets, only: :index
+      resources :liabilities, only: :index
+    end
     resources :members, only: [:index, :new, :create]
     resources :members, only: [:show], format: :js
-
-    resources :system_transactions, as: :transactions, only: [:index], format: :js
 
     scope path: :deposit do
       get "/:coin_id/new" => "system_deposits#new", as: :new_coin_deposit
@@ -57,7 +58,10 @@ Rails.application.routes.draw do
   scope module: :members do
     root to: "dashboard#index"
 
-    resources :coins, only: [:index]
+    resources :coins, only: [:index] do
+      resources :liabilities, only: :index
+    end
+
     resources :coins, only: [:show], format: :js
     resources :system_transactions, as: :transactions, only: [:index], format: :js
 

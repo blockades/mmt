@@ -59,9 +59,9 @@
               td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
               td
                 .icons
-                  - if exchanges_enabled?
+                  - if exchanges_enabled? || true
                     = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
                       i.fa.fa-shopping-cart.fa-lg
-                  - if withdrawls_enabled?
+                  - if withdrawls_enabled? || true
                     = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
                       i.fa.fa-level-down.fa-lg

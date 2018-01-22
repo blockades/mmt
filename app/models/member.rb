@@ -98,6 +98,10 @@ class Member < ApplicationRecord
     equity_events.where(coin_id: coin.id).sum(:equity)
   end
 
+  def display_liability(coin)
+    Utils.to_decimal(liability(coin), coin.subdivision)
+  end
+
   def full_phone_number
     "+#{country_code}#{phone_number}"
   end

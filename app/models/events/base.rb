@@ -18,6 +18,7 @@ module Events
     scope :with_coins, -> { joins(:coin) }
     scope :crypto, -> { with_coins.merge(Coin.crypto) }
     scope :fiat, -> { with_coins.merge(Coin.fiat) }
+    scope :ordered, -> { order(created_at: :desc) }
 
     TYPES = %w[Equity Asset Liability].freeze
 
@@ -31,6 +32,10 @@ module Events
 
     def btc_value_display
       Utils.to_decimal(btc_value, coin.subdivision).round(Coin::BTC_SUBDIVISION)
+    end
+
+    def display_entry
+      Utils.to_decimal(entry, coin.subdivision).round(Coin::BTC_SUBDIVISION)
     end
 
     def self.total

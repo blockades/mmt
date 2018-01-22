@@ -14,8 +14,7 @@ module Admins
       end
     end
 
-    def edit
-    end
+    def edit; end
 
     def update
       if @coin.update permitted_params
@@ -24,6 +23,10 @@ module Admins
         flash[:alert] = "Coin failed to update"
         render :new
       end
+    end
+
+    def show
+      @coin = Coin.includes(coin_events: { system_transaction: :initiated_by }).friendly.find(params[:id])
     end
 
     private
