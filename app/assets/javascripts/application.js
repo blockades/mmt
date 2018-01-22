@@ -14,6 +14,7 @@
 //= require jquery_ujs
 //= require turbolinks
 //= require select2-full
+//= require dashboard
 //= require_self
 //= require_tree ./members
 

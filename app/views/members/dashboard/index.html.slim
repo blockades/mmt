@@ -1,0 +1,27 @@
+
+.dashboard-tabs
+  .tab.inline-block.active data-selector="wallet"
+    p Wallet
+  .tab.inline-block data-selector="transactionHistory"
+    p Transaction History
+
+.dashboard-widgets
+  section.row data-selector="wallet"
+    .twelve.columns
+      h2 Wallet
+      .row
+        - @coins.each do |coin|
+          .two.columns
+            label #{coin.code} total
+            = number_field_tag :total, number_with_precision(coin.member_total_display, precision: Coin::BTC_SUBDIVISION), step: :any, id: "totalDisplay", readonly: true
+
+  section.row.hidden data-selector="transactionHistory"
+    .twelve.columns
+      h2 Transaction History
+      .transactions-select
+        p.inline-block
+          | Select a transaction type:
+        = form_for :transactions, url: transactions_path, method: :get, remote: true, html: { class: "inline-block" } do |f|
+          = select_tag :type, options_for_select(Transactions::Base::TYPES.map { |type| [type, type] }, selected: params[:type]), id: "transactionsSelect"
+      .transaction-list
+        = render partial: "members/system_transactions/index", locals: { transactions: Transactions::SystemDeposit.all }

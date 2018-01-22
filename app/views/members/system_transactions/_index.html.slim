@@ -1,0 +1,5 @@
+- transactions.all.each_slice(2) do |row|
+  .row
+    - row.each do |transaction|
+      = render partial: "admins/system_transactions/show", locals: { transaction: transaction }
+

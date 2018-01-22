@@ -4,7 +4,7 @@ var Dashboard = function () {
     $(".tab").removeClass("active");
     $(this).addClass("active");
     $(".dashboard-widgets").children().addClass("hidden");
-    $("#" + selector).removeClass("hidden");
+    $("section[data-selector=" + selector + "]").removeClass("hidden");
   });
 
   $("#transactionsSelect").on("propertychange change keyup", function (e) {

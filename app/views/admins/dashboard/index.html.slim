@@ -5,71 +5,70 @@
     p Transaction History
 
 .dashboard-widgets
-  #transactionKey.hidden
-    .row
-      .twelve.columns
-        h2 Transaction Key
-        table width="100%"
-          thead
-            tr
-              th
-                strong Transaction type
-              th Source (Debit)
-              th Destination (Credit)
-              th Initiated by
-              th Example
-          tbody
-            tr
-              td
-                strong SystemDeposit
-              td Coin total (Asset)
-              td Member's equity (Equity)
-              td Admin
-              td Admin enters into MMT 10 NEO for others to potentially use
-            tr
-              td
-                strong SystemAllocation
-              td Member's equity (Equity)
-              td Member's balance (Liability)
-              td Admin
-              td Admin decides to give a member free coin
-            tr
-              td
-                strong SystemWithdrawl
-              td Member's equity (Equity)
-              td Coin total (Asset)
-              td Admin
-              td Admin withdraws MMT's NEO for possible exchange
-            tr
-              td
-                strong MemberDeposit
-              td Coin total (Asset)
-              td Member's balance (Liability)
-              td Member
-              td I give MMT 10 BTC to put in my MMT account
-            tr
-              td
-                strong MemberAllocation
-              td Member A's balance (Liability)
-              td Member B's balance (Liability)
-              td Member A
-              td I want to give 10 NEO to you in MMT
-            tr
-              td
-                strong MemberExchange
-              td Member's balance in Coin A (Liability)
-              td Member's balance in Coin B (Liability)
-              td Member
-              td I move 10 NEO to 20 GAS in MMT
-            tr
-              td
-                strong MemberWithdrawl
-              td Member's balance (Liability)
-              td Coin total (Asset)
-              td Member
-              td I move 10 GBP from my MMT account into my bank account
+  section.row.hidden data-selector="transactionKey"
+    .twelve.columns
+      h2 Transaction Key
+      table width="100%"
+        thead
+          tr
+            th
+              strong Transaction type
+            th Source (Debit)
+            th Destination (Credit)
+            th Initiated by
+            th Example
+        tbody
+          tr
+            td
+              strong SystemDeposit
+            td Coin total (Asset)
+            td Member's equity (Equity)
+            td Admin
+            td Admin enters into MMT 10 NEO for others to potentially use
+          tr
+            td
+              strong SystemAllocation
+            td Member's equity (Equity)
+            td Member's balance (Liability)
+            td Admin
+            td Admin decides to give a member free coin
+          tr
+            td
+              strong SystemWithdrawl
+            td Member's equity (Equity)
+            td Coin total (Asset)
+            td Admin
+            td Admin withdraws MMT's NEO for possible exchange
+          tr
+            td
+              strong MemberDeposit
+            td Coin total (Asset)
+            td Member's balance (Liability)
+            td Member
+            td I give MMT 10 BTC to put in my MMT account
+          tr
+            td
+              strong MemberAllocation
+            td Member A's balance (Liability)
+            td Member B's balance (Liability)
+            td Member A
+            td I want to give 10 NEO to you in MMT
+          tr
+            td
+              strong MemberExchange
+            td Member's balance in Coin A (Liability)
+            td Member's balance in Coin B (Liability)
+            td Member
+            td I move 10 NEO to 20 GAS in MMT
+          tr
+            td
+              strong MemberWithdrawl
+            td Member's balance (Liability)
+            td Coin total (Asset)
+            td Member
+            td I move 10 GBP from my MMT account into my bank account
 
-  #transactionHistory
+  section.row data-selector="transactionHistory"
     .twelve.columns
       h2 Transaction History
       .transactions-select
