@@ -26,11 +26,3 @@
 
     h4 Authorized by
     p= transaction.authorized_by&.username
-
-    / h4 Events
-    / - transaction.events.each do |event|
-    /   h5 Type
-    /   p= event.type
-
-    /   h5 Quantity
-    /   p= event.entry

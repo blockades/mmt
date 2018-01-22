@@ -1,1 +1,1 @@
-| $(".transaction-list").html("#{j render partial: 'index', collection: @transactions, as: :transactions}");
+| $(".transaction-list").html("#{j render partial: 'members/system_transactions/index', locals: { transactions: @transactions }}");

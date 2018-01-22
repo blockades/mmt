@@ -1,11 +1,11 @@
 .dashboard-tabs
-  .tab.inline-block data-selector="transactionKey"
+  .tab.inline-block.active data-selector="transactionKey"
     p Transaction Key
-  .tab.inline-block.active data-selector="transactionHistory"
+  .tab.inline-block data-selector="transactionHistory"
     p Transaction History
 
 .dashboard-widgets
-  section.row.hidden data-selector="transactionKey"
+  section.row data-selector="transactionKey"
     .twelve.columns
       h2 Transaction Key
       table width="100%"
@@ -68,7 +68,7 @@
             td Member
             td I move 10 GBP from my MMT account into my bank account
 
-  section.row data-selector="transactionHistory"
+  section.row.hidden data-selector="transactionHistory"
     .twelve.columns
       h2 Transaction History
       .transactions-select
