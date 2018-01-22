@@ -24,4 +24,4 @@
         = form_for :transactions, url: transactions_path, method: :get, remote: true, html: { class: "inline-block" } do |f|
           = select_tag :type, options_for_select(Transactions::Base::TYPES.map { |type| [type, type] }, selected: params[:type]), id: "transactionsSelect"
       .transaction-list
-        = render partial: "members/system_transactions/index", locals: { transactions: Transactions::SystemDeposit.all }
+        = render partial: "members/system_transactions/index", locals: { transactions: @transactions }
