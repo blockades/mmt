@@ -1,5 +1,5 @@
 span
-  | You currently hold 
+  | You currently hold
   strong #{number_to_currency(@coin.member_liability, precision: @coin.subdivision, unit: "")}
   |  #{@coin.code}
 
@@ -11,15 +11,21 @@ br
       | Input values must be integers. The decimal equivalent is shown to the right.
     label
       | Debit
+
       span#debit
       span
     - if @coin.fiat?
       = f.select :source_coin_id, Coin.crypto.all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'sourceCoinSelect'
     - else
       = f.select :source_coin_id, Coin.not_self(@coin.id).all.map {|coin| [ coin.code, coin.id ] }, { include_blank: true }, class: "select2", id: 'sourceCoinSelect'
-    = f.number_field :source_quantity, value: 0, id: 'sourceQuantity', required: true
+    = f.number_field :source_quantity, value: 0, id: 'sourceQuantity', required: true, min: 0
     = number_field_tag :source_quantity_display, number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceQuantityDisplay', readonly: true
     = f.number_field :source_rate, value: number_with_precision(0, precision: Coin::BTC_SUBDIVISION), step: :any, id: 'sourceRate', class: 'hidden', readonly: true, required: true
+  .row
+    | You have&nbsp;
+    span.balance
+    | &nbsp;to sell
+    br
   .row
     label
       | Credit

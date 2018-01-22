@@ -32,6 +32,8 @@ var Exchange = function (coin) {
     var quantityInBtc = (sourceRate * sourceQuantity) * Math.pow(10, 8 - sourceSubdivision);
     var destinationQuantity = (quantityInBtc / destinationRate) / Math.pow(10, 8 - destinationSubdivision);
     var destinationQuantityDisplay = calculateDisplay(destinationQuantity, destinationSubdivision);
+    $('.balance').text(Math.round(sourceCoin.liability) + " (or " + sourceCoin.liability / Math.pow(10, sourceSubdivision) + " " + sourceCoin.code +")");
+    $("#sourceQuantity").attr({max: sourceCoin.liability});
 
     updateQuantity(sourceQuantity, destinationQuantity);
     updateQuantityDisplay(sourceQuantityDisplay, destinationQuantityDisplay);
