@@ -3,9 +3,8 @@
 namespace :db do
   namespace :seed do
     task :spreadsheet do
-      MemberCoinEvent.delete_all
-      CoinEvent.delete_all
-      SystemTransaction.delete_all
+      Events::Base.delete_all
+      Transactions::Base.delete_all
 
       ActiveRecord::Base.transaction do
         # Initialize an admin
