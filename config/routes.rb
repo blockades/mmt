@@ -25,8 +25,6 @@ Rails.application.routes.draw do
     resources :members, only: [:index, :new, :create]
     resources :members, only: [:show], format: :js
 
-    resources :system_transactions, as: :transactions, only: [:index], format: :js
-
     scope path: :deposit do
       get "/:coin_id/new" => "system_deposits#new", as: :new_coin_deposit
       post "/:coin_id/" => "system_deposits#create", as: :coin_deposit
@@ -61,7 +59,7 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
 
     resources :coins, only: [:index] do
-      resources :member_coin_events, only: :index
+      resources :liabilities, only: :index
     end
 
     resources :coins, only: [:show], format: :js

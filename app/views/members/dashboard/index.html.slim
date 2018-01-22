@@ -1,11 +1,8 @@
 .dashboard-tabs
-  .tab.inline-block.active data-selector="wallet"
+  .tab.inline-block.active
     p Wallet
-  .tab.inline-block data-selector="transactionHistory"
-    p Transaction History
-
 .dashboard-widgets
-  section.row data-selector="wallet"
+  section.row
     .twelve.columns
       h4 Total
       .row
@@ -31,7 +28,7 @@
               tr
                 td= coin.name
                 td= coin.code
-                td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
+                td= link_to number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: ''), coin_liabilities_path(coin)
                 td
                   .icons
                     - if exchanges_enabled?
@@ -40,14 +37,3 @@
                     - if withdrawls_enabled?
                       = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
                         i.fa.fa-level-down.fa-lg
-
-  section.row.hidden data-selector="transactionHistory"
-    .twelve.columns
-      h2 Transaction History
-      .transactions-select
-        p.inline-block
-          | Select a transaction type:
-        = form_for :transactions, url: transactions_path, method: :get, remote: true, html: { class: "inline-block" } do |f|
-          = select_tag :type, options_for_select(Transactions::Base::TYPES.map { |type| [type, type] }, selected: params[:type]), id: "transactionsSelect"
-      .transaction-list
-        = render partial: "members/system_transactions/index", locals: { transactions: @transactions }
