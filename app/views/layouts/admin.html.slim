@@ -12,11 +12,17 @@ html
       = flash_notices
     nav.primary
       ul.left
-        li= link_to "Central Reserve Health", admins_coins_path, class: "button button-primary"
-        li= link_to "Members", admins_members_path, class: 'button button-primary'
+        = link_to admins_root_path do
+          li Dashboard
+        = link_to admins_coins_path do
+          li Central Reserve
+        = link_to admins_members_path do
+          li Members
       ul.right
         - if current_member&.admin?
-          li= link_to 'My Dashboard', root_path, class: "button button-primary"
-        li= link_to 'Log out', destroy_member_session_path, method: :delete, class: "button button-primary"
+          = link_to root_path do
+            li Switch to Normal Mode
+        = link_to destroy_member_session_path, method: :delete do
+          li Log Out
     .container
       = yield
