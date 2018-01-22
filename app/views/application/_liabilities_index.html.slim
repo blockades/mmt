@@ -1,9 +1,9 @@
-h1= "#{MemberCoinEvent.model_name.human.pluralize} for #{@coin.name}"
+h1= "#{Events::Liability.model_name.human.pluralize} for #{@coin.name}"
 
 table
   thead
-    th= SystemTransaction.human_attribute_name(:type)
-    th= MemberCoinEvent.human_attribute_name(:created_at)
+    th= Transactions::Base.human_attribute_name(:type)
+    th= Events::Liability.human_attribute_name(:created_at)
     th Change
     th BTC Rate (at deposit time)
     th Source Member
@@ -13,12 +13,12 @@ table
     th= "Initiated by #{Member.human_attribute_name(:username)}"
     th Balance
   tbody
-    - @member_coin_events.each do |event|
+    - @liabilities.each do |event|
       tr
         - tx = event.system_transaction
         td= tx.type
         td= event.created_at
-        td= event.liability_display
+        td= event.display_entry
         td= tx.destination_coin_id == event.coin_id ? tx.destination_rate : tx.source_rate
         td= tx.source.display_name
         td= tx.source_coin&.display_name
@@ -26,4 +26,4 @@ table
         td= tx.destination_coin&.display_name
         td= tx.initiated_by.username
         td= total_liability
-        - total_liability -= event.liability_display
+        - total_liability -= event.display_entry

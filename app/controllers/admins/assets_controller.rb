@@ -1,13 +1,13 @@
 # frozen_string_literal: true
 
 module Admins
-  class MemberCoinEventsController < AdminsController
+  class AssetsController < AdminsController
     def index
-      @member_coin_events =
+      @collection =
         coin
-        .member_coin_events
+        .asset_events
         .ordered
-        .includes(system_transaction: :initiated_by)
+        .includes(:system_transaction)
     end
 
     private

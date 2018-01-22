@@ -2,10 +2,11 @@
 
 require "rails_helper"
 
-describe Admins::CoinEventsController, type: :controller do
+describe Admins::LiabilitiesController, type: :controller do
   let(:admin) { create :member, :admin }
-  let(:coin_event) { create :asset_event }
-  let(:coin) { coin_event.coin }
+  let(:deposit) { create :system_deposit, destination_quantity: 100 }
+  let!(:allocation) { create :system_allocation, source_coin: coin, destination_quantity: 1 }
+  let(:coin) { deposit.destination_coin }
 
   before { sign_in admin }
 

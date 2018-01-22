@@ -2,21 +2,21 @@ h1= "Events for #{@coin.name}"
 
 table
   thead
-    th= SystemTransaction.human_attribute_name(:type)
-    th= Event::Base.human_attribute_name(:created_at)
-    th= Event::Base.human_attribute_name(:assets)
+    th= Transactions::Base.human_attribute_name(:type)
+    th= Events::Base.human_attribute_name(:created_at)
+    th Change
     th BTC Rate (at deposit time)
     th= Member.human_attribute_name(:username)
-    th Total Assets (after event)
+    th Balance
   tbody
     - total_assets = @coin.assets_display
-    - @coin_events.each do |event|
+    - @collection.each do |event|
       tr
         - tx = event.system_transaction
         td= tx.type
         td= event.created_at
-        td= event.assets_display
+        td= event.display_entry
         td= tx.destination_coin_id == event.coin_id ? tx.destination_rate : tx.source_rate
         td= tx.initiated_by.username
         td= total_assets
-        - total_assets -= event.assets_display
+        - total_assets -= event.display_entry
