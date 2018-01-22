@@ -5,7 +5,8 @@ module Admins
     include TransactionHelper
 
     before_action :find_coin
-    before_action :find_previous_transaction, only: [:new, :create]
+    before_action :find_member, only: [:prev, :create]
+    before_action :find_previous_transaction, only: [:prev, :create]
     before_action :check_previous_transaction, only: [:create]
 
     def new
@@ -22,14 +23,24 @@ module Admins
       end
     end
 
+    def prev
+      respond_to do |format|
+        format.json { render json: @previous_transaction.as_json(only: [:id]) }
+      end
+    end
+
     private
 
     def find_coin
       @coin = Coin.friendly.find(params[:coin_id]).decorate
     end
 
+    def find_member
+      @member = Member.find(permitted_params[:destination_id])
+    end
+
     def find_previous_transaction
-      @previous_transaction = Transactions::SystemAllocation.ordered.for_destination(current_member).last
+      @previous_transaction = Transactions::SystemAllocation.previous_transaction(@member)
     end
 
     def check_previous_transaction

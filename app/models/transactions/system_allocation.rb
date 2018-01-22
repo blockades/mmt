@@ -14,6 +14,10 @@ module Transactions
     validates :source_type, inclusion: { in: ["Member"] }
     validates :destination_type, inclusion: { in: ["Member"] }
 
+    def self.previous_transaction(member)
+      ordered.for_destination(member)&.last
+    end
+
     private
 
     def referring_transaction
