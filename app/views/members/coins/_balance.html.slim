@@ -1,7 +1,7 @@
 tr
   td= coin.name
   td= coin.code
-  td= number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: '')
+  td= link_to number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: ''), coin_member_coin_events_path(coin)
   td
     .icons
       - if exchanges_enabled?

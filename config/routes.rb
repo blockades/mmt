@@ -60,7 +60,10 @@ Rails.application.routes.draw do
   scope module: :members do
     root to: "dashboard#index"
 
-    resources :coins, only: [:index]
+    resources :coins, only: [:index] do
+      resources :member_coin_events, only: :index
+    end
+
     resources :coins, only: [:show], format: :js
     resources :system_transactions, as: :transactions, only: [:index], format: :js
 
