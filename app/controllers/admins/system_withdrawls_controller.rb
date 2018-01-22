@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Admins
-  class SystemDepositsController < AdminsController
+  class SystemWithdrawlsController < AdminsController
     include TransactionHelper
 
     before_action :find_coin
@@ -11,13 +11,13 @@ module Admins
     def new; end
 
     def create
-      transaction = transaction_commiter(Transactions::SystemDeposit, deposit_params)
+      transaction = transaction_commiter(Transactions::SystemWithdrawl, withdrawl_params)
 
       if transaction.persisted?
-        quantity = Utils.to_decimal(transaction.destination_quantity, @coin.subdivision)
-        redirect_to admins_coins_path, notice: "Deposited #{quantity} #{@coin.code}"
+        quantity = Utils.to_decimal(transaction.source_quantity, @coin.subdivision)
+        redirect_to admins_coins_path, notice: "Withdrew #{quantity} #{@coin.code}"
       else
-        redirect_to admins_new_coin_deposit_path(@coin), alert: transaction.error_message
+        redirect_to admins_new_withdrawl_path, alert: transaction.error_message
       end
     end
 
@@ -28,30 +28,29 @@ module Admins
     end
 
     def find_previous_transaction
-      @previous_transaction = Transactions::SystemDeposit.ordered.for_source(current_member).last
+      @previous_transaction = Transactions::SystemWithdrawl.ordered.for_destination(current_member).last
     end
 
     def check_previous_transaction
       return if previous_transaction?
-      return redirect_back fallback_location: admins_new_coin_deposit_path(@coin.id),
+      return redirect_back fallback_location: admins_new_withdrawl_path(@coin.id),
                            alert: "Invalid previous transaction"
     end
 
     def permitted_params
-      params.require(:deposit).permit(
-        :destination_quantity,
-        :destination_rate,
+      params.require(:withdrawl).permit(
+        :source_quantity,
         :previous_transaction_id
       )
     end
 
-    def deposit_params
+    def withdrawl_params
       permitted_params.merge(
-        destination_id: @coin.id,
-        destination_type: Coin,
+        destination_id: current_member.id,
+        destination_type: Member,
         destination_coin_id: @coin.id,
-        source_id: current_member.id,
-        source_type: Member,
+        source_id: @coin.id,
+        source_type: Coin,
         source_coin_id: @coin.id,
         initiated_by_id: current_member.id
       )

@@ -17,10 +17,9 @@ module Admins
     def create
       member = Member.new permitted_params
       if member.save
-        flash[:success] = "Member created"
-        redirect_to action: :index
+        redirect_to action: :index, notice: "Member created"
       else
-        flash[:error] = "Member failed to be created"
+        flash[:alert] = "Member failed to be created"
         render :new
       end
     end

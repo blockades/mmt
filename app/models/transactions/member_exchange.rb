@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class MemberExchange < SystemTransaction
+  class MemberExchange < Transactions::Base
     validates :source_rate,
               :source_quantity,
               :destination_rate,
@@ -21,7 +21,7 @@ module Transactions
 
     def publish_to_source
       # Debit source (member) liability of source_coin
-      member_coin_events.build(
+      liability_events.build(
         coin: source_coin,
         member: source,
         liability: -source_quantity,
@@ -31,7 +31,7 @@ module Transactions
 
     def publish_to_destination
       # Credit destination (member) liability of destination_coin
-      member_coin_events.build(
+      liability_events.build(
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,

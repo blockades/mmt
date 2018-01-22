@@ -12,6 +12,10 @@ module Members
     end
 
     def new
+      @coin_as_json = @coin.as_json(
+        only: [:id, :subdivision, :crypto_currency],
+        methods: [:btc_rate]
+      ).to_json
     end
 
     def create

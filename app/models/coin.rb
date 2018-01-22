@@ -14,14 +14,24 @@ class Coin < ApplicationRecord
                                       class_name: "SystemTransaction",
                                       dependent: :restrict_with_error
 
-  has_many :coin_events, dependent: :restrict_with_error
-  has_many :member_coin_events, dependent: :restrict_with_error
-  has_many :members, through: :member_coin_events
+  has_many :asset_events, class_name: "Events::Asset",
+                          dependent: :restrict_with_error
+
+  has_many :liability_events, class_name: "Events::Liability",
+                              dependent: :restrict_with_error
+
+  has_many :members, through: :liability_events
+
+  has_many :equity_events, class_name: "Events::Equity",
+                           dependent: :restrict_with_error
+
+  has_many :contributors, through: :equity_events, source: :member
 
   scope :ordered, -> { order(:code) }
   scope :crypto, -> { where(crypto_currency: true) }
   scope :fiat, -> { where.not(crypto_currency: true) }
   scope :not_self, ->(coin_id) { where.not(id: coin_id) }
+  scope :not_btc, -> { where.not(code: "BTC") }
 
   attr_readonly :code
 
@@ -43,16 +53,22 @@ class Coin < ApplicationRecord
     !crypto_currency
   end
 
+  def system_total_display
+    Coin.sum do |coin|
+      Utils.to_decimal(coin.assets * coin.btc_rate, coin.subdivision) / btc_rate
+    end
+  end
+
   def assets
-    coin_events.sum(:assets)
+    asset_events.sum(:assets)
   end
 
   def liability
-    member_coin_events.sum(:liability)
+    liability_events.sum(:liability)
   end
 
   def equity
-    assets - liability
+    equity_events.sum(:equity)
   end
 
   # ===> Live value and rate
@@ -64,6 +80,10 @@ class Coin < ApplicationRecord
   # @return The amount of this currency that buys one BTC
   def btc_rate
     crypto_currency ? crypto_btc_rate : fiat_btc_rate
+  end
+
+  def self.btc
+    find_by(code: "BTC")
   end
 
   private

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 FactoryBot.define do
-  factory :system_transaction do
+  factory :system_transaction, class: Transactions::Base do
      trait :system_deposit do
        association :source, factory: :admin
        association :destination, factory: :coin
@@ -12,10 +12,10 @@ FactoryBot.define do
      end
 
      trait :system_allocation do
-       association :source, factory: :bitcoin
+       association :source, factory: :admin
        association :destination, factory: :member
-       source_coin { source }
-       destination_coin { source }
+       association :source_coin, factory: :bitcoin
+       destination_coin { source_coin }
        destination_rate { destination_coin.btc_rate }
        destination_quantity { Utils.to_integer(1, destination_coin.subdivision) }
        association :initiated_by, factory: :admin
@@ -36,6 +36,7 @@ FactoryBot.define do
       destination_coin { source_coin }
       destination_quantity { Utils.to_integer(1, destination_coin.subdivision) }
       source_rate { source_coin.btc_rate }
+      destination_rate { source_rate }
     end
 
     trait :member_deposit do

@@ -1,14 +1,13 @@
 # frozen_string_literal: true
 
 module Transactions
-  class SystemWithdrawl < SystemTransaction
+  class SystemWithdrawl < Transactions::Base
     validates :source_quantity,
               presence: true,
               numericality: { greater_than: 0 }
 
     validates :destination_quantity,
               :destination_rate,
-              :source_rate,
               absence: true
 
     validates :source_type, inclusion: { in: ["Coin"] }
@@ -22,20 +21,22 @@ module Transactions
 
     def publish_to_source
       # Debit source (coin) assets
-      coin_events.build(
+      asset_events.build(
         coin: source,
-        assets: -source_quantity
+        assets: -source_quantity,
+        member: destination,
+        rate: destination_coin.btc_rate
       )
     end
 
     def publish_to_destination
-    #   # Debit destination (admin) liability
-    #   admin_coin_events.build(
-    #     admin: destination,
-    #     coin: destination_coin,
-    #     liability: -source_quantity,
-    #     rate: nil
-    #   )
+      # Debit destination (member) liability
+      equity_events.build(
+        member: destination,
+        coin: destination_coin,
+        equity: -source_quantity,
+        rate: destination_coin.btc_rate
+      )
     end
   end
 end

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class SystemAllocation < SystemTransaction
+  class SystemAllocation < Transactions::Base
     validates :destination_rate,
               :destination_quantity,
               presence: true,
@@ -11,7 +11,7 @@ module Transactions
               :source_rate,
               absence: true
 
-    validates :source_type, inclusion: { in: ["Coin"] }
+    validates :source_type, inclusion: { in: ["Member"] }
     validates :destination_type, inclusion: { in: ["Member"] }
 
     private
@@ -21,16 +21,18 @@ module Transactions
     end
 
     def publish_to_source
-      # Source (coin) assets stays same
-      coin_events.build(
-        assets: 0,
-        coin: source
+      # Debit source (member) equity
+      equity_events.build(
+        member: source,
+        equity: -destination_quantity,
+        coin: source_coin,
+        rate: destination_rate
       )
     end
 
     def publish_to_destination
       # Credit destination (member) liability
-      member_coin_events.build(
+      liability_events.build(
         rate: destination_rate,
         liability: destination_quantity,
         member: destination,

@@ -1,7 +1,7 @@
 # frozen_string_literal: true
 
 module Transactions
-  class MemberDeposit < SystemTransaction
+  class MemberDeposit < Transactions::Base
     validates :destination_quantity,
               presence: true,
               numericality: { greater_than: 0 }
@@ -21,19 +21,21 @@ module Transactions
 
     def publish_to_source
       # Credit source (coin) assets
-      coin_events.build(
+      asset_events.build(
         coin: source,
-        assets: destination_quantity
+        member: destination,
+        assets: destination_quantity,
+        rate: destination_coin.btc_rate
       )
     end
 
     def publish_to_destination
       # Credit destination (member) liability
-      member_coin_events.build(
+      liability_events.build(
         coin: destination_coin,
         member: destination,
         liability: destination_quantity,
-        rate: nil
+        rate: destination_coin.btc_rate
       )
     end
   end

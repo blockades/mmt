@@ -14,15 +14,17 @@ describe Transactions::MemberExchange, transactions: true do
       create :system_deposit, {
         source: admin,
         destination: bitcoin,
-        destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+        destination_quantity: Utils.to_integer(5, bitcoin.subdivision),
+        initiated_by: admin
       }
       create :system_deposit, {
         source: admin,
         destination: sterling,
-        destination_quantity: Utils.to_integer(10_000, sterling.subdivision)
+        destination_quantity: Utils.to_integer(10_000, sterling.subdivision),
+        initiated_by: admin
       }
       create :system_allocation, {
-        source: bitcoin,
+        source: admin,
         destination: member,
         source_coin: bitcoin,
         destination_coin: bitcoin,
@@ -32,8 +34,8 @@ describe Transactions::MemberExchange, transactions: true do
       }
     end
 
-    it "creates member coin event" do
-      expect { exchange.save }.to change { member.member_coin_events.count }.by(2)
+    it "creates liability event" do
+      expect { exchange.save }.to change { member.liability_events.count }.by(2)
     end
 
     describe "#publish_to_source" do
@@ -46,13 +48,12 @@ describe Transactions::MemberExchange, transactions: true do
       end
 
       it "source_coin equity increases" do
-        equity = bitcoin.equity
-        expect { exchange.save }.to change { bitcoin.equity }.from(equity).to(equity + exchange.source_quantity)
+        expect { exchange.save }.to_not change { bitcoin.equity }
       end
     end
 
     describe "#publish_to_destination" do
-      it "credits source (member) destination_coin" do
+      it "credits destination (member) destination_coin" do
         expect { exchange.save }.to change { member.liability(sterling) }.by exchange.destination_quantity
       end
 
@@ -60,9 +61,8 @@ describe Transactions::MemberExchange, transactions: true do
         expect { exchange.save }.to_not change { sterling.assets }
       end
 
-      it "destination_coin equity decreases" do
-        equity = sterling.equity
-        expect { exchange.save }.to change { sterling.equity }.from(equity).to(equity - exchange.destination_quantity)
+      it "destination_coin equity stay same" do
+        expect { exchange.save }.to_not change { sterling.equity }
       end
     end
   end
@@ -73,15 +73,17 @@ describe Transactions::MemberExchange, transactions: true do
         create :system_deposit, {
           source: admin,
           destination: bitcoin,
-          destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
+          destination_quantity: Utils.to_integer(5, bitcoin.subdivision),
+          initiated_by: admin
         }
         create :system_deposit, {
           source: admin,
           destination: sterling,
-          destination_quantity: Utils.to_integer(5_000, sterling.subdivision)
+          destination_quantity: Utils.to_integer(5_000, sterling.subdivision),
+          initiated_by: admin
         }
         create :system_allocation, {
-          source: bitcoin,
+          source: admin,
           destination: member,
           source_coin: bitcoin,
           destination_coin: bitcoin,

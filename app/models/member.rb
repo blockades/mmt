@@ -34,21 +34,20 @@ class Member < ApplicationRecord
                                      inverse_of: :authorized_by,
                                      dependent: :restrict_with_error
 
-  has_many :member_coin_events, dependent: :restrict_with_error
+  has_many :liability_events, class_name: "Events::Liability",
+                              dependent: :restrict_with_error
 
-  has_many :credits, -> { where("liability > 0") }, class_name: "MemberCoinEvent",
-                                                    dependent: :restrict_with_error
+  has_many :equity_events, class_name: "Events::Equity",
+                           dependent: :restrict_with_error
 
-  has_many :debits, -> { where("liability < 0") }, class_name: "MemberCoinEvent",
-                                                   dependent: :restrict_with_error
-
-  has_many :coins, through: :member_coin_events
-
-  has_many :crypto_events, -> { crypto }, class_name: "MemberCoinEvent",
+  has_many :crypto_events, -> { crypto }, class_name: "Events::Liability",
                                           dependent: :restrict_with_error
 
-  has_many :fiat_events, -> { fiat }, class_name: "MemberCoinEvent",
+  has_many :fiat_events, -> { fiat }, class_name: "Events::Liability",
                                       dependent: :restrict_with_error
+
+  has_many :coins, -> { distinct }, through: :liability_events
+  has_many :contributed_coins, -> { distinct }, through: :equity_events, source: :coin
 
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
@@ -84,11 +83,15 @@ class Member < ApplicationRecord
   attr_accessor :login
 
   def coin_history(coin)
-    member_coin_events.where(coin_id: coin.id)
+    liability_events.where(coin_id: coin.id)
   end
 
   def liability(coin)
     coin_history(coin).sum(:liability)
+  end
+
+  def equity(coin)
+    equity_events.where(coin_id: coin.id).sum(:equity)
   end
 
   def full_phone_number

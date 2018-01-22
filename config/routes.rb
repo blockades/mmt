@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   namespace :admins do
     root to: "dashboard#index"
-    resources :coins, only: [:index, :edit, :update]
+    resources :coins, only: [:index, :show, :edit, :update]
     resources :members, only: [:index, :new, :create, :edit]
 
     scope path: :deposit do
@@ -29,6 +29,11 @@ Rails.application.routes.draw do
     scope path: :allocate do
       get "/:coin_id/new" => "system_allocations#new", as: :new_coin_allocation
       post "/:coin_id/" => "system_allocations#create", as: :coin_allocation
+    end
+
+    scope path: :withdraw do
+      get "/:coin_id/new" => "system_withdrawls#new", as: :new_withdrawl
+      post "/:coin_id" => "system_withdrawls#create", as: :withdrawl
     end
   end
 
@@ -58,7 +63,7 @@ Rails.application.routes.draw do
 
     scope path: :withdraw do
       root to: "withdrawls#index", as: :withdrawls
-      get "/:coin_id" => "withdrawls#new", as: :new_withdrawl
+      get "/:coin_id/new" => "withdrawls#new", as: :new_withdrawl
       post "/:coin_id" => "withdrawls#create", as: :withdrawl
     end
 
