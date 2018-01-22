@@ -12,8 +12,8 @@ module Events
     private
 
     def coin_assets
-      assets = coin.assets + system_transaction.asset_events.to_a.sum(&:assets)
-      liabilities = system_transaction.liability_events.to_a.sum(&:liability)
+      assets = coin.assets + system_transaction.asset_events.to_a.select { |e| e.coin_id == coin.id }.sum(&:assets)
+      liabilities = system_transaction.liability_events.to_a.select { |e| e.coin_id == coin.id }.sum(&:liability)
       assets_after = assets - liabilities.abs
       return true if assets_after.positive? || assets_after.zero?
       self.errors.add :assets, "Insufficient assets"
