@@ -10,7 +10,8 @@ module Events
     belongs_to :coin
     belongs_to :member
     belongs_to :system_transaction, class_name: "Transactions::Base",
-                                    foreign_key: :system_transaction_id
+                                    foreign_key: :system_transaction_id,
+                                    inverse_of: :events
 
     scope :credit, -> { where(arel_table[:entry].gt(0)) }
     scope :debit, -> { where(arel_table[:entry].lt(0)) }

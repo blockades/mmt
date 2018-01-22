@@ -31,21 +31,25 @@ module Transactions
 
     has_many :events, class_name: "Events::Base",
                       foreign_key: :system_transaction_id,
+                      inverse_of: :system_transaction,
                       autosave: true,
                       dependent: :restrict_with_error
 
     has_many :asset_events, class_name: "Events::Asset",
                             foreign_key: :system_transaction_id,
+                            inverse_of: :system_transaction,
                             autosave: true,
                             dependent: :restrict_with_error
 
     has_many :liability_events, class_name: "Events::Liability",
                                 foreign_key: :system_transaction_id,
+                                inverse_of: :system_transaction,
                                 autosave: true,
                                 dependent: :restrict_with_error
 
     has_many :equity_events, class_name: "Events::Equity",
                              foreign_key: :system_transaction_id,
+                             inverse_of: :system_transaction,
                              autosave: true,
                              dependent: :restrict_with_error
 
