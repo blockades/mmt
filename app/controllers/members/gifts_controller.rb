@@ -19,7 +19,7 @@ module Members
       transaction = transaction_commiter(Transactions::MemberAllocation, gift_params)
 
       if transaction.persisted?
-        redirect_to coins_path, notice: "Success"
+        redirect_to root_path, notice: "Success"
       else
         redirect_to new_gift_path, alert: transaction.error_message
       end
