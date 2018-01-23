@@ -7,8 +7,6 @@ module Members
     before_action :find_coin, except: [:index]
     before_action :find_previous_transaction, only: [:new, :create]
 
-    def index; end
-
     def new; end
 
     def create

@@ -65,7 +65,6 @@ Rails.application.routes.draw do
     end
 
     resources :coins, only: [:show], format: :js
-    resources :system_transactions, as: :transactions, only: [:index], format: :js
 
     if ENV["EXCHANGE"]
       scope path: :exchanges do
