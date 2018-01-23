@@ -28,6 +28,8 @@ services:
     environment:
       DB_HOST: db
       DB_USER: postgres
+      EXCHANGE: "true"
+      WITHDRAWL: "true"
     ports:
       - "3000:80"
 

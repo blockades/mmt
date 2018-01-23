@@ -14,7 +14,7 @@ module Members
 
     def show
       respond_to do |format|
-        format.json { render json: @coin.as_json(methods: [:btc_rate, :member_total_display]) }
+        format.json { render json: @coin.as_json(methods: [:btc_rate, :member_total_display]).merge(liability: current_member.liability(@coin))}
       end
     end
 
