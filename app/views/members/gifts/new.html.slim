@@ -20,7 +20,4 @@ javascript:
   $(document).on("turbolinks:load", function () {
     var attributes = { quantity: "#quantity", display: "#quantityDisplay", coin: #{raw @coin.to_json} };
     new QuantityAsDecimal(attributes);
-
-    var coin = JSON.parse('#{raw @coin.as_json(only: [:id]).to_json}');
-    new Gift(coin);
   });
