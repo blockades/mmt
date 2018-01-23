@@ -65,7 +65,6 @@ Rails.application.routes.draw do
     end
 
     resources :coins, only: [:show], format: :js
-    resources :system_transactions, as: :transactions, only: [:index], format: :js
 
     if ENV["EXCHANGE"]
       scope path: :exchanges do
@@ -80,6 +79,22 @@ Rails.application.routes.draw do
         root to: "withdrawls#index", as: :withdrawls
         get "/:coin_id/new" => "withdrawls#new", as: :new_withdrawl
         post "/:coin_id" => "withdrawls#create", as: :withdrawl
+      end
+    end
+
+    if ENV["DEPOSIT"]
+      scope path: :deposit do
+        root to: "deposits#index", as: :deposits
+        get "/:coin_id/new" => "deposits#new", as: :new_deposit
+        post "/:coin_id" => "deposits#create", as: :deposit
+      end
+    end
+
+    if ENV["GIFT"]
+      scope path: :gift do
+        root to: "gifts#index", as: :gifts
+        get "/:coin_id/new" => "gifts#new", as: :new_gift
+        post "/:coin_id" => "gifts#create", as: :gift
       end
     end
 

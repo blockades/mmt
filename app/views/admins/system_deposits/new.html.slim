@@ -4,7 +4,7 @@ h2 Deposit #{@coin.code}
   .row
     = f.label :quantity
     = f.number_field :destination_quantity, value: 0, id: 'quantity', required: true
-    = number_field_tag :destination_quantity_display, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantityDisplay'
+    = number_field_tag :destination_quantity_display, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantityDisplay', readonly: true
   br
   .row
     label BTC Rate

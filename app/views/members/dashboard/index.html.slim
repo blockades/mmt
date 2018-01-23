@@ -31,6 +31,12 @@
                 td= link_to number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: ''), coin_liabilities_path(coin)
                 td
                   .icons
+                    - if gifts_enabled?
+                      = link_to new_gift_path(coin), class: 'icon', title: "Gift #{coin.code}" do
+                        i.fa.fa-gift.fa-lg
+                    - if deposits_enabled?
+                      = link_to new_deposit_path(coin), class: 'icon', title: "Deposit #{coin.code}" do
+                        i.fa.fa-level-up.fa-lg
                     - if exchanges_enabled?
                       = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
                         i.fa.fa-shopping-cart.fa-lg

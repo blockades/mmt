@@ -1,10 +1,10 @@
-h2 Withdraw #{@coin.code}
+h2 Deposit #{@coin.code}
 
-= form_for :withdrawl, url: withdrawl_path(@coin.id), method: :post do |f|
+= form_for :deposit, url: deposit_path(@coin.id), method: :post do |f|
   .row
     = f.label :quantity
-    = f.number_field :source_quantity, value: 0, id: 'quantity', required: true
-    = number_field_tag :source_quantity, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantityDisplay', readonly: true
+    = f.number_field :destination_quantity, value: 0, id: 'quantity', required: true
+    = number_field_tag :destination_quantity, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantityDisplay', readonly: true
   br
   .row
     = f.hidden_field :previous_transaction_id, value: @previous_transaction&.id

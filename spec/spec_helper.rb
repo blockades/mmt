@@ -10,6 +10,10 @@ SimpleCov.start "rails" do
 end
 
 ENV["OTP_SECRET_ENCRYPTION_KEY"] = Digest::SHA2.hexdigest "SUPER_DUPER_SECRET_KEY"
+ENV["DEPOSIT"] = "true"
+ENV["WITHDRAWL"] = "true"
+ENV["EXCHANGE"] = "true"
+ENV["GIFT"] = "true"
 
 RSpec.configure do |config|
   config.expect_with :rspec do |expectations|

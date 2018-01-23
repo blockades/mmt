@@ -2,7 +2,7 @@
 
 module ApplicationHelper
   def self.feature_modules
-    ["WITHDRAWL", "EXCHANGE"]
+    ["WITHDRAWL", "EXCHANGE", "DEPOSIT", "GIFT"]
   end
 
   feature_modules.each do |feature_module|
