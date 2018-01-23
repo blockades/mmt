@@ -18,7 +18,7 @@ Rails.application.routes.draw do
 
   namespace :admins do
     root to: "dashboard#index"
-    resources :coins, only: [:index, :edit, :update] do
+    resources :coins, only: [:index, :edit, :show, :update] do
       resources :assets, only: :index
       resources :liabilities, only: :index
     end
