@@ -36,7 +36,7 @@ FactoryBot.define do
       destination_coin { source_coin }
       destination_quantity { Utils.to_integer(1, destination_coin.subdivision) }
       source_rate { source_coin.btc_rate }
-      destination_rate { source_rate }
+      destination_rate { destination_coin.btc_rate }
     end
 
     trait :member_deposit do
@@ -45,6 +45,7 @@ FactoryBot.define do
       source_coin { source }
       destination_coin { source }
       destination_quantity { Utils.to_integer(1, destination_coin.subdivision) }
+      destination_rate { destination_coin.btc_rate }
     end
 
     trait :member_withdrawl do

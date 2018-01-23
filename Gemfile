@@ -36,6 +36,7 @@ gem "uglifier", ">= 1.3.0"
 group :development, :test do
   gem "awesome_print"
   gem "pry-remote"
+  gem "pry-byebug"
 end
 
 group :development do
