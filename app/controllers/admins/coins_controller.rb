@@ -2,19 +2,24 @@
 
 module Admins
   class CoinsController < AdminsController
-    before_action :find_coin, only: [:edit, :show, :update]
+    before_action :find_coin, only: [:edit, :update]
 
     def index
       @coins = Coin.all.decorate
     end
 
+    def edit; end
+
     def show
+      @coin = Coin.includes(
+        asset_events: :system_transaction
+      ).friendly.find(params[:id])
+
       respond_to do |format|
+        format.html
         format.json { render json: @coin.as_json(methods: [:btc_rate, :system_total_display]) }
       end
     end
-
-    def edit; end
 
     def update
       if @coin.update permitted_params
@@ -23,10 +28,6 @@ module Admins
         flash[:alert] = "Coin failed to update"
         render :new
       end
-    end
-
-    def show
-      @coin = Coin.includes(coin_events: { system_transaction: :initiated_by }).friendly.find(params[:id])
     end
 
     private
