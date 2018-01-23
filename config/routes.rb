@@ -83,6 +83,22 @@ Rails.application.routes.draw do
       end
     end
 
+    if ENV["DEPOSIT"]
+      scope path: :deposit do
+        root to: "deposits#index", as: :deposits
+        get "/:coin_id/new" => "deposits#new", as: :new_deposit
+        post "/:coin_id" => "deposits#create", as: :deposit
+      end
+    end
+
+    if ENV["GIFT"]
+      scope path: :gift do
+        root to: "gifts#index", as: :gifts
+        get "/:coin_id/new" => "gifts#new", as: :new_gift
+        post "/:coin_id" => "gifts#create", as: :gift
+      end
+    end
+
     resources :members, path: "/", only: [:show, :update]
   end
 end

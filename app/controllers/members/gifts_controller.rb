@@ -1,29 +1,27 @@
 # frozen_string_literal: true
 
 module Members
-  class WithdrawlsController < ApplicationController
+  class GiftsController < ApplicationController
     include TransactionHelper
 
     before_action :find_coin, except: [:index]
     before_action :find_previous_transaction, only: [:new, :create]
 
-    def index
-    end
+    def index; end
 
-    def new
-    end
+    def new; end
 
     def create
       unless previous_transaction?
-        return redirect_back fallback_location: new_withdrawl_path, alert: "Invalid previous transaction"
+        return redirect_back fallback_location: new_gift_path, alert: "Invalid previous transaction"
       end
 
-      transaction = transaction_commiter(Transactions::MemberWithdrawl, withdrawl_params)
+      transaction = transaction_commiter(Transactions::MemberAllocation, gift_params)
 
       if transaction.persisted?
         redirect_to coins_path, notice: "Success"
       else
-        redirect_to new_withdrawl_path, alert: transaction.error_message
+        redirect_to new_gift_path, alert: transaction.error_message
       end
     end
 
@@ -34,23 +32,25 @@ module Members
     end
 
     def find_previous_transaction
-      @previous_transaction = Transactions::MemberWithdrawl.ordered.for_source(current_member).last
+      @previous_transaction = Transactions::MemberAllocation.ordered.for_destination(current_member).last
     end
 
     def permitted_params
-      params.require(:withdrawl).permit(
-        :source_quantity,
-        :previous_transaction_id
+      params.require(:gift).permit(
+        :destination_quantity,
+        :previous_transaction_id,
+        :destination_id,
+        :destination_rate
       )
     end
 
-    def withdrawl_params
+    def gift_params
       permitted_params.merge(
         source_id: current_member.id,
         source_type: Member,
         source_coin_id: @coin.id,
-        destination_id: @coin.id,
-        destination_type: Coin,
+        source_rate: permitted_params[:destination_rate],
+        destination_type: Member,
         destination_coin_id: @coin.id,
         initiated_by_id: current_member.id
       )
