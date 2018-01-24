@@ -46,7 +46,6 @@ Rails.application.routes.draw do
   end
 
   namespace :settings, module: :members, as: :member_settings do
-    get "/" => "settings#index"
     resource :password, only: [:new, :update]
 
     resource :two_factor_authentication, only: [:new, :create, :edit, :update, :destroy],

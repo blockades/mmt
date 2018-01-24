@@ -1,0 +1,23 @@
+= form_for @member, remote: true, class: "form" do |f|
+  .group data-selector="username"
+    h2.content= @member.username
+    = link_to "#", class: "edit" do
+      i.fa.fa-pencil-square-o.fa-lg
+    .fields.hidden
+      .field
+        = f.label :username
+        = f.text_field :username, class: "submit"
+  .group data-selector="phoneNumber"
+    h5 Phone Number
+    p.content= @member.full_phone_number
+    = link_to "#", class: "edit" do
+      i.fa.fa-pencil-square-o.fa-lg
+    .fields.hidden
+      .field.inline-block
+        = f.label :country_code
+        = f.select :country_code, options_for_select(MMT::MobileCountryCodes.for_select, selected: MMT::MobileCountryCodes.with_code_only.detect { |code| code == @member.country_code }), include_blank: true, class: "submit"
+      .field.inline-block
+        = f.label :phone_number
+        = f.text_field :phone_number, value: @member.phone_number, class: "submit"
+  .field.hidden
+    = f.submit :submit

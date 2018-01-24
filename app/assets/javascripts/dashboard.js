@@ -1,10 +1,12 @@
 var Dashboard = function () {
   $(".tab").on("click", function () {
-    var selector = $(this).data("selector");
+    let selector = $(this).data("selector");
     $(".tab").removeClass("active");
     $(this).addClass("active");
-    $(".dashboard-widgets").children().addClass("hidden");
-    $("section[data-selector=" + selector + "]").removeClass("hidden");
+    let visible = $("section[data-selector=" + selector + "]");
+    let hidden = $(".dashboard-widgets").children("section");
+    hidden.addClass("hidden");
+    visible.removeClass("hidden");
   });
 
   var transactionSelect = $("#transactionSelect");
@@ -15,3 +17,5 @@ var Dashboard = function () {
     });
   });
 }
+
+$(document).on("turbolinks:load", Dashboard);

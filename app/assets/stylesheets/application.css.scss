@@ -44,6 +44,20 @@ nav.primary {
   }
 }
 
+section {
+  ul {
+    list-style: none;
+    a {
+      text-decoration: none;
+      color: $dark;
+    }
+    li {
+      border-bottom: 1px dashed $dark;
+      padding: 1em 0 1em 0;
+    }
+  }
+}
+
 .flash {
   text-align: center;
   font-weight: 600;
@@ -173,4 +187,30 @@ section.title {
 
 .strip {
   margin: 0;
+}
+
+.padded {
+  padding: 10px;
+}
+
+.border-right {
+  border-right: 2px solid $dark;
+}
+
+.border-dashed-top{
+  border-top: 1px dashed $dark;
+}
+
+.group {
+  .content {
+    display: inline-block;
+  }
+  a {
+    display: inline-block;
+    margin-left: 1em;
+    color: $dark;
+    &:hover {
+      color: $blue;
+    }
+  }
 }
