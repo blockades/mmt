@@ -1,10 +1,10 @@
 var Dashboard = function () {
   $(".tab").on("click", function () {
-    let attribute = $(this).data("attribute");
+    var attribute = $(this).data("attribute");
     $(".tab").removeClass("active");
     $(this).addClass("active");
-    let visible = $("section[data-attribute=" + attribute + "]");
-    let hidden = $(".dashboard-widgets").children("section");
+    var visible = $("section[data-attribute=" + attribute + "]");
+    var hidden = $(".dashboard-widgets").children("section");
     hidden.addClass("hidden");
     visible.removeClass("hidden");
   });

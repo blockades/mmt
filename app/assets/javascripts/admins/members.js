@@ -1,9 +1,9 @@
 var Members = function () {
   $(".item").on("click", function (e) {
     e.preventDefault();
-    let attribute = $(this).data("attribute");
-    let visible = $(".content[data-attribute=" + attribute + "]");
-    let hidden = $(".content");
+    var attribute = $(this).data("attribute");
+    var visible = $(".content[data-attribute=" + attribute + "]");
+    var hidden = $(".content");
     hidden.addClass("hidden");
     visible.removeClass("hidden");
   });

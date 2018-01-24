@@ -9,7 +9,7 @@ var Profile = function () {
     var content = $(this).find(".content");
     scopedLink.on("click", function (e) {
       e.preventDefault();
-      let fields = $(self).find(".fields");
+      var fields = $(self).find(".fields");
       fields.hasClass("hidden") ? fields.removeClass("hidden") : fields.addClass("hidden")
     });
     var submit = $(this).find(".submit");
