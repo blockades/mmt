@@ -1,8 +1,10 @@
 var Dashboard = function () {
-  $(".tab").on("click", function () {
+  $(".switch").on("click", function (e) {
+    e.preventDefault();
     var attribute = $(this).data("attribute");
     $(".tab").removeClass("active");
-    $(this).addClass("active");
+    var active = $(".tab[data-attribute=" + attribute + "]")
+    active.addClass("active");
     var visible = $("section[data-attribute=" + attribute + "]");
     var hidden = $(".dashboard-widgets").children("section");
     hidden.addClass("hidden");

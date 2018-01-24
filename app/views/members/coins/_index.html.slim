@@ -1,0 +1,39 @@
+  h4 Total
+  .row
+    - @coins.each do |coin|
+      .two.columns
+        .row
+          .twelve.columns
+            label #{coin.code} total
+            = number_field_tag :total, number_with_precision(coin.member_total_display, precision: Coin::BTC_SUBDIVISION), step: :any, id: "totalDisplay", readonly: true
+  br
+  h4 Balance
+  .row
+    table width="100%"
+      thead
+        tr
+          th Name
+          th Code
+          th Balance
+          th
+            span.right Actions
+      tbody
+        - @coins.each do |coin|
+          tr
+            td= coin.name
+            td= coin.code
+            td= link_to number_to_currency(@member.coin_liability(coin), precision: coin.subdivision, unit: ''), coin_liabilities_path(coin)
+            td
+              .icons
+                - if gifts_enabled?
+                  = link_to new_gift_path(coin), class: 'icon', title: "Gift #{coin.code}" do
+                    i.fa.fa-gift.fa-lg
+                - if deposits_enabled?
+                  = link_to new_deposit_path(coin), class: 'icon', title: "Deposit #{coin.code}" do
+                    i.fa.fa-level-up.fa-lg
+                - if exchanges_enabled?
+                  = link_to new_exchange_path(coin), class: 'icon', title: "Buy #{coin.code}" do
+                    i.fa.fa-shopping-cart.fa-lg
+                - if withdrawls_enabled?
+                  = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
+                    i.fa.fa-level-down.fa-lg

@@ -17,7 +17,7 @@ module Admins
 
       if transaction.persisted?
         quantity = Utils.to_decimal(transaction.destination_quantity, @coin.subdivision)
-        redirect_to admins_coins_path, notice: "Allocated #{quantity} #{@coin.code}"
+        redirect_to admins_root_path, notice: "Allocated #{quantity} #{@coin.code}"
       else
         redirect_to admins_new_coin_allocation_path(@coin.id), alert: transaction.error_message
       end

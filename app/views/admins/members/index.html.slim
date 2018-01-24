@@ -1,12 +1,13 @@
 .row
   .three.columns.strip
-    section.members.padded
-      h3 Options
-      ul.border-dashed-top
-        = link_to "#", class: "item", data: { attribute: "list" } do
-          li List
-        = link_to "#", class: "item", data: { attribute: "invite" } do
-          li Invite
+    section.padded
+      .framed
+        h3 Options
+        ul.border-dashed-top
+          = link_to "#", class: "item", data: { attribute: "list" } do
+            li List
+          = link_to "#", class: "item", data: { attribute: "invite" } do
+            li Invite
   .nine.columns.border-left
     article.members.padded.padded-left
       .content.hidden[data-attribute="invite"]

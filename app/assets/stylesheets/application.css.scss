@@ -44,17 +44,19 @@ nav.primary {
   }
 }
 
-section {
-  ul {
-    list-style: none;
-    a {
-      text-decoration: none;
-      color: $dark;
-    }
-    li {
-      border-bottom: 1px dashed $dark;
-      padding: 1em 0 1em 0;
-    }
+section ul {
+
+}
+
+section .framed ul {
+  list-style: none;
+  a {
+    text-decoration: none;
+    color: $dark;
+  }
+  li {
+    border-bottom: 1px dashed $dark;
+    padding: 1em 0 1em 0;
   }
 }
 

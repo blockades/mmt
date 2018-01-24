@@ -1,0 +1,58 @@
+table.full-width
+  thead
+    tr
+      th Name
+      th Email
+      th Notes
+      th Type
+      th Date In
+      th Amount
+      th USD
+      th IOU
+      th Coin
+      th Holdings
+      th Rate*
+      th Current Value
+      th % Difference
+  tbody
+    - member = Member.find_by(email: "develop@blockades.dev")
+    - usd = Coin.find_by(code: "USD")
+    tr
+      - holdings = 0.073709
+      - rate_at_top = 5129
+      td= member.username
+      td= member.email
+      td Paid in AUD
+      td Buy**
+      td= member.created_at.strftime("%d/%m/%Y")
+      td 1000
+      td 806.20
+      td No
+      td BTC
+      td= holdings
+      td= rate_at_top
+      td= (holdings * (1/usd.btc_rate)).round(Coin::BTC_SUBDIVISION)
+      td= ((((1.0 / usd.btc_rate) - rate_at_top) / rate_at_top) * 100).round(Coin::BTC_SUBDIVISION)
+    tr
+      - holdings = 0.06492
+      - rate_at_top = 18218
+      td= member.username
+      td= member.email
+      td Request in GBP
+      td Sell**
+      td= (member.created_at + 1.month).strftime("%d/%m/%Y")
+      td 500
+      td 710.27
+      td No
+      td BTC
+      td= holdings
+      td= rate_at_top
+      td= (holdings * (1/usd.btc_rate)).round(Coin::BTC_SUBDIVISION)
+      td= ((((1.0 / usd.btc_rate) - rate_at_top) / rate_at_top) * 100).round(Coin::BTC_SUBDIVISION)
+
+p
+  | * Rate at time of entry
+p
+  | ** For the sake of testing, a Buy should be regarded as a 'MemberDeposit', and a Sell should be regarded as a 'MemberWithdrawl'
+  | A 'Buy' could be regarded as a 'MemberExchange' (i.e. a member has purchased Coin A in exchange for Fiat)
+    A 'Sell' could also be regarded as a 'MemberExchange' (i.e. a member has purchased Fiat in exchange for Coin A)

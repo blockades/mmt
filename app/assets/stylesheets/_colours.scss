@@ -1,16 +1,28 @@
+$midnight: #000022;
 $green: #139517;
 $red: #F44242;
 $blue: #1EAEDB;
 $dark: #282828;
 
-.white {
-  color: white;
-}
+$colours: (
+  ($midnight, 'midnight'),
+  ($green, 'green'),
+  ($red, 'red'),
+  ($blue, 'blue'),
+  ($dark, 'dark')
+);
 
-.bg-green {
-  background-color: $green;
-}
-
-.bg-red {
-  background-color: $red;
+@each $group in $colours {
+  $colour: #{nth($group, 1)};
+  $name: #{nth($group, 2)};
+  .bg-#{$name} {
+    background-color: #{$colour};
+  }
+  .#{$name} {
+    color: #{$colour};
+  }
+  .border-#{$name} {
+    border: 2px solid #{$colour};
+    border-radius: 5px;
+  }
 }
