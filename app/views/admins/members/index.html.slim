@@ -9,7 +9,7 @@
           li Invite
   .nine.columns.border-left
     article.members.padded.padded-left
-      .content.hidden data-attribute="invite"
+      .content.hidden[data-attribute="invite"]
         h2= t("devise.invitations.new.header")
         = form_for @member, url: invitation_path(:member), html: { method: :post } do |f|
           = devise_error_messages!
@@ -19,7 +19,7 @@
               br/
               = f.email_field field
           p= f.submit t("devise.invitations.new.submit_button")
-      .content data-attribute="list"
+      .content[data-attribute="list"]
         h2 List
         table.full-width
           thead
