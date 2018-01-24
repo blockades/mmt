@@ -94,6 +94,10 @@ section {
   float: left;
 }
 
+.full-width {
+  width: 100%;
+}
+
 body {
   margin: 0;
   padding-bottom: 100px;
@@ -119,10 +123,6 @@ section.title {
   border: 1px solid grey;
   margin: 1em;
   padding: 1em;
-}
-
-.full-length {
-  width: 100%;
 }
 
 .hidden {
@@ -193,8 +193,20 @@ section.title {
   padding: 10px;
 }
 
+.padded-right {
+  padding-right: 40px;
+}
+
+.padded-left {
+  padding-left: 40px;
+}
+
 .border-right {
   border-right: 2px solid $dark;
+}
+
+.border-left {
+  border-left: 2px solid $dark;
 }
 
 .border-dashed-top{

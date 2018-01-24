@@ -1,13 +1,13 @@
 .row
-  .four.columns.strip.border-right
+  .three.columns.strip
     - if my_profile?
       section.settings.padded
         h3 Settings
         ul.border-dashed-top
           li= link_to 'Two Factor Authentication', member_settings_two_factor_authentication_path
           li= link_to 'Change Password', new_member_settings_password_path
-  .eight.columns
-    article.profile.padded
+  .nine.columns.border-left
+    article.profile.padded.padded-left
       - if my_profile?
         = render partial: "members/members/form"
       - else
