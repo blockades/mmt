@@ -1,6 +1,6 @@
 # frozen_string_literal: true
 
-redis_uri = URI.parse(ENV.fetch("REDIS_URL") { "http://localhost:3000/12" })
+redis_uri = URI.parse(ENV.fetch("REDIS_URL") { "redis://localhost:6379/12" })
 
 Rails.application.configure do
   config.cache_store = :redis_store, { host: redis_uri.host, port: redis_uri.port, db: 0 }
