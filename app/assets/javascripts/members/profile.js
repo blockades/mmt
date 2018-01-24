@@ -1,7 +1,7 @@
 var Profile = function () {
   var form = $("form.edit_member");
-  var username = $(".group[data-selector=username]");
-  var phoneNumber = $(".group[data-selector=phoneNumber]");
+  var username = $(".group[data-attribute=username]");
+  var phoneNumber = $(".group[data-attribute=phoneNumber]");
 
   $.each([phoneNumber, username], function () {
     var self = this;

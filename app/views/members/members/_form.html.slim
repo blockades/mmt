@@ -1,5 +1,5 @@
 = form_for @member, remote: true, class: "form" do |f|
-  .group data-selector="username"
+  .group data-attribute="username"
     h2.content= @member.username
     = link_to "#", class: "edit" do
       i.fa.fa-pencil-square-o.fa-lg
@@ -7,7 +7,7 @@
       .field
         = f.label :username
         = f.text_field :username, class: "submit"
-  .group data-selector="phoneNumber"
+  .group data-attribute="phoneNumber"
     h5 Phone Number
     p.content= @member.full_phone_number
     = link_to "#", class: "edit" do

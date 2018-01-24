@@ -1,13 +1,13 @@
 .dashboard-tabs
-  .tab.inline-block.active data-selector="wallet"
+  .tab.inline-block.active data-attribute="wallet"
     p Wallet
-  .tab.inline-block data-selector="transactionKey"
+  .tab.inline-block data-attribute="transactionKey"
     p Transaction Key
-  .tab.inline-block data-selector="guide"
+  .tab.inline-block data-attribute="guide"
     p Guide
 
 .dashboard-widgets
-  section.row data-selector="wallet"
+  section.row data-attribute="wallet"
     .twelve.columns
       h4 Total
       .row
@@ -49,7 +49,7 @@
                       = link_to new_withdrawl_path(coin), class: 'icon', title: "Withdraw #{coin.code}" do
                         i.fa.fa-level-down.fa-lg
 
-  section.row.hidden data-selector="transactionKey"
+  section.row.hidden data-attribute="transactionKey"
     .twelve.columns
       h2 Transaction Key
       table width="100%"
