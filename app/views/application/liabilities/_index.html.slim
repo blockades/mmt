@@ -19,7 +19,7 @@ table
         td= tx.type
         td= event.created_at
         td= event.display_entry
-        td= tx.destination_coin_id == event.coin_id ? tx.destination_rate : tx.source_rate
+        td= event.rate
         td= tx.source.display_name
         td= tx.source_coin&.display_name
         td= tx.destination.display_name
