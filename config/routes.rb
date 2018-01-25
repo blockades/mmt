@@ -46,7 +46,7 @@ Rails.application.routes.draw do
   end
 
   namespace :settings, module: :members, as: :member_settings do
-    resource :password, only: [:new, :update]
+    resource :password, only: [:edit, :update]
 
     resource :two_factor_authentication, only: [:new, :create, :edit, :update, :destroy],
                                          path_names: { new: "setup", edit: "confirm", destroy: "disable" } do

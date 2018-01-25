@@ -12,12 +12,12 @@
     p
       | To change your password please enter an authentication code. 
       - if @member.authenticated_by_phone?
-        = link_to 'Send code to mobile', send_code_member_settings_two_factor_authentication_path, remote: true, class: "button", data: { disable_with: "Processing&hellip;".html_safe }
+        = link_to 'Send code to mobile', send_code_member_settings_two_factor_authentication_path, remote: true, class: "button button-primary", data: { disable_with: "Processing&hellip;".html_safe }
       - else
         - unless @member.phone_number?
           | You can register for codes to be sent via SMS by entering your phone number on #{link_to 'your profile', member_path(@member)}
         - else
-          = link_to 'Send code by SMS', member_settings_resend_two_factor_code_path, remote: true, class: "button", data: { disable_with: "Processing&hellip;".html_safe }
+          = link_to 'Send code by SMS', send_code_member_settings_two_factor_authentication_path, remote: true, class: "button button-primary", data: { disable_with: "Processing&hellip;".html_safe }
 
     = f.label :two_factor_code
     = text_field_tag "member[authentication_code]", nil, required: true
