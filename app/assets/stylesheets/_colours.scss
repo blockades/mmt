@@ -3,13 +3,15 @@ $green: #139517;
 $red: #F44242;
 $blue: #1EAEDB;
 $dark: #282828;
+$white: #FFFFFF;
 
 $colours: (
   ($midnight, 'midnight'),
   ($green, 'green'),
   ($red, 'red'),
   ($blue, 'blue'),
-  ($dark, 'dark')
+  ($dark, 'dark'),
+  ($white, 'white')
 );
 
 @each $group in $colours {

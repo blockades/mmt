@@ -1,13 +1,18 @@
-h2 Log in
-= form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
-  .field
-    = f.label :login
-    br
-    = f.text_field :login, autofocus: true
-  .field
-    = f.label :password
-    br
-    = f.password_field :password, autocomplete: "off"
-  .actions
-    = f.submit "Log in"
-= render "devise/shared/links"
+.top
+  h1.logo
+    | [BLOCKADES - MMT]
+
+.middle
+  .bg-white.transparent.padded
+    = form_for(resource, as: resource_name, url: session_path(resource_name)) do |f|
+      .field
+        = f.label :login
+        br
+        = f.text_field :login, autofocus: true
+      .field
+        = f.label :password
+        br
+        = f.password_field :password, autocomplete: "off"
+      .actions
+        = f.submit "Log in", class: "button button-primary"
+    = render "devise/shared/links"

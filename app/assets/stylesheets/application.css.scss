@@ -20,6 +20,27 @@
 
 @import 'colours';
 
+html{
+  min-height: 100vh;
+}
+
+body{
+  min-height: 100vh;
+}
+
+.logo {
+  font-size: 7.5rem;
+  line-height: 0.95;
+  padding: 30px 20px 70px 40px;
+}
+
+.background {
+  background: url(http://blockades.org/images/blockades.png) no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  image-rendering: pixelated;
+}
+
 nav.primary {
   height: 54px;
   background: $dark;
@@ -84,6 +105,24 @@ section .framed ul {
   display: inline-block;
 }
 
+.top {
+  position: absolute;
+  top: 0%;
+  left: 25%;
+  width: 50%;
+}
+
+.middle {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+}
+
+.transparent {
+  background: rgba(255, 255, 255, 0.7);
+}
+
 .center {
   text-align: center;
 }
@@ -102,7 +141,6 @@ section .framed ul {
 
 body {
   margin: 0;
-  padding-bottom: 100px;
 }
 
 .container {
