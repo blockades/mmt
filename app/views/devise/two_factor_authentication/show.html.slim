@@ -14,7 +14,7 @@
     = link_to "Cancel", destroy_member_session_path, method: :delete, class: 'button'
 
   - if resource.direct_otp
-    = link_to "Resend code", send_code_member_two_factor_authentication_path, method: :post, class: 'button', data: { disable_with: "Processing&hellip;".html_safe }
+    = link_to "Resend code", send_code_member_settings_two_factor_authentication_path, method: :post, class: 'button', data: { disable_with: "Processing&hellip;".html_safe }
 
   br
   br
