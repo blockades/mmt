@@ -16,7 +16,7 @@ var Exchange = function (coin) {
     var destinationQuantity = $("#destinationQuantity").val();
     var destinationQuantityDisplay = calculateDisplay(destinationQuantity, destinationSubdivision);
     var quantityInBtc = (destinationQuantity * destinationRate) * Math.pow(10, 8 - destinationSubdivision);
-    var sourceQuantity = Math.ceil((quantityInBtc / sourceRate) / Math.pow(10, 8 - sourceSubdivision));
+    var sourceQuantity = Math.round((quantityInBtc / sourceRate) / Math.pow(10, 8 - sourceSubdivision));
     var sourceQuantityDisplay = calculateDisplay(sourceQuantity, sourceSubdivision);
 
     updateQuantity(sourceQuantity, destinationQuantity);
@@ -33,7 +33,7 @@ var Exchange = function (coin) {
     var sourceQuantity = $('#sourceQuantity').val();
     var sourceQuantityDisplay = calculateDisplay(sourceQuantity, sourceSubdivision);
     var quantityInBtc = (sourceRate * sourceQuantity) * Math.pow(10, 8 - sourceSubdivision);
-    var destinationQuantity = Math.floor((quantityInBtc / destinationRate) / Math.pow(10, 8 - destinationSubdivision));
+    var destinationQuantity = Math.round((quantityInBtc / destinationRate) / Math.pow(10, 8 - destinationSubdivision));
     var destinationQuantityDisplay = calculateDisplay(destinationQuantity, destinationSubdivision);
 
     $('.balance').text(Math.round(sourceCoin.liability) + " (or " + sourceCoin.liability / Math.pow(10, sourceSubdivision) + " " + sourceCoin.code +")");
