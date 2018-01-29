@@ -1,8 +1,14 @@
 .dashboard-tabs
+  .switch.tab.inline-block[data-attribute="guide"]
+    p Debugger's Guide
   .switch.tab.inline-block.active[data-attribute="transactionKey"]
     p Transaction Key
 
 .dashboard-widgets
+  section.row.hidden[data-attribute="guide"]
+    .twelve.columns
+      = render partial: "application/dashboard/guide"
+
   section.row[data-attribute="transactionKey"]
     .twelve.columns
       = render partial: "application/dashboard/transaction_key"
