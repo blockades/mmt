@@ -16,12 +16,15 @@ var Exchange = function (coin) {
     var destinationQuantity = $("#destinationQuantity").val();
     var destinationQuantityDisplay = calculateDisplay(destinationQuantity, destinationSubdivision);
     var quantityInBtc = (destinationQuantity * destinationRate) * Math.pow(10, 8 - destinationSubdivision);
-    var sourceQuantity = (quantityInBtc / sourceRate) / Math.pow(10, 8 - sourceSubdivision);
+    var sourceQuantity = Math.round((quantityInBtc / sourceRate) / Math.pow(10, 8 - sourceSubdivision));
     var sourceQuantityDisplay = calculateDisplay(sourceQuantity, sourceSubdivision);
 
     updateQuantity(sourceQuantity, destinationQuantity);
     updateQuantityDisplay(sourceQuantityDisplay, destinationQuantityDisplay);
     updateRate(sourceRate);
+    if (destinationSubdivision > sourceSubdivision) {
+      calculateDestination(sourceCoin)
+    }
   }
 
   var calculateDestination = function (sourceCoin) {
@@ -30,14 +33,18 @@ var Exchange = function (coin) {
     var sourceQuantity = $('#sourceQuantity').val();
     var sourceQuantityDisplay = calculateDisplay(sourceQuantity, sourceSubdivision);
     var quantityInBtc = (sourceRate * sourceQuantity) * Math.pow(10, 8 - sourceSubdivision);
-    var destinationQuantity = (quantityInBtc / destinationRate) / Math.pow(10, 8 - destinationSubdivision);
+    var destinationQuantity = Math.round((quantityInBtc / destinationRate) / Math.pow(10, 8 - destinationSubdivision));
     var destinationQuantityDisplay = calculateDisplay(destinationQuantity, destinationSubdivision);
+
     $('.balance').text(Math.round(sourceCoin.liability) + " (or " + sourceCoin.liability / Math.pow(10, sourceSubdivision) + " " + sourceCoin.code +")");
     $("#sourceQuantity").attr({max: sourceCoin.liability});
 
     updateQuantity(sourceQuantity, destinationQuantity);
     updateQuantityDisplay(sourceQuantityDisplay, destinationQuantityDisplay);
     updateRate(sourceRate);
+    if (sourceSubdivision > destinationSubdivision) {
+      calculateSource(sourceCoin)
+    }
   }
 
   var updateQuantity = function (sourceQuantity, destinationQuantity) {
