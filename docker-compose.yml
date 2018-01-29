@@ -30,6 +30,8 @@ services:
       DB_USER: postgres
       EXCHANGE: "true"
       WITHDRAWL: "true"
+      GIFT: "true"
+      DEPOSIT: "true"
     ports:
       - "3000:80"
 
