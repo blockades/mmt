@@ -53,7 +53,10 @@ module Transactions
                              autosave: true,
                              dependent: :restrict_with_error
 
-    before_validation :publish_to_source, :publish_to_destination, on: :create
+    before_validation :publish_to_source,
+                      :publish_to_destination,
+                      :hash_previous_transaction,
+                      on: :create
 
     def error_message
       errors.full_messages.to_sentence
@@ -93,8 +96,11 @@ module Transactions
       destination_quantity.nil? ? nil : Utils.to_decimal(destination_quantity, destination_coin.subdivision)
     end
 
-    def hash
-      Digest::SHA2.hexdigest(attributes.to_s)
+    def as_hash
+      Digest::SHA2.hexdigest attributes.merge(
+        created_at: self.created_at.to_time.to_i,
+        updated_at: self.updated_at.to_time.to_i
+      ).to_s
     end
 
     def events_sum
@@ -117,7 +123,7 @@ module Transactions
     end
 
     def correct_previous_transaction
-      return true if previous_transaction.blank? || (previous_transaction.id == referring_transaction.id)
+      return true if previous_transaction.blank? || (previous_transaction.as_hash == referring_transaction.as_hash)
       self.errors.add :previous_transaction, "invalid"
     end
 
@@ -155,6 +161,12 @@ module Transactions
 
     def referring_transaction_to_source
       self.class.ordered.not_self(self).for_source(source).last
+    end
+
+    def hash_previous_transaction
+      if referring_transaction && previous_transaction && (previous_transaction.as_hash == referring_transaction.as_hash)
+        self.previous_transaction_hash = previous_transaction.as_hash
+      end
     end
   end
 end
