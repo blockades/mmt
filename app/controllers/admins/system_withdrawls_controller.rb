@@ -5,7 +5,7 @@ module Admins
     include TransactionHelper
 
     before_action :find_coin
-    before_action :find_previous_transaction, only: [:new]
+    before_action :find_previous_transaction, only: [:new, :create]
     before_action :check_previous_transaction, only: [:create]
 
     def new; end
