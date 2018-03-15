@@ -10,7 +10,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20171208182813) do
+ActiveRecord::Schema.define(version: 20180304205722) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -118,6 +118,7 @@ ActiveRecord::Schema.define(version: 20171208182813) do
     t.decimal "destination_rate"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string "previous_transaction_hash"
     t.index ["authorized_by_id"], name: "index_system_transactions_on_authorized_by_id"
     t.index ["destination_coin_id"], name: "index_system_transactions_on_destination_coin_id"
     t.index ["destination_type", "destination_id"], name: "transactions_on_destination"
