@@ -4,8 +4,9 @@ class AddHashToTransaction < ActiveRecord::Migration[5.1]
 
     transaction do
       Transactions::Base::TYPES.each do |klass|
-        tx = "Transactions::#{klass}".constantize.ordered.last
-        recurse(tx)
+        "Transactions::#{klass}".constantize.ordered.each do |tx|
+          recurse(tx)
+        end
       end
     end
   end
@@ -15,9 +16,8 @@ class AddHashToTransaction < ActiveRecord::Migration[5.1]
   end
 
   def recurse(tx)
-    unless tx.nil? || tx.previous_transaction.nil?
-      tx.update_columns(previous_transaction_hash: tx.previous_transaction.as_hash)
-      recurse(tx.previous_transaction)
-    end
+    return if tx.previous_transaction.nil? || tx.previous_transaction_hash.present?
+    tx.update_columns previous_transaction_hash: tx.previous_transaction.as_hash
+    recurse(tx.previous_transaction)
   end
 end

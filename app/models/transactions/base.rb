@@ -76,7 +76,7 @@ module Transactions
     end
 
     scope :ordered, -> { order(created_at: :asc) }
-    scope :not_self, ->(sys_transaction) { where.not(id: sys_transaction.id) }
+    scope :not_self, ->(tx) { where.not(id: tx.id) }
     scope :for_source, ->(source) { where(source: source) }
     scope :for_destination, ->(destination) { where(destination: destination) }
 
@@ -123,7 +123,8 @@ module Transactions
     end
 
     def correct_previous_transaction
-      return true if previous_transaction.blank? || (previous_transaction.as_hash == referring_transaction.as_hash)
+      return true if (previous_transaction.blank? && referring_transaction.blank?) ||
+        (previous_transaction.as_hash == referring_transaction.as_hash)
       self.errors.add :previous_transaction, "invalid"
     end
 
