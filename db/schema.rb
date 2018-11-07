@@ -10,12 +10,22 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180304205722) do
+ActiveRecord::Schema.define(version: 20181104215916) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
+
+  create_table "annotations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.string "annotatable_type", null: false
+    t.uuid "annotatable_id", null: false
+    t.string "type", null: false
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["annotatable_type", "annotatable_id"], name: "index_annotations_on_annotatable_type_and_annotatable_id"
+  end
 
   create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
