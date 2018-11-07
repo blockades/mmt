@@ -10,6 +10,7 @@ module Admins
     before_action :check_previous_transaction, only: [:create]
 
     def new
+      @system_allocation = Transactions::SystemAllocation.new
     end
 
     def create
@@ -50,11 +51,12 @@ module Admins
     end
 
     def permitted_params
-      params.require(:allocation).permit(
+      params.require(:transactions_system_allocation).permit(
         :destination_id,
         :destination_quantity,
         :destination_rate,
-        :previous_transaction_id
+        :previous_transaction_id,
+        annotations_attributes: [:body, :type]
       )
     end
 

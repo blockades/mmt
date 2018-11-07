@@ -8,7 +8,9 @@ module Admins
     before_action :find_previous_transaction, only: [:new, :create]
     before_action :check_previous_transaction, only: [:create]
 
-    def new; end
+    def new
+      @system_deposit = Transactions::SystemDeposit.new
+    end
 
     def create
       transaction = transaction_commiter(Transactions::SystemDeposit, deposit_params)
@@ -38,10 +40,11 @@ module Admins
     end
 
     def permitted_params
-      params.require(:deposit).permit(
+      params.require(:transactions_system_deposit).permit(
         :destination_quantity,
         :destination_rate,
-        :previous_transaction_id
+        :previous_transaction_id,
+        annotations_attributes: [:body, :type]
       )
     end
 

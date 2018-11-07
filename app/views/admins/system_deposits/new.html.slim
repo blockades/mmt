@@ -1,6 +1,6 @@
-h2 Deposit #{@coin.code}
+h2 Admin : : Deposit #{@coin.code}
 
-= form_for :deposit, url: admins_coin_deposit_path(@coin), method: :post do |f|
+= form_for @system_deposit, url: admins_coin_deposit_path(@coin), method: :post do |f|
   .row
     = f.label :quantity
     = f.number_field :destination_quantity, value: 0, id: 'quantity', required: true
@@ -9,6 +9,12 @@ h2 Deposit #{@coin.code}
   .row
     label BTC Rate
     = f.number_field :destination_rate, value: number_with_precision(@coin.btc_rate, precision: Coin::BTC_SUBDIVISION), step: :any, required: true
+  br
+  .row
+    label Comment
+    = f.fields_for :annotations, @system_deposit.comments.build do |b|
+      = b.hidden_field :type,  value: 'Comment'
+      = b.text_area :body
   br
   .row
     = f.hidden_field :previous_transaction_id, value: @previous_transaction&.id
