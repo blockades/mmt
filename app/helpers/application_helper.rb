@@ -17,12 +17,18 @@ module ApplicationHelper
     end.join)
   end
 
-  def link_to_add_fields(name, f, association)
+  def link_to_add_fields(name, f, association, namespace, html_options = {})
     new_object = f.object.send(association).klass.new
     id = new_object.object_id
     fields = f.fields_for(association, new_object, child_index: id) do |b|
-      render("#{association}/fields", f: b)
+      render partial: "#{namespace ? "#{namespace}/" : ""}#{association.to_s}/fields", locals: { f: b, object_id: id }
     end
-    link_to(name, "#", class: "button add_fields", data: { id: id, fields: fields.delete("\n") })
+    if block_given?
+      link_to('#', class: "#{html_options.try(:[], :class)} add_fields", title: html_options.try(:[], :title), data: { id: id, fields: fields.gsub("\n", "") } ) do
+        yield
+      end
+    else
+      link_to(name, '#', class: "#{html_options.try(:[], :class)} button add_fields", title: html_options.try(:[], :title), data: { id: id, fields: fields.gsub("\n", "") } )
+    end
   end
 end
