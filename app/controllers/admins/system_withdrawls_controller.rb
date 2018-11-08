@@ -40,9 +40,11 @@ module Admins
     end
 
     def permitted_params
-      params.require(:withdrawl).permit(
+      params.require(:transactions_system_withdrawl).permit(
         :source_quantity,
-        :previous_transaction_id
+        :previous_transaction_id,
+        annotations_attributes: [:body, :type],
+        signatures_attributes: [:member_id]
       )
     end
 

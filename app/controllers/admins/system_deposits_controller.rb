@@ -44,7 +44,8 @@ module Admins
         :destination_quantity,
         :destination_rate,
         :previous_transaction_id,
-        annotations_attributes: [:body, :type]
+        annotations_attributes: [:body, :type],
+        signatures_attributes: [:member_id]
       )
     end
 
