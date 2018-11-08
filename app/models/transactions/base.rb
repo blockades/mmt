@@ -35,6 +35,12 @@ module Transactions
     has_many :comments, class_name: "Annotations::Comment",
                         foreign_key: :annotatable_id
 
+    has_many :transaction_ids, class_name: "Annotations::TransactionId",
+                               foreign_key: :annotatable_id
+
+    has_many :signatures, class_name: "Signature", foreign_key: :system_transaction_id
+    has_many :signees, class_name: "Member", through: :signatures
+
     has_many :events, class_name: "Events::Base",
                       foreign_key: :system_transaction_id,
                       inverse_of: :system_transaction,
@@ -64,8 +70,8 @@ module Transactions
                       :hash_previous_transaction,
                       on: :create
 
-    accepts_nested_attributes_for :annotations, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank?  },
-                                                allow_destroy: true
+    accepts_nested_attributes_for :signatures, reject_if: -> (attributes) { attributes[:member_id].blank? }
+    accepts_nested_attributes_for :annotations, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank?  }
 
     def error_message
       errors.full_messages.to_sentence
