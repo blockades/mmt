@@ -1,0 +1,2 @@
+fieldset
+  = f.select :member_id, Member.admin.map {|member| [member.email, member.id] }, { include_blank: true }, class: "select2"
