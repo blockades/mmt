@@ -7,8 +7,9 @@ module Annotations
     self.table_name = "annotations"
     self.store_full_sti_class = false
 
-    TYPES = %w[Comment].freeze
+    TYPES = %w[Comment TransactionId].freeze
 
     validates :type, presence: true, inclusion: { in: TYPES }
+    validates :body, presence: true
   end
 end
