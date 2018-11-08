@@ -29,3 +29,13 @@ var QuantityAsDecimal = function (attributes) {
 
   quantity.on('propertychange change click keyup input paste', updateQuantityDisplay);
 }
+
+$(document).on('ready', function () {
+  $('.add_fields').on('click', function (e) {
+    e.preventDefault();
+    time = new Date().getTime();
+    regexp = new RegExp($(this).data('id'), 'g');
+    $('.signatures').append($(this).data('fields').replace(regexp, time));
+    return false;
+  })
+})
