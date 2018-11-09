@@ -43,7 +43,8 @@ module Admins
       params.require(:transactions_system_withdrawl).permit(
         :source_quantity,
         :previous_transaction_id,
-        annotations_attributes: [:body, :type],
+        comments_attributes: [:body],
+        transaction_id_attributes: [:body],
         signatures_attributes: [:member_id]
       )
     end
@@ -56,7 +57,29 @@ module Admins
         source_id: @coin.id,
         source_type: Coin,
         source_coin_id: @coin.id,
-        initiated_by_id: current_member.id
+        initiated_by_id: current_member.id,
+        comments_attributes: comments_attributes,
+        transaction_id_attributes: transaction_id_attributes
+      )
+    end
+
+    def comments_attributes
+      return {} unless permitted_params[:comments_attributes]
+      permitted_params[:comments_attributes].transform_values do |attributes|
+        attributes.merge(
+          member_id: current_member.id,
+          annotatable_type: Transactions::SystemDeposit,
+          type: Annotations::Comment
+        )
+      end
+    end
+
+    def transaction_id_attributes
+      return {} unless permitted_params[:transaction_id_attributes]
+      permitted_params[:transaction_id_attributes].merge(
+        member_id: current_member.id,
+        annotatable_type: Transactions::SystemDeposit,
+        type: Annotations::TransactionId
       )
     end
   end

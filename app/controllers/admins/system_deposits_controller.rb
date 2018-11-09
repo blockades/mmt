@@ -60,14 +60,28 @@ module Admins
         source_coin_id: @coin.id,
         initiated_by_id: current_member.id,
         comments_attributes: comments_attributes,
+        transaction_id_attributes: transaction_id_attributes
       )
     end
 
     def comments_attributes
       return {} unless permitted_params[:comments_attributes]
       permitted_params[:comments_attributes].transform_values do |attributes|
-        attributes.merge(member_id: current_member.id)
+        attributes.merge(
+          member_id: current_member.id,
+          annotatable_type: Transactions::SystemDeposit,
+          type: Annotations::Comment
+        )
       end
+    end
+
+    def transaction_id_attributes
+      return {} unless permitted_params[:transaction_id_attributes]
+      permitted_params[:transaction_id_attributes].merge(
+        member_id: current_member.id,
+        annotatable_type: Transactions::SystemDeposit,
+        type: Annotations::TransactionId
+      )
     end
   end
 end
