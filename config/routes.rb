@@ -19,6 +19,10 @@ Rails.application.routes.draw do
   namespace :admins do
     root to: "dashboard#index"
 
+    resources :transactions, only: [] do
+      resources :comments, only: :create, controller: :transaction_comments, format: :js
+    end
+
     resources :coins, only: [:index, :edit, :show, :update] do
       resources :assets, only: [:index, :show]
       resources :liabilities, only: [:index, :show]
