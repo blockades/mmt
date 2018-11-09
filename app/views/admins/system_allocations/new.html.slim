@@ -15,14 +15,12 @@ h2 Admin : : Allocate #{@coin.name} (#{@coin.code})
   br
   .row
     label Comment
-    = f.fields_for :annotations, @system_allocation.comments.build do |b|
-      = b.hidden_field :type,  value: 'Comment'
+    = f.fields_for :comments, @system_allocation.comments.build do |b|
       = b.text_area :body
   br
   .row
     label Transaction ID
-    = f.fields_for :annotations, @system_allocation.transaction_ids.build do |b|
-      = b.hidden_field :type,  value: 'TransactionId'
+    = f.fields_for :transaction_id, @system_allocation.build_transaction_id do |b|
       = b.text_area :body
   br
   .row
