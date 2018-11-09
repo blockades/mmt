@@ -30,12 +30,12 @@ var QuantityAsDecimal = function (attributes) {
   quantity.on('propertychange change click keyup input paste', updateQuantityDisplay);
 }
 
-$(document).on('ready', function () {
-  $('.add_fields').on('click', function (e) {
+$(document).on('turbolinks:load', function () {
+  $('.addFields').on('click', function (e) {
     e.preventDefault();
     time = new Date().getTime();
     regexp = new RegExp($(this).data('id'), 'g');
-    $('.signatures').append($(this).data('fields').replace(regexp, time));
+    $(this.nextSibling).append($(this).data('fields').replace(regexp, time));
     return false;
   })
 })
