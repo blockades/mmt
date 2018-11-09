@@ -24,11 +24,11 @@ module ApplicationHelper
       render partial: "#{namespace ? "#{namespace}/" : ""}#{association.to_s}/fields", locals: { f: b, object_id: id }
     end
     if block_given?
-      link_to('#', class: "#{html_options.try(:[], :class)} add_fields", title: html_options.try(:[], :title), data: { id: id, fields: fields.gsub("\n", "") } ) do
+      link_to('#', class: "#{html_options.try(:[], :class)} addFields", title: html_options.try(:[], :title), data: { id: id, fields: fields.gsub("\n", "") } ) do
         yield
       end
     else
-      link_to(name, '#', class: "#{html_options.try(:[], :class)} button add_fields", title: html_options.try(:[], :title), data: { id: id, fields: fields.gsub("\n", "") } )
+      link_to(name, '#', class: "#{html_options.try(:[], :class)} button addFields", title: html_options.try(:[], :title), data: { id: id, fields: fields.gsub("\n", "") } )
     end
   end
 end
