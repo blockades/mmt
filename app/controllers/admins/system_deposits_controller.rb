@@ -44,7 +44,8 @@ module Admins
         :destination_quantity,
         :destination_rate,
         :previous_transaction_id,
-        annotations_attributes: [:body, :type],
+        comments_attributes: [:body],
+        transaction_id_attributes: [:body],
         signatures_attributes: [:member_id]
       )
     end
@@ -57,8 +58,16 @@ module Admins
         source_id: current_member.id,
         source_type: Member,
         source_coin_id: @coin.id,
-        initiated_by_id: current_member.id
+        initiated_by_id: current_member.id,
+        comments_attributes: comments_attributes,
       )
+    end
+
+    def comments_attributes
+      return {} unless permitted_params[:comments_attributes]
+      permitted_params[:comments_attributes].transform_values do |attributes|
+        attributes.merge(member_id: current_member.id)
+      end
     end
   end
 end
