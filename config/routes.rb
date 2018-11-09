@@ -20,8 +20,8 @@ Rails.application.routes.draw do
     root to: "dashboard#index"
 
     resources :coins, only: [:index, :edit, :show, :update] do
-      resources :assets, only: :index
-      resources :liabilities, only: :index
+      resources :assets, only: [:index, :show]
+      resources :liabilities, only: [:index, :show]
     end
 
     resources :members, only: [:index, :new, :create]
