@@ -18,6 +18,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
   enable_extension "pgcrypto"
 
   create_table "annotations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "member_id", null: false
     t.string "annotatable_type", null: false
     t.uuid "annotatable_id", null: false
     t.string "type", null: false
@@ -25,6 +26,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
     t.index ["annotatable_type", "annotatable_id"], name: "index_annotations_on_annotatable_type_and_annotatable_id"
+    t.index ["member_id"], name: "index_annotations_on_member_id"
   end
 
   create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
@@ -148,6 +150,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.index ["source_type", "source_id"], name: "transactions_on_source"
   end
 
+  add_foreign_key "annotations", "members"
   add_foreign_key "events", "coins"
   add_foreign_key "events", "members"
   add_foreign_key "events", "system_transactions"

@@ -9,6 +9,9 @@ module Annotations
 
     TYPES = %w[Comment TransactionId].freeze
 
+    scope :comments, -> { where(type: "Comment") }
+    scope :transaction_ids, -> { where(type: "TransactionId") }
+
     validates :type, presence: true, inclusion: { in: TYPES }
     validates :body, presence: true
   end

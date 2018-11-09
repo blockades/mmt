@@ -35,8 +35,8 @@ module Transactions
     has_many :comments, class_name: "Annotations::Comment",
                         foreign_key: :annotatable_id
 
-    has_many :transaction_ids, class_name: "Annotations::TransactionId",
-                               foreign_key: :annotatable_id
+    has_one :transaction_id, class_name: "Annotations::TransactionId",
+                             foreign_key: :annotatable_id
 
     has_many :signatures, class_name: "Signature", foreign_key: :system_transaction_id
     has_many :signees, class_name: "Member", through: :signatures
@@ -71,7 +71,8 @@ module Transactions
                       on: :create
 
     accepts_nested_attributes_for :signatures, reject_if: -> (attributes) { attributes[:member_id].blank? }
-    accepts_nested_attributes_for :annotations, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank?  }
+    accepts_nested_attributes_for :comments, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank? }
+    accepts_nested_attributes_for :transaction_id, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank? }
 
     def error_message
       errors.full_messages.to_sentence
