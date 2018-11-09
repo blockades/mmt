@@ -39,7 +39,7 @@ module Transactions
                              foreign_key: :annotatable_id
 
     has_many :signatures, class_name: "Signature", foreign_key: :system_transaction_id
-    has_many :signees, class_name: "Member", through: :signatures
+    has_many :signatories, through: :signatures, source: :member
 
     has_many :events, class_name: "Events::Base",
                       foreign_key: :system_transaction_id,

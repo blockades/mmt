@@ -5,14 +5,23 @@ module Annotations
     belongs_to :annotatable, polymorphic: true
 
     self.table_name = "annotations"
-    self.store_full_sti_class = false
 
     TYPES = %w[Comment TransactionId].freeze
 
-    scope :comments, -> { where(type: "Comment") }
-    scope :transaction_ids, -> { where(type: "TransactionId") }
+    TYPES.each do |type|
+      define_method "#{type.underscore}?" do
+        type == self.type
+      end
+    end
 
-    validates :type, presence: true, inclusion: { in: TYPES }
+    scope :comments, -> { where(type: "Annotations::Comment") }
+    scope :transaction_ids, -> { where(type: "Annotations::TransactionId") }
+
+    scope :ordered, -> { order(created_at: :asc) }
+
     validates :body, presence: true
+
+    validates :type, presence: true,
+                     inclusion: { in: TYPES.map { |type| "Annotations::#{type}" } }
   end
 end

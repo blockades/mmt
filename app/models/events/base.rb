@@ -13,9 +13,6 @@ module Events
                                     foreign_key: :system_transaction_id,
                                     inverse_of: :events
 
-    delegate :annotations, to: :system_transaction, allow_nil: true
-    delegate :signatures, to: :system_transaction, allow_nil: true
-
     scope :credit, -> { where(arel_table[:entry].gt(0)) }
     scope :debit, -> { where(arel_table[:entry].lt(0)) }
     scope :for_coin, ->(coin_id) { where coin_id: coin_id }
