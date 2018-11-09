@@ -3,6 +3,5 @@
 module Annotations
   class Comment < Annotations::Base
     belongs_to :member
-
   end
 end

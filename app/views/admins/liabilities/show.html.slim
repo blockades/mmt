@@ -5,6 +5,12 @@
   .three.columns.strip
     section.padded
       .framed style="word-wrap: break-word;"
+        h3 Initiated By
+        span= tx.initiated_by.username
+    br
+
+    section.padded
+      .framed style="word-wrap: break-word;"
         h3 Local Transaction ID
         span= tx.id
     br

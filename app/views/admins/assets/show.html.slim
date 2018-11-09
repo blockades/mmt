@@ -5,23 +5,28 @@
   .three.columns.strip
     section.padded
       .framed style="word-wrap: break-word;"
+        h3 Initiated By
+        span= tx.initiated_by.username
+
+    section.padded
+      .framed style="word-wrap: break-word;"
+        h3 Signatures
+        ul.border-dashed-top
+          - @asset.system_transaction.signatories.each do |member|
+            = link_to member_path(member) do
+              li= member.username
+
+    section.padded
+      .framed style="word-wrap: break-word;"
         h3 Local Transaction ID
         span= tx.id
-    br
+
     - if transaction_id
       section.padded
         .framed style="word-wrap: break-word;"
           h3 Blockchain Transaction ID
           span= link_to transaction_id.body, "https://www.blockchain.com/#{@asset.coin.code.downcase}/tx/#{transaction_id.body}"
 
-    br
-    section.padded
-      .framed style="word-wrap: break-word;"
-        h3 Signatures
-        ul.border-dashed-top
-          - @asset.system_transaction.signatories.each do |member|
-            = link_to member_path(member), class: "item", data: { attribute: "list" } do
-              li= member.username
   .nine.columns
     .row
       h3 Comments
