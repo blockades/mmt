@@ -1,3 +1,5 @@
+
+
 h2 Admin : : Deposit #{@coin.code}
 
 = form_for @system_deposit, url: admins_coin_deposit_path(@coin), method: :post do |f|
@@ -12,14 +14,12 @@ h2 Admin : : Deposit #{@coin.code}
   br
   .row
     label Comment
-    = f.fields_for :annotations, @system_deposit.comments.build do |b|
-      = b.hidden_field :type,  value: 'Comment'
+    = f.fields_for :comments, @system_deposit.comments.build do |b|
       = b.text_area :body
   br
   .row
     label Transaction ID
-    = f.fields_for :annotations, @system_deposit.transaction_ids.build do |b|
-      = b.hidden_field :type,  value: 'Comment'
+    = f.fields_for :transaction_id, @system_deposit.build_transaction_id do |b|
       = b.text_area :body
   br
   .row

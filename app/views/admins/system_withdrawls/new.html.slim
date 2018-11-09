@@ -15,7 +15,7 @@ h2 Admin : : Withdraw #{@coin.code}
   .row
     label Transaction ID
     = f.fields_for :annotations, @system_withdrawl.transaction_ids.build do |b|
-      = b.hidden_field :type,  value: 'Comment'
+      = b.hidden_field :type,  value: 'TransactionId'
       = b.text_area :body
   br
   .row

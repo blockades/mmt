@@ -1,0 +1,19 @@
+.row
+  .three.columns
+    h3 Signed By
+    - @liability.signatures.each do |signature|
+      .row
+        = signature.member.username
+  .six.columns
+    h3 Comments
+    - @liability.annotations.comments.each do |comment|
+      .row
+        = comment.body
+  .three.columns
+    h3 Transaction ID
+    - @liability.annotations.transaction_ids.each do |transaction_id|
+      .row
+        = transaction_id.body
+
+- @liability.annotations.transaction_ids.each do |transaction_id|
+  = transaction_id.body

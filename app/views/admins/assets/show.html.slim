@@ -1,0 +1,35 @@
+.row
+  .three.columns
+    h3 Signatures
+    table
+      thead
+        tr
+          th Signed By
+      tbody
+        - @asset.signatures.each do |signature|
+          tr
+            td= signature.member.username
+  .five.columns
+    h3 Comments
+    table
+      thead
+        tr
+          th By
+          th Body
+      tbody
+        - @asset.annotations.comments.each do |comment|
+          tr
+            td= comment&.member&.username
+            td= comment.body
+  .four.columns
+    h2 Transaction ID
+    table
+      thead
+        tr
+          th
+      tbody
+        - @asset.annotations.transaction_ids.each do |transaction_id|
+          tr
+            td= transaction_id.body
+
+

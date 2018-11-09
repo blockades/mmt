@@ -22,7 +22,7 @@ h2 Admin : : Allocate #{@coin.name} (#{@coin.code})
   .row
     label Transaction ID
     = f.fields_for :annotations, @system_allocation.transaction_ids.build do |b|
-      = b.hidden_field :type,  value: 'Comment'
+      = b.hidden_field :type,  value: 'TransactionId'
       = b.text_area :body
   br
   .row

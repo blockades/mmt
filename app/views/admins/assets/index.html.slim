@@ -8,6 +8,7 @@ table
     th BTC Rate (at deposit time)
     th= Member.human_attribute_name(:username)
     th Balance
+    th Actions
   tbody
     - total_assets = @coin.assets_display
     - @collection.each do |event|
@@ -19,4 +20,7 @@ table
         td= tx.destination_coin_id == event.coin_id ? tx.destination_rate : tx.source_rate
         td= tx.initiated_by.username
         td= total_assets
+        td
+          = link_to admins_coin_asset_path(@coin.id, event.id) do
+            i.fa.fa-eye.fa-lg
         - total_assets -= event.display_entry
