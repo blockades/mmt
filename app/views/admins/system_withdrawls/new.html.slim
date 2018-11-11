@@ -13,11 +13,13 @@ h2 Admin : : Withdraw #{@coin.code}
   br
   .row
     label Transaction ID
+    p Please provide a valid BTC or ETH transaction ID
     = f.fields_for :transaction_id, @system_withdrawl.build_transaction_id do |b|
       = b.text_area :body
   br
   .row
     label Signees
+    p Please select your co-signers. Don't leave any blank (so don't add too many!)
     = link_to_add_fields "Add another signee", f, :signatures, :admins, class: "icon" do
       span Add Signee
     .signatures

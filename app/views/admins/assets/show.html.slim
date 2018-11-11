@@ -5,6 +5,10 @@
   .three.columns.strip
     section.padded
       .framed style="word-wrap: break-word;"
+        h3 Created At
+        span= tx.created_at.strftime("%m/%d/%Y at %I:%M%p")
+    section.padded
+      .framed style="word-wrap: break-word;"
         h3 Initiated By
         span= tx.initiated_by.username
 
@@ -25,6 +29,9 @@
       section.padded
         .framed style="word-wrap: break-word;"
           h3 Blockchain Transaction ID
+          p
+            strong NOTE: 
+            span This only works for ETH and BTC
           span= link_to transaction_id.body, "https://www.blockchain.com/#{@asset.coin.code.downcase}/tx/#{transaction_id.body}"
 
   .nine.columns
