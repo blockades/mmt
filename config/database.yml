@@ -17,7 +17,7 @@ test:
 production:
   <<: *default
   database: mmt_production
-  username: MMT
+  username: mmt
   password: <%= ENV['MMT_DATABASE_PASSWORD'] %>
 
 staging:
