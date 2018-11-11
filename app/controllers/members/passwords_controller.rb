@@ -18,7 +18,7 @@ module Members
     private
 
     def change_password
-      ChangePassword.call(
+      @change_password ||= ChangePassword.call(
         member: current_member,
         password: current_password_params[:current_password],
         password_params: password_params
