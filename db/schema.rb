@@ -10,12 +10,24 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20180304205722) do
+ActiveRecord::Schema.define(version: 20181108093132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
   enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
+
+  create_table "annotations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "member_id", null: false
+    t.string "annotatable_type", null: false
+    t.uuid "annotatable_id", null: false
+    t.string "type", null: false
+    t.text "body"
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["annotatable_type", "annotatable_id"], name: "index_annotations_on_annotatable_type_and_annotatable_id"
+    t.index ["member_id"], name: "index_annotations_on_member_id"
+  end
 
   create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "name"
@@ -101,6 +113,16 @@ ActiveRecord::Schema.define(version: 20180304205722) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
+  create_table "signatures", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+    t.uuid "member_id", null: false
+    t.uuid "system_transaction_id", null: false
+    t.datetime "created_at", null: false
+    t.datetime "updated_at", null: false
+    t.index ["member_id", "system_transaction_id"], name: "index_signatures_on_member_id_and_system_transaction_id", unique: true
+    t.index ["member_id"], name: "index_signatures_on_member_id"
+    t.index ["system_transaction_id"], name: "index_signatures_on_system_transaction_id"
+  end
+
   create_table "system_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "source_type", null: false
     t.uuid "source_id", null: false
@@ -128,9 +150,12 @@ ActiveRecord::Schema.define(version: 20180304205722) do
     t.index ["source_type", "source_id"], name: "transactions_on_source"
   end
 
+  add_foreign_key "annotations", "members"
   add_foreign_key "events", "coins"
   add_foreign_key "events", "members"
   add_foreign_key "events", "system_transactions"
+  add_foreign_key "signatures", "members"
+  add_foreign_key "signatures", "system_transactions"
   add_foreign_key "system_transactions", "coins", column: "destination_coin_id"
   add_foreign_key "system_transactions", "coins", column: "source_coin_id"
   add_foreign_key "system_transactions", "members", column: "authorized_by_id"

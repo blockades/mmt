@@ -29,6 +29,18 @@ module Transactions
                                foreign_key: :authorized_by_id,
                                inverse_of: :authorized_transactions
 
+    has_many :annotations, as: :annotatable, class_name: "Annotations::Base",
+                                             foreign_key: :annotatable_id
+
+    has_many :comments, class_name: "Annotations::Comment",
+                        foreign_key: :annotatable_id
+
+    has_one :transaction_id, class_name: "Annotations::TransactionId",
+                             foreign_key: :annotatable_id
+
+    has_many :signatures, class_name: "Signature", foreign_key: :system_transaction_id
+    has_many :signatories, through: :signatures, source: :member
+
     has_many :events, class_name: "Events::Base",
                       foreign_key: :system_transaction_id,
                       inverse_of: :system_transaction,
@@ -57,6 +69,10 @@ module Transactions
                       :publish_to_destination,
                       :hash_previous_transaction,
                       on: :create
+
+    accepts_nested_attributes_for :signatures, reject_if: -> (attributes) { attributes[:member_id].blank? }
+    accepts_nested_attributes_for :comments, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank? }
+    accepts_nested_attributes_for :transaction_id, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank? }
 
     def error_message
       errors.full_messages.to_sentence

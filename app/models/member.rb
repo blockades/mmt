@@ -16,6 +16,9 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
+  has_many :signatures
+  has_many :signed_transactions, through: :signatures
+
   has_many :source_transactions, as: :source,
                                  class_name: "Transactions::Base",
                                  dependent: :restrict_with_error
@@ -52,6 +55,7 @@ class Member < ApplicationRecord
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
+  scope :admin, -> { where(admin: true) }
   scope :with_crypto, -> { joins(:crypto) }
   scope :with_fiat, -> { joins(:fiat) }
 

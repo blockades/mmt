@@ -12,7 +12,7 @@ var Allocation = function (coin) {
     $.ajax({
       url: "/admins/allocate/" + coinId + "/prev",
       type: "GET",
-      data: { allocation: { destination_id: memberId } },
+      data: { transactions_system_allocation: { destination_id: memberId } },
       success: setPreviousTransactionId
     });
   }

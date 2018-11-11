@@ -1,10 +1,28 @@
 h2 Admin : : Withdraw #{@coin.code}
 
-= form_for :withdrawl, url: admins_withdrawl_path(@coin.id), method: :post do |f|
+= form_for @system_withdrawl, url: admins_withdrawl_path(@coin.id), method: :post do |f|
   .row
     = f.label :quantity
     = f.number_field :source_quantity, value: 0, id: 'quantity', required: true
     = number_field_tag :source_quantity_display, number_with_precision(0, precision: @coin.subdivision), step: :any, id: 'quantityDisplay'
+  br
+  .row
+    label Comment
+    = f.fields_for :comments, @system_withdrawl.comments.build do |b|
+      = b.text_area :body
+  br
+  .row
+    label Transaction ID
+    p Please provide a valid BTC or ETH transaction ID
+    = f.fields_for :transaction_id, @system_withdrawl.build_transaction_id do |b|
+      = b.text_area :body
+  br
+  .row
+    label Signees
+    p Please select your co-signers. Don't leave any blank (so don't add too many!)
+    = link_to_add_fields "Add another signee", f, :signatures, :admins, class: "icon" do
+      span Add Signee
+    .signatures
   br
   .row
     = f.hidden_field :previous_transaction_id, value: @previous_transaction&.id

@@ -12,18 +12,22 @@ table
     th Destination Coin
     th= "Initiated by #{Member.human_attribute_name(:username)}"
     th Balance
+    th Actions
   tbody
     - @liabilities.each do |event|
-      tr
-        - tx = event.system_transaction
-        td= tx.type
-        td= event.created_at
-        td= event.display_entry
-        td= event.rate
-        td= tx.source.display_name
-        td= tx.source_coin&.display_name
-        td= tx.destination.display_name
-        td= tx.destination_coin&.display_name
-        td= tx.initiated_by.username
-        td= total_liability
-        - total_liability -= event.display_entry
+        tr
+          - tx = event.system_transaction
+          td= tx.type
+          td= event.created_at
+          td= event.display_entry
+          td= event.rate
+          td= tx.source.display_name
+          td= tx.source_coin&.display_name
+          td= tx.destination.display_name
+          td= tx.destination_coin&.display_name
+          td= tx.initiated_by.username
+          td= total_liability
+          td
+            = link_to admins_coin_liability_path(@coin.id, event.id) do
+              i.fa.fa-eye.fa-lg
+          - total_liability -= event.display_entry

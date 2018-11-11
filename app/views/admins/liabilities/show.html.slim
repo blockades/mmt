@@ -1,0 +1,48 @@
+- tx = @liability.system_transaction
+- transaction_id = tx.transaction_id
+
+.row
+  .three.columns.strip
+    section.padded
+      .framed style="word-wrap: break-word;"
+        h3 Initiated By
+        span= tx.initiated_by.username
+    br
+
+    section.padded
+      .framed style="word-wrap: break-word;"
+        h3 Local Transaction ID
+        span= tx.id
+    br
+
+    - if transaction_id
+      section.padded
+        .framed style="word-wrap: break-word;"
+          h3 Blockchain Transaction ID
+          span= link_to transaction_id.body, "https://www.blockchain.com/#{@liability.coin.code.downcase}/tx/#{transaction_id.body}"
+      br
+
+    section.padded
+      .framed style="word-wrap: break-word;"
+        h3 Signatures
+        ul.border-dashed-top
+          - @liability.system_transaction.signatories.each do |member|
+            = link_to member_path(member), class: "item", data: { attribute: "list" } do
+              li= member.username
+  .nine.columns
+    .row
+      h3 Comments
+    .row
+      = form_for tx.comments.build, url: admins_transaction_comments_path(tx), method: :post, remote: true, html: { data: { disable_with: "Processing$hellip;".html_safe } } do |f|
+        = f.text_area :body, style: "width: 100%"
+        = f.submit
+    .row
+      table style="width: 100%"
+        thead
+          tr
+            th style="width: 20%" By
+            th style="width: 70%" Body
+            th style="width: 10%" Created At
+        tbody.comment-list
+          - @liability.system_transaction.comments.order(created_at: :desc).each do |comment|
+            = render partial: "admins/transaction_comments/show", locals: { comment: comment }
