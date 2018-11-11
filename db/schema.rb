@@ -14,7 +14,6 @@ ActiveRecord::Schema.define(version: 20181108093132) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
-  enable_extension "uuid-ossp"
   enable_extension "pgcrypto"
 
   create_table "annotations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
@@ -29,7 +28,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.index ["member_id"], name: "index_annotations_on_member_id"
   end
 
-  create_table "coins", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+  create_table "coins", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "name"
     t.string "code"
     t.datetime "created_at", null: false
@@ -54,7 +53,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.index ["system_transaction_id"], name: "index_events_on_system_transaction_id"
   end
 
-  create_table "friendly_id_slugs", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+  create_table "friendly_id_slugs", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "slug", null: false
     t.uuid "sluggable_id", null: false
     t.string "sluggable_type", limit: 50
@@ -66,7 +65,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.index ["sluggable_type"], name: "index_friendly_id_slugs_on_sluggable_type"
   end
 
-  create_table "members", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
+  create_table "members", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
     t.string "email", default: "", null: false
     t.string "encrypted_password", default: "", null: false
     t.string "reset_password_token"
