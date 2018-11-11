@@ -11,7 +11,7 @@ describe Transactions::MemberExchange, transactions: true do
 
   describe "hooks", mocked_rates: true do
     before do
-      create :system_deposit, {
+      tx = create :system_deposit, {
         source: admin,
         destination: bitcoin,
         destination_quantity: Utils.to_integer(5, bitcoin.subdivision),
@@ -21,7 +21,8 @@ describe Transactions::MemberExchange, transactions: true do
         source: admin,
         destination: sterling,
         destination_quantity: Utils.to_integer(10_000, sterling.subdivision),
-        initiated_by: admin
+        initiated_by: admin,
+        previous_transaction: tx
       }
       create :system_allocation, {
         source: admin,
@@ -70,7 +71,7 @@ describe Transactions::MemberExchange, transactions: true do
   describe "invalid", mocked_rates: true do
     context "insufficient coin assets" do
       before do
-        create :system_deposit, {
+        tx = create :system_deposit, {
           source: admin,
           destination: bitcoin,
           destination_quantity: Utils.to_integer(5, bitcoin.subdivision),
@@ -80,7 +81,8 @@ describe Transactions::MemberExchange, transactions: true do
           source: admin,
           destination: sterling,
           destination_quantity: Utils.to_integer(5_000, sterling.subdivision),
-          initiated_by: admin
+          initiated_by: admin,
+          previous_transaction: tx,
         }
         create :system_allocation, {
           source: admin,
@@ -102,7 +104,7 @@ describe Transactions::MemberExchange, transactions: true do
 
     context "insufficient member liability" do
       before do
-        create :system_deposit, {
+        tx = create :system_deposit, {
           source: admin,
           destination: bitcoin,
           destination_quantity: Utils.to_integer(5, bitcoin.subdivision)
@@ -110,7 +112,8 @@ describe Transactions::MemberExchange, transactions: true do
         create :system_deposit, {
           source: admin,
           destination: sterling,
-          destination_quantity: Utils.to_integer(10_000, sterling.subdivision)
+          destination_quantity: Utils.to_integer(10_000, sterling.subdivision),
+          previous_transaction: tx
         }
         exchange.source_quantity = Utils.to_integer(10, bitcoin.subdivision)
         exchange.destination_quantity = Utils.to_integer(50_000, sterling.subdivision)
