@@ -1,6 +1,6 @@
 class DeviseCreateMembers < ActiveRecord::Migration[5.0]
   def change
-    create_table :members, id: :uuid, default: 'gen_random_uuid()' do |t|
+    create_table :members, id: :uuid, default: 'uuid_generate_v4()' do |t|
       ## Database authenticatable
       t.string :email,              null: false, default: ""
       t.string :encrypted_password, null: false, default: ""

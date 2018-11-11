@@ -16,7 +16,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
   enable_extension "plpgsql"
   enable_extension "pgcrypto"
 
-  create_table "annotations", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "annotations", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.uuid "member_id", null: false
     t.string "annotatable_type", null: false
     t.uuid "annotatable_id", null: false
@@ -39,7 +39,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.index ["code"], name: "index_coins_on_code", unique: true
   end
 
-  create_table "events", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "events", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "type", null: false
     t.uuid "coin_id", null: false
     t.uuid "system_transaction_id", null: false
@@ -112,7 +112,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.index ["username"], name: "index_members_on_username", unique: true
   end
 
-  create_table "signatures", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "signatures", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.uuid "member_id", null: false
     t.uuid "system_transaction_id", null: false
     t.datetime "created_at", null: false
@@ -122,7 +122,7 @@ ActiveRecord::Schema.define(version: 20181108093132) do
     t.index ["system_transaction_id"], name: "index_signatures_on_system_transaction_id"
   end
 
-  create_table "system_transactions", id: :uuid, default: -> { "gen_random_uuid()" }, force: :cascade do |t|
+  create_table "system_transactions", id: :uuid, default: -> { "uuid_generate_v4()" }, force: :cascade do |t|
     t.string "source_type", null: false
     t.uuid "source_id", null: false
     t.string "destination_type", null: false

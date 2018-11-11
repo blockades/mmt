@@ -1,6 +1,6 @@
 class CreateSignatures < ActiveRecord::Migration[5.1]
   def change
-    create_table :signatures, id: :uuid, default: 'gen_random_uuid()' do |t|
+    create_table :signatures, id: :uuid, default: 'uuid_generate_v4()' do |t|
       t.references :member, type: :uuid, foreign_key: true, null: false
       t.references :system_transaction, type: :uuid, foreign_key: true, null: false
 

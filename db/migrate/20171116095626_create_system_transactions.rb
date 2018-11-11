@@ -1,6 +1,6 @@
 class CreateSystemTransactions < ActiveRecord::Migration[5.1]
   def change
-    create_table :system_transactions, id: :uuid, default: 'gen_random_uuid()' do |t|
+    create_table :system_transactions, id: :uuid, default: 'uuid_generate_v4()' do |t|
       t.references :source, type: :uuid, polymorphic: true, index: { name: "transactions_on_source" }, null: false
       t.references :destination, type: :uuid, polymorphic: true, index: { name: "transactions_on_destination" }, null: false
 

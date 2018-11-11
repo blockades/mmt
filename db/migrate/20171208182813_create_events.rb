@@ -1,6 +1,6 @@
 class CreateEvents < ActiveRecord::Migration[5.1]
   def change
-    create_table :events, id: :uuid, default: 'gen_random_uuid()' do |t|
+    create_table :events, id: :uuid, default: 'uuid_generate_v4()' do |t|
       t.string :type, null: false
       t.references :coin, type: :uuid, foreign_key: true, index: true, null: false
       t.references :system_transaction, type: :uuid, foreign_key: true, index: true, null: false
