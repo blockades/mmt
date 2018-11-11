@@ -11,7 +11,7 @@ module Utils
     end
 
     def to_integer(quantity, subdivision)
-      (quantity * precision(subdivision)).to_i
+      (quantity * precision(subdivision)).round
     end
   end
 end

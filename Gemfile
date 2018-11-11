@@ -35,11 +35,17 @@ gem "uglifier", ">= 1.3.0"
 
 group :development, :test do
   gem "awesome_print"
-  gem "pry-remote"
   gem "pry-byebug"
+  gem "pry-remote"
 end
 
 group :development do
+  gem 'capistrano',         require: false
+  gem 'capistrano-rvm',     require: false
+  gem 'capistrano-rails',   require: false
+  gem 'capistrano-bundler', require: false
+  gem 'capistrano3-puma',   require: false
+  gem 'capistrano-ssh-doctor', '~> 1.0'
   gem "dotenv-rails"
   gem "listen", "~> 3.0.5"
   gem "spring"

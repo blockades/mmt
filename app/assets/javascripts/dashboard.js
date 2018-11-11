@@ -1,10 +1,14 @@
 var Dashboard = function () {
-  $(".tab").on("click", function () {
-    var selector = $(this).data("selector");
+  $(".switch").on("click", function (e) {
+    e.preventDefault();
+    var attribute = $(this).data("attribute");
     $(".tab").removeClass("active");
-    $(this).addClass("active");
-    $(".dashboard-widgets").children().addClass("hidden");
-    $("section[data-selector=" + selector + "]").removeClass("hidden");
+    var active = $(".tab[data-attribute=" + attribute + "]")
+    active.addClass("active");
+    var visible = $("section[data-attribute=" + attribute + "]");
+    var hidden = $(".dashboard-widgets").children("section");
+    hidden.addClass("hidden");
+    visible.removeClass("hidden");
   });
 
   var transactionSelect = $("#transactionSelect");
@@ -15,3 +19,5 @@ var Dashboard = function () {
     });
   });
 }
+
+$(document).on("turbolinks:load", Dashboard);

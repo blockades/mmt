@@ -1,12 +1,35 @@
-= link_to 'Invite new member', new_member_invitation_path, class: 'button button-secondary'
-table
-  thead
-    th Username
-    th Email
-    th Actions
-  tbody
-    - @members.each do |member|
-      tr
-        td= member.username || '-'
-        td= member.email
-        td
+.row
+  .three.columns.strip
+    section.padded
+      .framed
+        h3 Options
+        ul.border-dashed-top
+          = link_to "#", class: "item", data: { attribute: "list" } do
+            li List
+          = link_to "#", class: "item", data: { attribute: "invite" } do
+            li Invite
+  .nine.columns.border-left
+    article.members.padded.padded-left
+      .content.hidden[data-attribute="invite"]
+        h2= t("devise.invitations.new.header")
+        = form_for @member, url: invitation_path(:member), html: { method: :post } do |f|
+          = devise_error_messages!
+          - Member.invite_key_fields.each do |field|
+            p
+              = f.label field
+              br/
+              = f.email_field field
+          p= f.submit t("devise.invitations.new.submit_button")
+      .content[data-attribute="list"]
+        h2 List
+        table.full-width
+          thead
+            th Username
+            th Email
+            th Actions
+          tbody
+            - @members.each do |member|
+              tr
+                td= member.username || '-'
+                td= member.email
+                td

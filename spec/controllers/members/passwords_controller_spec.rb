@@ -9,20 +9,20 @@ describe Members::PasswordsController, type: :controller, two_factor: true do
     sign_in member
   end
 
-  describe "GET new" do
-    let(:get_new) { get :new }
+  describe "GET edit" do
+    let(:get_edit) { get :edit }
 
     it "returns a 200" do
-      get_new
+      get_edit
       expect(response.status).to eq 200
     end
 
     it "assigns @member" do
-      expect { get_new }.to change { assigns :member }
+      expect { get_edit }.to change { assigns :member }
     end
 
     it "renders the setup template" do
-      expect(get_new).to render_template :new
+      expect(get_edit).to render_template :edit
     end
   end
 
@@ -59,7 +59,7 @@ describe Members::PasswordsController, type: :controller, two_factor: true do
       before { member.update!(two_factor_enabled: true, otp_delivery_method: "app") }
 
       it "redirects back" do
-        expect(patch_update).to redirect_to new_member_settings_password_path
+        expect(patch_update).to redirect_to edit_member_settings_password_path
       end
     end
   end

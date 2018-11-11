@@ -20,6 +20,27 @@
 
 @import 'colours';
 
+html{
+  min-height: 100vh;
+}
+
+body{
+  min-height: 100vh;
+}
+
+.logo {
+  font-size: 7.5rem;
+  line-height: 0.95;
+  padding: 30px 20px 70px 40px;
+}
+
+.background {
+  background: url(http://blockades.org/images/blockades.png) no-repeat;
+  background-size: cover;
+  min-height: 100vh;
+  image-rendering: pixelated;
+}
+
 nav.primary {
   height: 54px;
   background: $dark;
@@ -41,6 +62,22 @@ nav.primary {
       display: inline-block;
       list-style-type: none;
     }
+  }
+}
+
+section ul {
+
+}
+
+section .framed ul {
+  list-style: none;
+  a {
+    text-decoration: none;
+    color: $dark;
+  }
+  li {
+    border-bottom: 1px dashed $dark;
+    padding: 1em 0 1em 0;
   }
 }
 
@@ -68,6 +105,24 @@ nav.primary {
   display: inline-block;
 }
 
+.top {
+  position: absolute;
+  top: 0%;
+  left: 25%;
+  width: 50%;
+}
+
+.middle {
+  position: absolute;
+  top: 25%;
+  left: 25%;
+  width: 50%;
+}
+
+.transparent {
+  background: rgba(255, 255, 255, 0.7);
+}
+
 .center {
   text-align: center;
 }
@@ -80,9 +135,12 @@ nav.primary {
   float: left;
 }
 
+.full-width {
+  width: 100%;
+}
+
 body {
   margin: 0;
-  padding-bottom: 100px;
 }
 
 .container {
@@ -105,10 +163,6 @@ section.title {
   border: 1px solid grey;
   margin: 1em;
   padding: 1em;
-}
-
-.full-length {
-  width: 100%;
 }
 
 .hidden {
@@ -173,4 +227,42 @@ section.title {
 
 .strip {
   margin: 0;
+}
+
+.padded {
+  padding: 10px;
+}
+
+.padded-right {
+  padding-right: 40px;
+}
+
+.padded-left {
+  padding-left: 40px;
+}
+
+.border-right {
+  border-right: 2px solid $dark;
+}
+
+.border-left {
+  border-left: 2px solid $dark;
+}
+
+.border-dashed-top{
+  border-top: 1px dashed $dark;
+}
+
+.group {
+  .content {
+    display: inline-block;
+  }
+  a {
+    display: inline-block;
+    margin-left: 1em;
+    color: $dark;
+    &:hover {
+      color: $blue;
+    }
+  }
 }

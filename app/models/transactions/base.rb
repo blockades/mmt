@@ -29,6 +29,18 @@ module Transactions
                                foreign_key: :authorized_by_id,
                                inverse_of: :authorized_transactions
 
+    has_many :annotations, as: :annotatable, class_name: "Annotations::Base",
+                                             foreign_key: :annotatable_id
+
+    has_many :comments, class_name: "Annotations::Comment",
+                        foreign_key: :annotatable_id
+
+    has_one :transaction_id, class_name: "Annotations::TransactionId",
+                             foreign_key: :annotatable_id
+
+    has_many :signatures, class_name: "Signature", foreign_key: :system_transaction_id
+    has_many :signatories, through: :signatures, source: :member
+
     has_many :events, class_name: "Events::Base",
                       foreign_key: :system_transaction_id,
                       inverse_of: :system_transaction,
@@ -53,7 +65,14 @@ module Transactions
                              autosave: true,
                              dependent: :restrict_with_error
 
-    before_validation :publish_to_source, :publish_to_destination, on: :create
+    before_validation :publish_to_source,
+                      :publish_to_destination,
+                      :hash_previous_transaction,
+                      on: :create
+
+    accepts_nested_attributes_for :signatures, reject_if: -> (attributes) { attributes[:member_id].blank? }
+    accepts_nested_attributes_for :comments, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank? }
+    accepts_nested_attributes_for :transaction_id, reject_if: -> (attributes) { attributes[:type].blank? && attributes[:body].blank? }
 
     def error_message
       errors.full_messages.to_sentence
@@ -73,7 +92,7 @@ module Transactions
     end
 
     scope :ordered, -> { order(created_at: :asc) }
-    scope :not_self, ->(sys_transaction) { where.not(id: sys_transaction.id) }
+    scope :not_self, ->(tx) { where.not(id: tx.id) }
     scope :for_source, ->(source) { where(source: source) }
     scope :for_destination, ->(destination) { where(destination: destination) }
 
@@ -93,8 +112,11 @@ module Transactions
       destination_quantity.nil? ? nil : Utils.to_decimal(destination_quantity, destination_coin.subdivision)
     end
 
-    def hash
-      Digest::SHA2.hexdigest(attributes.to_s)
+    def as_hash
+      Digest::SHA2.hexdigest attributes.merge(
+        created_at: self.created_at.to_time.to_i,
+        updated_at: self.updated_at.to_time.to_i
+      ).to_s
     end
 
     def events_sum
@@ -117,7 +139,8 @@ module Transactions
     end
 
     def correct_previous_transaction
-      return true if previous_transaction.blank? || (previous_transaction.id == referring_transaction.id)
+      return true if (previous_transaction.blank? && referring_transaction.blank?) ||
+        (previous_transaction.as_hash == referring_transaction.as_hash)
       self.errors.add :previous_transaction, "invalid"
     end
 
@@ -155,6 +178,12 @@ module Transactions
 
     def referring_transaction_to_source
       self.class.ordered.not_self(self).for_source(source).last
+    end
+
+    def hash_previous_transaction
+      if referring_transaction && previous_transaction && (previous_transaction.as_hash == referring_transaction.as_hash)
+        self.previous_transaction_hash = previous_transaction.as_hash
+      end
     end
   end
 end

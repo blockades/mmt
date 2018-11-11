@@ -1,0 +1,57 @@
+h2 Debugger's Guide
+.row
+  .eight.columns
+    p
+      | In total there are 
+      = link_to "7 different types of transactions", "#", class: "switch", data: { attribute: "transactionKey"}
+      |  that can be commited to the system.
+    p A member (normal user) can create 4 types of transaction for each coin.
+    p
+      | In addition to dealing with their own funds, an admin can create 3 additional types of transaction that affect overall system liquidity.
+        Depending on the action the admin takes, this should permit or forbid other members using the system to perform relevant actions.
+    br
+    p
+      strong For example:
+  .four.columns.border-dark.padded
+    h5 Errors to look out for:
+    ol
+      li Ability to withdraw currency that isn't present
+      li Inability to withdraw currency that is present
+      li Ability to allocate/gift currency that isn't present
+      li Inability to allocate/gift currency that is present
+.row
+  .three.columns.padded-right.border-right
+    .framed
+      h4 Scenario A
+      ul
+        li System NEO assets sum to 1000
+        li An admin withdraws 800 NEO from the system
+        li A member attempts to purchase 250 NEO
+        li
+          strong
+            | Result : 
+            span.red Rejected
+
+  .three.columns.padded-right.border-right
+    .framed
+      h4 Scenario B
+      ul
+        li System BTC assets sum to 10
+        li System BTC liabilities sum to 7
+        li A member's personal liability sums to 2.3 BTC
+        li A member withdraws 2 BTC
+        li
+          strong
+            | Result : 
+            span.green Approved
+  .three.columns.padded-right.border-right
+    .framed
+      h4 Scenario C
+      ul
+        li System ETH assets sum to 5
+        li A member's personal liability sums to 1.5 ETH
+        li A member gifts 2 ETH
+        li
+          strong
+            | Result : 
+            span.red Rejected

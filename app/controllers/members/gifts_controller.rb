@@ -6,16 +6,13 @@ module Members
 
     before_action :find_coin, except: [:index]
     before_action :find_previous_transaction, only: [:new, :create]
+    before_action :check_previous_transaction, only: [:create]
 
     def index; end
 
     def new; end
 
     def create
-      unless previous_transaction?
-        return redirect_back fallback_location: new_gift_path, alert: "Invalid previous transaction"
-      end
-
       transaction = transaction_commiter(Transactions::MemberAllocation, gift_params)
 
       if transaction.persisted?
@@ -33,6 +30,12 @@ module Members
 
     def find_previous_transaction
       @previous_transaction = Transactions::MemberAllocation.ordered.for_destination(current_member).last
+    end
+
+    def check_previous_transaction
+      return if previous_transaction?
+      redirect_back fallback_location: new_gift_path,
+                    alert: "Invalid previous transaction"
     end
 
     def permitted_params

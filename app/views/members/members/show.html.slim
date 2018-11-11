@@ -1,4 +1,15 @@
-h1= @member.username
-
-- if my_profile?
-  = link_to 'Settings', member_settings_path
+.row
+  .three.columns.strip
+    - if my_profile?
+      section.padded
+        .framed
+          h3 Settings
+          ul.border-dashed-top
+            li= link_to 'Two Factor Authentication', member_settings_two_factor_authentication_path
+            li= link_to 'Change Password', edit_member_settings_password_path
+  .nine.columns.border-left
+    article.profile.padded.padded-left
+      - if my_profile?
+        = render partial: "members/members/form"
+      - else
+        h3= @member.username

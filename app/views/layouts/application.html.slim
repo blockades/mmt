@@ -6,6 +6,7 @@ html
     = csrf_meta_tags
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
+    = favicon_link_tag asset_path('favicon.ico'), rel: 'icon', type: "image/x-icon"
   body
     #flash
       = flash_notices
@@ -21,7 +22,7 @@ html
           = link_to admins_root_path do
             li Switch to Admin Mode
         = link_to member_path(current_member) do
-          li Settings
+          li= current_member.username
         = link_to destroy_member_session_path, method: :delete, authenticity_token: true do
           li Log Out
     .container

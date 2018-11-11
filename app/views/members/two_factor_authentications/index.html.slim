@@ -35,7 +35,7 @@ hr
           | Your fallback phone number is: 
           strong= @member.full_phone_number || "Unknown"
     .two.columns
-      = link_to 'Change phone number', member_settings_path(@member), class: 'button'
+      = link_to 'Change phone number', member_path(@member), class: 'button'
 
   hr
   .row

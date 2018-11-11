@@ -2,16 +2,16 @@
 
 require "sidekiq"
 
-redis_host = ENV.fetch("REDIS_HOST") { "localhost" }
+redis_url = ENV.fetch("REDIS_URL") { 'redis://localhost:6379/12'}
 
 Sidekiq.configure_server do |config|
   config.redis = {
-    url: "redis://#{redis_host}:6379/12"
+    url: redis_url
   }
 end
 
 Sidekiq.configure_client do |config|
   config.redis = {
-    url: "redis://#{redis_host}:6379/12",
+    url: redis_url
   }
 end

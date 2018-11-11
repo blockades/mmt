@@ -7,6 +7,7 @@ html
     = stylesheet_link_tag    'application', media: 'all', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'application', 'data-turbolinks-track': 'reload'
     = javascript_include_tag 'admin', 'data-turbolinks-track': 'reload'
+    = favicon_link_tag asset_path('favicon.ico'), rel: 'icon', type: "image/x-icon"
   body
     #flash
       = flash_notices
@@ -22,6 +23,8 @@ html
         - if current_member&.admin?
           = link_to root_path do
             li Switch to Normal Mode
+        = link_to member_path(current_member) do
+          li= current_member.username
         = link_to destroy_member_session_path, method: :delete do
           li Log Out
     .container

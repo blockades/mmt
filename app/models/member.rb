@@ -16,6 +16,9 @@ class Member < ApplicationRecord
   extend FriendlyId
   friendly_id :username, use: :slugged
 
+  has_many :signatures
+  has_many :signed_transactions, through: :signatures
+
   has_many :source_transactions, as: :source,
                                  class_name: "Transactions::Base",
                                  dependent: :restrict_with_error
@@ -52,6 +55,7 @@ class Member < ApplicationRecord
   has_many :crypto, -> { distinct }, through: :crypto_events, source: :coin
   has_many :fiat, -> { distinct }, through: :fiat_events, source: :coin
 
+  scope :admin, -> { where(admin: true) }
   scope :with_crypto, -> { joins(:crypto) }
   scope :with_fiat, -> { joins(:fiat) }
 
@@ -102,10 +106,6 @@ class Member < ApplicationRecord
     Utils.to_decimal(liability(coin), coin.subdivision)
   end
 
-  def full_phone_number
-    "+#{country_code}#{phone_number}"
-  end
-
   def authenticated_by_app?
     otp_delivery_method == "app"
   end
@@ -127,7 +127,10 @@ class Member < ApplicationRecord
   end
 
   def send_authentication_code_by_sms!
-    Workers::SmsAuthentication.perform_async(full_phone_number, "Your authentication code is #{direct_otp}")
+    Workers::SmsAuthentication.perform_async(
+      I18n.t("member.phone_number.complete", country_code: country_code, phone_number: phone_number),
+      I18n.t("member.two_factor.sms.code", code: direct_otp)
+    )
   end
 
   class << self

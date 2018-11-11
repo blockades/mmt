@@ -19,9 +19,13 @@ Rails.application.routes.draw do
   namespace :admins do
     root to: "dashboard#index"
 
+    resources :transactions, only: [] do
+      resources :comments, only: :create, controller: :transaction_comments, format: :js
+    end
+
     resources :coins, only: [:index, :edit, :show, :update] do
-      resources :assets, only: :index
-      resources :liabilities, only: :index
+      resources :assets, only: [:index, :show]
+      resources :liabilities, only: [:index, :show]
     end
 
     resources :members, only: [:index, :new, :create]
@@ -46,8 +50,7 @@ Rails.application.routes.draw do
   end
 
   namespace :settings, module: :members, as: :member_settings do
-    get "/" => "settings#index"
-    resource :password, only: [:new, :update]
+    resource :password, only: [:edit, :update]
 
     resource :two_factor_authentication, only: [:new, :create, :edit, :update, :destroy],
                                          path_names: { new: "setup", edit: "confirm", destroy: "disable" } do
