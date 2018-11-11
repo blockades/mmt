@@ -4,7 +4,7 @@ lock "3.11.0"
 server ENV.fetch( 'SERVER_IP' ), roles: [:web, :app, :db], primary: true
 
 set :application, "mmt"
-set :repo_url, "git@bitbucket.org:blockades/mmt.git"
+set :repo_url, "git@github.com:blockades/mmt.git"
 set :user,            'deploy'
 set :puma_threads,    [4, 16]
 set :puma_workers,    0
